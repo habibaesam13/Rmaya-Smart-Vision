@@ -189,6 +189,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::post ('clubs', [ClubsController::class, 'store'])->name('clubs.store');
     Route::get  ('clubs', [ClubsController::class, 'index'])->name ('clubs.index');
+    Route::get  ('clubs/{id}/edit', [ClubsController::class, 'edit'])->name('clubs.edit');
+    Route::put  ('clubs/{id}', [ClubsController::class, 'update'])->name('clubs.update');
+    Route::delete('clubs/{id}', [ClubsController::class, 'destroy'])->name('clubs.destroy');
+    Route::post   ('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
 
 });
 
