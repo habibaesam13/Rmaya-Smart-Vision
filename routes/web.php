@@ -182,6 +182,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get  ('weapons/{id}/edit', [WeaponController::class, 'edit'])->name('weapons.edit');
     Route::put('weapons/{id}', [WeaponController::class, 'update'])->name('weapons.update');
     Route::delete('weapons/{id}', [WeaponController::class, 'destroy'])->name('weapons.destroy');
+
+
+    //clubs
 });
 
 
