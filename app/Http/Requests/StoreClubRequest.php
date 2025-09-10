@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Http\Requests\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class StoreClubRequest extends FormRequest
 {
     /**

@@ -200,7 +200,8 @@ return [
     'sliders' => 'Sliders',
     'slider' => 'Slider',
     'Slider' => 'Slider',
-
+    'Clubs'   => 'Clubs',
+    'Weapons' => 'Weapons',
     'Add slider' => 'Add Slider',
     'Show sliders' => 'Show Slider',
 

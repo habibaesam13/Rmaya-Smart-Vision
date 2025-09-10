@@ -55,6 +55,8 @@
                             <i class="fas fa-toggle-off text-danger" style="font-size: 1.4rem;"></i>
                             @endif
                         </button>
+                    </form>
+                    <a href="#"><i class="fa-solid fa-gun"></i></a>
                 </li>
                 @empty
                 <li class="list-group-item text-muted">لا توجد أندية مضافة</li>

@@ -274,6 +274,8 @@ return [
 'last_test_in_invoice' => 'هذة فاتورة مصدرة الكترونيا , لا تحتاج الي توقيع او ختم',
     'delete' => 'الغاء',
     'give_permissions_to_role' => 'تعيين اذونات لهذة الصلاحية',
+    'Clubs'=>'الأندية',
+    'Weapons'=>'الأسلحة',
 
 //    'This is an electronically generated invoice, hence does not require a signature or stamp'
 

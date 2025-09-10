@@ -175,26 +175,33 @@ Route::group([
 
 
 
-// Weapons routes
-Route::prefix('admin')->middleware('auth')->group(function () {
-    // Weapons routes
-    Route::post ('weapons', [WeaponController::class, 'store'])->name('weapons.store');
-    Route::get  ('weapons', [WeaponController::class, 'index'])->name('weapons.index');
-    Route::get  ('weapons/{id}/edit', [WeaponController::class, 'edit'])->name('weapons.edit');
-    Route::put('weapons/{id}', [WeaponController::class, 'update'])->name('weapons.update');
-    Route::delete('weapons/{id}', [WeaponController::class, 'destroy'])->name('weapons.destroy');
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath', 'auth']
+    ],
+    function () {
 
+        // Admin routes
+        Route::prefix('admin')->group(function () {
 
-    //clubs
+            // Weapons routes
+            Route::get('weapons', [WeaponController::class, 'index'])->name('weapons.index');
+            Route::post('weapons', [WeaponController::class, 'store'])->name('weapons.store');
+            Route::get('weapons/{id}/edit', [WeaponController::class, 'edit'])->name('weapons.edit');
+            Route::put('weapons/{id}', [WeaponController::class, 'update'])->name('weapons.update');
+            Route::delete('weapons/{id}', [WeaponController::class, 'destroy'])->name('weapons.destroy');
 
-    Route::post ('clubs', [ClubsController::class, 'store'])->name('clubs.store');
-    Route::get  ('clubs', [ClubsController::class, 'index'])->name ('clubs.index');
-    Route::get  ('clubs/{id}/edit', [ClubsController::class, 'edit'])->name('clubs.edit');
-    Route::put  ('clubs/{id}', [ClubsController::class, 'update'])->name('clubs.update');
-    Route::delete('clubs/{id}', [ClubsController::class, 'destroy'])->name('clubs.destroy');
-    Route::post   ('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
-
-});
+            // Clubs routes
+            Route::get('clubs', [ClubsController::class, 'index'])->name('clubs.index');
+            Route::post('clubs', [ClubsController::class, 'store'])->name('clubs.store');
+            Route::get('clubs/{id}/edit', [ClubsController::class, 'edit'])->name('clubs.edit');
+            Route::put('clubs/{id}', [ClubsController::class, 'update'])->name('clubs.update');
+            Route::delete('clubs/{id}', [ClubsController::class, 'destroy'])->name('clubs.destroy');
+            Route::post('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
+        });
+    }
+);
 
 
 require __DIR__ . '/auth.php';

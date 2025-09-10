@@ -59,7 +59,10 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->clubService->updateClub($id, $request->validated());
+         $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        ]);
+        $this->clubService->updateClub($id, $validated);
         return redirect()->route('clubs.index')->with('success', 'تم تحديث النادي بنجاح.');
     }
 

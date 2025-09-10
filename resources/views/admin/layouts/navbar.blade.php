@@ -4,18 +4,15 @@
 
     <!-- Brand Logo -->
     <a href="{{url('/')}}" class="logo">
-                <span class="logo-light">
-                    <span class="logo-lg"><img src="{{asset(all_settings()->getItem('logo'))}}" alt="logo"></span>
-                    <span class="logo-sm"><img src="{{asset(all_settings()->getItem('logo'))}}"
-                                               alt="small logo"></span>
-                </span>
+        <span class="logo-light">
+            <span class="logo-lg"><img src="{{asset(all_settings()->getItem('logo'))}}" alt="logo"></span>
+            <span class="logo-sm"><img src="{{asset(all_settings()->getItem('logo'))}}" alt="small logo"></span>
+        </span>
 
         <span class="logo-dark">
-                    <span class="logo-lg"><img src="{{asset(all_settings()->getItem('logo'))}}"
-                                               alt="dark logo"></span>
-                    <span class="logo-sm"><img src="{{asset(all_settings()->getItem('logo'))}}"
-                                               alt="small logo"></span>
-                </span>
+            <span class="logo-lg"><img src="{{asset(all_settings()->getItem('logo'))}}" alt="dark logo"></span>
+            <span class="logo-sm"><img src="{{asset(all_settings()->getItem('logo'))}}" alt="small logo"></span>
+        </span>
     </a>
 
     <!-- Sidebar Hover Menu Toggle Button -->
@@ -34,35 +31,37 @@
         <div class="sidenav-user">
             <div class="dropdown-center">
                 <a class="topbar-link dropdown-toggle text-reset drop-arrow-none px-2 d-flex align-items-center justify-content-center"
-                   data-bs-toggle="dropdown" data-bs-offset="0,19" type="button" aria-haspopup="false"
-                   aria-expanded="false">
+                    data-bs-toggle="dropdown" data-bs-offset="0,19" type="button" aria-haspopup="false"
+                    aria-expanded="false">
                     <img src="{{asset('admin/assets/images/users/user_photo.png')}}" width="42"
-                         class="rounded-circle me-2 d-flex" alt="user-image">
+                        class="rounded-circle me-2 d-flex" alt="user-image">
                     <span class="d-flex flex-column gap-1 sidebar-user-name">
-                                <h4 class="my-0 fw-bold fs-15">{{auth()->user()->name}}</h4>
-                                <h6 class="my-0">{{__('lang.Admin Head')}}</h6>
-                            </span>
+                        <h4 class="my-0 fw-bold fs-15">{{auth()->user()->name}}</h4>
+                        <h6 class="my-0">{{__('lang.Admin Head')}}</h6>
+                    </span>
                     <i class="ri-arrow-down-s-line d-block sidebar-user-arrow align-middle ms-2"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                <!-- item-->
+                    <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item active fw-semibold text-danger">
                         <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
-                        <span onclick="window.location.href='{{route('admin.get_admin_logout')}}'" class="align-middle">Sign Out</span>
+                        <span onclick="window.location.href='{{route('admin.get_admin_logout')}}'"
+                            class="align-middle">Sign Out</span>
                     </a>
                 </div>
             </div>
         </div>
         <!-------------------------languages buttons ------------------->
         <ul>
-            @foreach(\Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                <li class="{{app()->getLocale() === $localeCode ? 'd-none' : ''}}">
-                    <a rel="alternate" hreflang="{{ $localeCode }}"
-                       href="{{ \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                        {{ $properties['native'] }}
-                    </a>
-                </li>
+            @foreach(\Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLocales() as $localeCode =>
+            $properties)
+            <li class="{{app()->getLocale() === $localeCode ? 'd-none' : ''}}">
+                <a rel="alternate" hreflang="{{ $localeCode }}"
+                    href="{{ \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                    {{ $properties['native'] }}
+                </a>
+            </li>
             @endforeach
         </ul>
         <!-------------------------languages buttons ------------------->
@@ -72,93 +71,119 @@
             <!------------start original nav ----------------->
 
 
-        @if(checkModulePermission('settings', 'view'))
-                <li class="side-nav-item">
-                    <a data-bs-toggle="collapse" href="#sidebarLayouts_settings" aria-expanded="false"
-                       aria-controls="sidebarLayouts_2"
-                       class="side-nav-link">
-                        <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
-                        <span class="menu-text"> {{__('lang.settings')}} </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="sidebarLayouts_settings">
-                        <ul class="sub-menu">
-                            {{--                            @if(checkModulePermission('roles', 'add'))--}}
-                            {{--                                <li class="side-nav-item">--}}
-                            {{--                                    <a href="{{url(route('admin.roles.create'))}}"--}}
-                            {{--                                       class="side-nav-link"> {{__('lang.Add Role')}} </a>--}}
-                            {{--                                </li>--}}
-                            {{--                            @endif--}}
+            @if(checkModulePermission('settings', 'view'))
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarLayouts_settings" aria-expanded="false"
+                    aria-controls="sidebarLayouts_2" class="side-nav-link">
+                    <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
+                    <span class="menu-text"> {{__('lang.settings')}} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarLayouts_settings">
+                    <ul class="sub-menu">
+                        {{--                            @if(checkModulePermission('roles', 'add'))--}}
+                        {{--                                <li class="side-nav-item">--}}
+                        {{--                                    <a href="{{url(route('admin.roles.create'))}}"--}}
+                        {{--                                       class="side-nav-link"> {{__('lang.Add Role')}}
+                        </a>--}}
+                        {{--                                </li>--}}
+                        {{--                            @endif--}}
 
-                            <li class="side-nav-item">
-                                <a href="{{url(route('admin.settings.edit'))}}"
-                                   class="side-nav-link"> {{__('lang.Show Setting')}} </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                        <li class="side-nav-item">
+                            <a href="{{url(route('admin.settings.edit'))}}" class="side-nav-link">
+                                {{__('lang.Show Setting')}} </a>
+                        </li>
+                        <li>
+                            <a href="{{route('weapons.index')}}" class="side-nav-link"> {{__('lang.Show All Settings')}}
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </li>
             @endif
+
+
+
+
+
 
 
 
             @if(checkModulePermission('admins', 'view'))
-                <li class="side-nav-item  @if (request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*')  || request()->routeIs('admin.give_module_to_role_show')  ) active   @endif">
-                    <a data-bs-toggle="collapse" href="#sidebarLayouts_admins" aria-expanded="false"
-                       aria-controls="sidebarLayouts_2"
-                       class="side-nav-link">
-                        <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
-                        <span class="menu-text"> {{__('lang.admins')}} </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div
-                        class="collapse  @if (request()->routeIs('admin.users.*')  ||  request()->routeIs('admin.roles.*') || request()->routeIs('admin.give_module_to_role_show')) show   @endif"
-                        id="sidebarLayouts_admins">
-                        <ul class="sub-menu">
-                            @if(checkModulePermission('admins', 'add'))
-                                <li class="side-nav-item">
-                                    <a href="{{url(route('admin.users.create'))}}"
-                                       class="side-nav-link"> {{__('lang.Add Admin')}} </a>
-                                </li>
-                            @endif
+            <li
+                class="side-nav-item  @if (request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*')  || request()->routeIs('admin.give_module_to_role_show')  ) active   @endif">
+                <a data-bs-toggle="collapse" href="#sidebarLayouts_admins" aria-expanded="false"
+                    aria-controls="sidebarLayouts_2" class="side-nav-link">
+                    <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
+                    <span class="menu-text"> {{__('lang.admins')}} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse  @if (request()->routeIs('admin.users.*')  ||  request()->routeIs('admin.roles.*') || request()->routeIs('admin.give_module_to_role_show')) show   @endif"
+                    id="sidebarLayouts_admins">
+                    <ul class="sub-menu">
+                        @if(checkModulePermission('admins', 'add'))
+                        <li class="side-nav-item">
+                            <a href="{{url(route('admin.users.create'))}}" class="side-nav-link">
+                                {{__('lang.Add Admin')}} </a>
+                        </li>
+                        @endif
 
-                            <li class="side-nav-item">
-                                <a href="{{url(route('admin.users.index'))}}"
-                                   class="side-nav-link"> {{__('lang.Show Admin')}} </a>
-                            </li>
+                        <li class="side-nav-item">
+                            <a href="{{url(route('admin.users.index'))}}" class="side-nav-link">
+                                {{__('lang.Show Admin')}} </a>
+                        </li>
 
-                            @if(checkModulePermission('roles', 'view'))
-                                <li class="side-nav-item">
-                                    <a href="{{url(route('admin.roles.index'))}}"
-                                       class="side-nav-link"> {{__('lang.Show Role')}} </a>
-                                </li>
-                            @endif
+                        @if(checkModulePermission('roles', 'view'))
+                        <li class="side-nav-item">
+                            <a href="{{url(route('admin.roles.index'))}}" class="side-nav-link">
+                                {{__('lang.Show Role')}} </a>
+                        </li>
+                        @endif
 
-                        </ul>
-                    </div>
-                </li>
+                    </ul>
+                </div>
+            </li>
             @endif
 
+            <ul class="side-nav">
 
-            @if(checkModulePermission('logs', 'view'))
-                <li class="side-nav-item">
-                    <a data-bs-toggle="collapse" href="#sidebarLayouts_logs" aria-expanded="false"
-                       aria-controls="sidebarLayouts_logs"
-                       class="side-nav-link">
-                        <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
-                        <span class="menu-text">  {{__('lang.logs')}}  </span>
-                        <span class="menu-arrow"></span>
+                {{-- Weapons --}}
+                <li class="side-nav-item @if (request()->routeIs('weapons.*')) active @endif">
+                    <a href="{{ route('weapons.index') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="ri-sword-line"></i></span>
+                        <span class="menu-text">{{ __('lang.Weapons') }}</span>
                     </a>
-                    <div class="collapse" id="sidebarLayouts_logs">
-                        <ul class="sub-menu">
-
-
-                            <li class="side-nav-item">
-                                <a href="{{url(route('admin.logs.index'))}}"
-                                   class="side-nav-link"> {{__('lang.show')}}  {{__('lang.logs')}} </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
+
+                {{-- Clubs --}}
+                <li class="side-nav-item @if (request()->routeIs('clubs.*')) active @endif">
+                    <a href="{{ route('clubs.index') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="ri-shield-line"></i></span>
+                        <span class="menu-text">{{ __('lang.Clubs') }}</span>
+                    </a>
+                </li>
+
+            </ul>
+            @if(checkModulePermission('logs', 'view'))
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarLayouts_logs" aria-expanded="false"
+                    aria-controls="sidebarLayouts_logs" class="side-nav-link">
+                    <span class="menu-icon"><i class="ri-layout-2-line"></i></span>
+                    <span class="menu-text"> {{__('lang.logs')}} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarLayouts_logs">
+                    <ul class="sub-menu">
+
+
+                        <li class="side-nav-item">
+                            <a href="{{url(route('admin.logs.index'))}}" class="side-nav-link"> {{__('lang.show')}}
+                                {{__('lang.logs')}} </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             @endif
 
 
@@ -167,9 +192,9 @@
 
         <!-- Help Box -->
         <div class="help-box text-center">
-{{--            <h5 class="fw-semibold fs-16">Unlimited Access</h5>--}}
-{{--            <p class="mb-3 opacity-75">Upgrade to plan to get access to unlimited reports</p>--}}
-{{--            <a href="javascript: void(0);" class="btn btn-danger btn-sm">Upgrade</a>--}}
+            {{--            <h5 class="fw-semibold fs-16">Unlimited Access</h5>--}}
+            {{--            <p class="mb-3 opacity-75">Upgrade to plan to get access to unlimited reports</p>--}}
+            {{--            <a href="javascript: void(0);" class="btn btn-danger btn-sm">Upgrade</a>--}}
         </div>
 
         <div class="clearfix"></div>
@@ -188,19 +213,18 @@
 
             <!-- Brand Logo -->
             <a href="#" class="logo">
-                        <span class="logo-light">
-                            <span class="logo-lg"><img src="{{asset('admin/assets/images/logo.png')}}"
-                                                       alt="logo"></span>
-                            <span class="logo-sm"><img src="{{asset('admin/assets/images/logo-sm.png')}}"
-                                                       alt="small logo"></span>
-                        </span>
+                <span class="logo-light">
+                    <span class="logo-lg"><img src="{{asset('admin/assets/images/logo.png')}}" alt="logo"></span>
+                    <span class="logo-sm"><img src="{{asset('admin/assets/images/logo-sm.png')}}"
+                            alt="small logo"></span>
+                </span>
 
                 <span class="logo-dark">
-                            <span class="logo-lg"><img src="{{asset('admin/assets/images/logo-dark.png')}}"
-                                                       alt="dark logo"></span>
-                            <span class="logo-sm"><img src="{{asset('admin/assets/images/logo-sm.png')}}"
-                                                       alt="small logo"></span>
-                        </span>
+                    <span class="logo-lg"><img src="{{asset('admin/assets/images/logo-dark.png')}}"
+                            alt="dark logo"></span>
+                    <span class="logo-sm"><img src="{{asset('admin/assets/images/logo-sm.png')}}"
+                            alt="small logo"></span>
+                </span>
             </a>
 
             <!-- Sidebar Menu Toggle Button -->
@@ -219,7 +243,8 @@
 
                 <div>
                     <h4 class="page-title fs-18 fw-bold mb-0">{{all_settings()->getItem('company_name')}}</h4>
-                    <h5 class="page-title mt-1 text-primary  fw-bold mb-0">{{all_settings()->getItem('company_department_name')}}</h5>
+                    <h5 class="page-title mt-1 text-primary  fw-bold mb-0">
+                        {{all_settings()->getItem('company_department_name')}}</h5>
 
                 </div>
 
@@ -240,23 +265,22 @@
             <div class="topbar-item nav-user">
                 <div class="dropdown">
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown"
-                       data-bs-offset="0,25" type="button" aria-haspopup="false" aria-expanded="false">
+                        data-bs-offset="0,25" type="button" aria-haspopup="false" aria-expanded="false">
                         <img src="{{asset('admin/assets/images/users/user_photo.png')}}" width="32"
-                             class="rounded-circle me-lg-2 d-flex"
-                             alt="user-image">
+                            class="rounded-circle me-lg-2 d-flex" alt="user-image">
                         <span class="d-lg-flex flex-column gap-1 d-none">
-                                    <h5 class="my-0">{{auth()->user()->name}}</h5>
-                                </span>
+                            <h5 class="my-0">{{auth()->user()->name}}</h5>
+                        </span>
                         <i class="ri-arrow-down-s-line d-none d-lg-block align-middle ms-2"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
 
-                    <!-- item-->
+                        <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item active fw-semibold text-danger">
                             <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
                             <span onclick="window.location.href='{{route('admin.get_admin_logout')}}'"
-                                  class="align-middle">Sign Out</span>
+                                class="align-middle">Sign Out</span>
                         </a>
                     </div>
                 </div>
@@ -275,7 +299,7 @@
                     <div class="px-3 py-2 d-flex flex-row align-items-center" id="top-search">
                         <i class="ri-search-line fs-22"></i>
                         <input type="search" class="form-control border-0" id="search-modal-input"
-                               placeholder="Search for actions, people,">
+                            placeholder="Search for actions, people,">
                         <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[esc]</button>
                     </div>
                 </div>
