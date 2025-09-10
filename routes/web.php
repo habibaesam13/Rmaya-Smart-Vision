@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WeaponController;
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -176,7 +177,11 @@ Route::group([
 // Weapons routes
 Route::prefix('admin')->middleware('auth')->group(function () {
     // Weapons routes
-    Route::resource('weapons', \App\Http\Controllers\WeaponController::class);
+    Route::post ('weapons', [WeaponController::class, 'store'])->name('weapons.store');
+    Route::get  ('weapons', [WeaponController::class, 'index'])->name('weapons.index');
+    Route::get  ('weapons/{id}/edit', [WeaponController::class, 'edit'])->name('weapons.edit');
+    Route::put('weapons/{id}', [WeaponController::class, 'update'])->name('weapons.update');
+    Route::delete('weapons/{id}', [WeaponController::class, 'destroy'])->name('weapons.destroy');
 });
 
 
