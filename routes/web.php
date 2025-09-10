@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WeaponController;
+use App\Http\Controllers\ClubsController;
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -185,6 +186,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
 
     //clubs
+
+    Route::post ('clubs', [ClubsController::class, 'store'])->name('clubs.store');
+    Route::get  ('clubs', [ClubsController::class, 'index'])->name ('clubs.index');
+
 });
 
 

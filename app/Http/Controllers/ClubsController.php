@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sv_clubs;
 use Illuminate\Http\Request;
 
-class SvClubsController extends Controller
+class ClubsController extends Controller
 {
     /**
      * Display a listing of the resource.
