@@ -109,7 +109,7 @@
                                     </form>
 
                                     {{-- Custom Icon Example --}}
-                                    <a href="#" class="icon-btn text-dark" title="سلاح مرتبط">
+                                    <a href="{{ route('clubs-weapons.index', $club->cid) }}" class="icon-btn text-dark" title="سلاح مرتبط">
                                         <i class="fa-solid fa-gun"></i>
                                     </a>
                                 </div>
