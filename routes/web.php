@@ -172,9 +172,6 @@ Route::group([
 
 
 
-
-
-
 Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
@@ -202,6 +199,7 @@ Route::group(
         });
     }
 );
+
 
 
 require __DIR__ . '/auth.php';
