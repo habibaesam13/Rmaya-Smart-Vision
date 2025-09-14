@@ -51,6 +51,14 @@ class ClubsWeaponsController extends Controller
      */
     public function edit(Request $request, $cwid)
     {
+        // $validated=$request->validate([
+        //     'cid' => 'required|exists:clubs,id',
+        //     'wid' => 'required|exists:weapons,id',
+        //     'gender' => 'required|in:male,female',
+        //     'age_from' => 'required|integer|min:1|max:100',
+        //     'age_to' => 'nullable|integer|gte:age_from|min:1|max:100',
+        //     'success_degree' => 'required|integer|between:0,100',
+        // ]);
         $clubWeapon = $this->clubsWeaponsService->getClubWeapon($cwid);
         if (!$clubWeapon) {
             return redirect()->back()->withErrors(['error' => 'السلاح غير موجود']);
