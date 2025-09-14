@@ -19,13 +19,11 @@ class ClubsWeaponsService
     }
 
     /**
-     * Get a specific club weapon by club + weapon IDs.
+     * Get a specific club weapon record by composite keys.
      */
-    public function getClubWeapon($clubId, $weaponId)
+    public function getClubWeapon($cwid)
     {
-        return Sv_clubs_weapons::where('cid', $clubId)
-            ->where('wid', $weaponId)
-            ->firstOrFail();
+        return Sv_clubs_weapons::findorfail($cwid);
     }
 
     /**
@@ -39,9 +37,21 @@ class ClubsWeaponsService
     /**
      * Update a club weapon record by composite keys.
      */
-    public function updateClubWeapon($clubId, $weaponId, array $data)
+    public function updateClubWeapon($cwid, array $data)
     {
-        $clubWeapon = $this->getClubWeapon($clubId, $weaponId);
+        if(isset($data['age_to']) && $data['age_to'] < $data['age_from']) {
+            throw new \InvalidArgumentException('The age_to must be greater than or equal to age_from.');
+        }
+        else if(isset($data['age_from']) && ( $data['age_from'] < 0 || $data['age_from'] > 100)) {
+            throw new \InvalidArgumentException('The age_from must be between 0 and 100.');
+        }
+        else if(isset($data['age_to']) && ( $data['age_to'] < 0 || $data['age_to'] > 100)) {
+            throw new \InvalidArgumentException('The age_to must be between 0 and 100.');
+        }
+        if($data['success_degree'] < 0 || $data['success_degree'] > 100) {
+            throw new \InvalidArgumentException('The success_degree must be between 0 and 100.');
+        }
+        $clubWeapon = $this->getClubWeapon($cwid);
         $clubWeapon->update($data);
 
         return $clubWeapon;
@@ -50,18 +60,18 @@ class ClubsWeaponsService
     /**
      * Delete a club weapon record by composite keys.
      */
-    public function deleteClubWeapon($clubId, $weaponId)
+    public function deleteClubWeapon($cwid)
     {
-        $clubWeapon = $this->getClubWeapon($clubId, $weaponId);
+        $clubWeapon = $this->getClubWeapon($cwid);
         return $clubWeapon->delete();
     }
 
     /**
      * Toggle active status.
      */
-    public function toggleClubWeaponStatus($clubId, $weaponId)
+    public function toggleClubWeaponStatus($cwid)
     {
-        $clubWeapon = $this->getClubWeapon($clubId, $weaponId);
+        $clubWeapon = $this->getClubWeapon($cwid);
         $clubWeapon->active = !$clubWeapon->active;
         $clubWeapon->save();
 

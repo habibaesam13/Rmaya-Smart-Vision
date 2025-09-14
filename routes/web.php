@@ -208,10 +208,10 @@ Route::group(
             Route::prefix('clubs-weapons')->group(function () {
                 Route::get('{cid}', [ClubsWeaponsController::class, 'index'])->name('clubs-weapons.index');
                 Route::post('store', [ClubsWeaponsController::class, 'store'])->name('clubs-weapons.store');
-                Route::get('{cid}/{wid}/edit', [ClubsWeaponsController::class, 'edit'])->name('clubs-weapons.edit');
-                Route::put('{cid}/{wid}', [ClubsWeaponsController::class, 'update'])->name('clubs-weapons.update');
-                Route::delete('{cid}/{wid}', [ClubsWeaponsController::class, 'destroy'])->name('clubs-weapons.destroy');
-                Route::post('{cid}/{wid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
+                Route::get('{cwid}/edit', [ClubsWeaponsController::class, 'edit'])->name('clubs-weapons.edit');
+                Route::put('{cwid}', [ClubsWeaponsController::class, 'update'])->name('clubs-weapons.update');
+                Route::delete('{cwid}', [ClubsWeaponsController::class, 'destroy'])->name('clubs-weapons.destroy');
+                Route::post('{cwid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
             });
         });
     }

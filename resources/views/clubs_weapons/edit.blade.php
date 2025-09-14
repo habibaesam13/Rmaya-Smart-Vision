@@ -9,7 +9,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <i class="ri-shield-line text-success me-2" style="font-size:2rem !important"></i>
-                تعديل سلاح نادي {{ $club->name }}
+                تعديل سلاح  {{$club->name}}
             </h2>
 
             {{-- Error Message --}}

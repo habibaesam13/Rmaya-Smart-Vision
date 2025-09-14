@@ -30,7 +30,7 @@ class ClubsWeaponsController extends Controller
     {
         $clubsWeapons = $this->clubsWeaponsService->getClubsWeaponsByClubId($club_id);
         $club = $this->clubsService->getClubById($club_id);
-        $weapons = $this->weaponsService->getAllWeapons();
+        $weapons = $this->weaponsService->getAllWeapons();//for add form
 
         return view('clubs_weapons.index', compact('clubsWeapons', 'club', 'weapons'));
     }
@@ -40,7 +40,6 @@ class ClubsWeaponsController extends Controller
      */
     public function store(StoreClubWeaponRequest $request)
     {
-
         $validated = $request->validated();
         $this->clubsWeaponsService->createClubWeapon($validated);
         return redirect()->route('clubs-weapons.index', $validated['cid'])
@@ -50,10 +49,13 @@ class ClubsWeaponsController extends Controller
     /**
      * Show the form for editing a specific club weapon.
      */
-    public function edit($club_id, $weapon_id)
+    public function edit(Request $request, $cwid)
     {
-        $clubWeapon = $this->clubsWeaponsService->getClubWeapon($club_id, $weapon_id);
-        $club = $this->clubsService->getClubById($club_id);
+        $clubWeapon = $this->clubsWeaponsService->getClubWeapon($cwid);
+        if (!$clubWeapon) {
+            return redirect()->back()->withErrors(['error' => 'السلاح غير موجود']);
+        }
+        $club = $this->clubsService->getClubById($clubWeapon->cid);
         $weapons = $this->weaponsService->getAllWeapons();
 
         return view('clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
@@ -62,10 +64,15 @@ class ClubsWeaponsController extends Controller
     /**
      * Update a specific club weapon.
      */
-    public function update(Request $request, $club_id, $weapon_id)
+    public function update(Request $request, $cwid)
     {
-        $this->clubsWeaponsService->updateClubWeapon($club_id, $weapon_id, $request->all());
-
+        try{
+            $this->clubsWeaponsService->updateClubWeapon($cwid, $request->all());
+        }
+        catch(\InvalidArgumentException $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+        $club_id = $request->input('cid');
         return redirect()->route('clubs-weapons.index', $club_id)
             ->with('success', 'تم تحديث بيانات السلاح بنجاح');
     }
@@ -73,10 +80,10 @@ class ClubsWeaponsController extends Controller
     /**
      * Delete a specific club weapon.
      */
-    public function destroy($club_id, $weapon_id)
+    public function destroy(Request $request, $cwid)
     {
-        $this->clubsWeaponsService->deleteClubWeapon($club_id, $weapon_id);
-
+        $this->clubsWeaponsService->deleteClubWeapon($cwid);
+        $club_id = $request->input('cid');
         return redirect()->route('clubs-weapons.index', $club_id)
             ->with('success', 'تم حذف السلاح من النادي');
     }
@@ -84,10 +91,11 @@ class ClubsWeaponsController extends Controller
     /**
      * Toggle active status.
      */
-    public function toggleStatus($club_id, $weapon_id)
+    public function toggleStatus(Request $request, $cwid)
     {
-        $this->clubsWeaponsService->toggleClubWeaponStatus($club_id, $weapon_id);
-
+        $this->clubsWeaponsService->toggleClubWeaponStatus($cwid);
+        $club_id = $request->input('cid'); // Get club_id from hidden input
+        
         return redirect()->route('clubs-weapons.index', $club_id)
             ->with('success', 'تم تحديث حالة السلاح');
     }

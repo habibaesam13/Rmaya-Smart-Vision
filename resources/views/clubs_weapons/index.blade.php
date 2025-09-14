@@ -9,7 +9,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <i class="ri-shield-line text-success me-2" style="font-size:2rem !important"></i>
-                أسلحة نادي {{ $club->name }}
+                أسلحة {{ $club->name }}
             </h2>
 
             {{-- Error Message --}}
@@ -67,11 +67,13 @@
                         {{-- Gender --}}
                         <div class="mb-3 w-50 d-flex  align-items-center justify-content-center gap-3">
                             <div>
-                                <input id="male" type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+                                <input id="male" type="radio" name="gender" value="male"
+                                    {{ old('gender') == 'male' ? 'checked' : '' }}>
                                 <label for="male">ذكر</label>
                             </div>
                             <div>
-                                <input id="female" type="radio" name="gender" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+                                <input id="female" type="radio" name="gender" value="female"
+                                    {{ old('gender') == 'female' ? 'checked' : '' }}>
                                 <label for="female">أنثى</label>
                             </div>
 
@@ -80,7 +82,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class= "d-flex gap-3 " >
+                    <div class="d-flex gap-3 ">
 
                         {{-- Age From --}}
                         <div class="mb-3 w-25">
@@ -105,18 +107,19 @@
                         {{-- Success Degree --}}
                         <div class="mb-3 w-25">
                             <label for="success_degree" class="form-label">العلامة المؤهلة</label>
-                            <input type="number" name="success_degree" id="success_degree" class="form-control text-center"
-                                value="{{ old('success_degree') }}" min="0" max="100" required placeholder="العلامه المؤهلة للتصفيات الاولية">
+                            <input type="number" name="success_degree" id="success_degree"
+                                class="form-control text-center" value="{{ old('success_degree') }}" min="0" max="100"
+                                required placeholder="العلامه المؤهلة للتصفيات الاولية">
                             @error('success_degree')
                             <div class="text-danger small">{{ $message }}</div>
                             @enderror
                         </div>
 
                         {{-- Submit --}}
-                        
+
                     </div>
-                    <div >
-                    <button type="submit" class="btn btn-primary  ">حفظ</button>
+                    <div>
+                        <button type="submit" class="btn btn-primary  ">حفظ</button>
 
                     </div>
                 </form>
@@ -130,7 +133,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <i class="ri-list-check-2 text-success me-2" style="font-size:2rem !important"></i>
-                قائمة أسلحة نادي {{ $club->name }}
+                قائمة أسلحة {{ $club->name }}
             </h2>
 
             {{-- Weapons Table --}}
@@ -146,6 +149,7 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach($clubsWeapons as $clubWeapon)
                     <tr>
                         <td>{{ $clubWeapon->weapon->name }}</td>
@@ -154,18 +158,36 @@
                         <td>{{ $clubWeapon->age_to }}</td>
                         <td>{{ $clubWeapon->success_degree }}</td>
                         <td>
-                            <a href="{{ route('clubs-weapons.edit', [$club->cid, $clubWeapon->wid]) }}" class="btn btn-sm btn-warning">تعديل</a>
-                            <form action="{{ route('clubs-weapons.destroy', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                            </form>
-                            <form action="{{ route('clubs-weapons.toggle-status', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-secondary">
-                                    {{ $clubWeapon->active ? 'تعطيل' : 'تفعيل' }}
-                                </button>
-                            </form>
+                            <div class="d-flex justify-content-center gap-3">
+                                {{-- Edit Button --}}
+                                <a href="{{ route('clubs-weapons.edit', [$clubWeapon->cwid]) }}"
+                                    class="icon-btn text-warning" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {{-- Delete Button --}}
+                                <form action="{{ route('clubs-weapons.destroy',  $clubWeapon->cwid) }}" method="POST"
+                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا السلاح؟');">
+
+                                    @csrf
+                                    <input type="hidden" name="cid" value="{{ $club->cid }}">
+                                    @method('DELETE')
+                                    <button type="submit" class="icon-btn text-danger" title="حذف"
+                                       >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+
+                                {{-- Toggle Status Button --}}
+                                <form action="{{ route('clubs-weapons.toggle-status', [$clubWeapon->cwid]) }}"
+                                    method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="cid" value="{{ $club->cid }}">
+                                    <button type="submit" class="icon-btn text-secondary"
+                                        title="{{ $clubWeapon->active ? 'تعطيل' : 'تفعيل' }}" >
+                                        <i class="fas fa-{{ $clubWeapon->active ? 'pause' : 'play' }}"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
@@ -173,4 +195,19 @@
             </table>
         </div>
     </div>
+    <style>
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+
+    
     @endsection
