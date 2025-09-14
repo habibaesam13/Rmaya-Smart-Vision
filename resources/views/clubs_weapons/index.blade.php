@@ -1,5 +1,6 @@
 @extends('admin.master')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
+
 @section('content')
 
 <div class="page-container my-4">
@@ -13,23 +14,23 @@
 
             {{-- Error Message --}}
             @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>يرجى تصحيح الأخطاء أدناه
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <ul class="mb-0 mt-2">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>يرجى تصحيح الأخطاء أدناه
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <ul class="mb-0 mt-2">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
             @endif
 
             {{-- Success Message --}}
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             {{-- Add Weapon Button --}}
@@ -46,66 +47,78 @@
                     <input type="hidden" name="cid" value="{{ $club->cid }}">
 
                     {{-- Weapon --}}
-                    <div class="mb-3">
-                        <label for="weapon_id" class="form-label">اختر السلاح</label>
-                        <select name="wid" id="weapon_id" class="form-select form-select-lg" required>
-                            <option value="" disabled {{ old('wid') ? '' : 'selected' }}>اختر السلاح</option>
-                           
-                            @foreach($weapons as $weapon)
+                    <div class="d-flex justify-content-between w-100  align-items-center">
+                        <div class="mb-3 w-50">
+                            <label for="weapon_id" class="form-label">اختر السلاح</label>
+                            <select name="wid" id="weapon_id" class="form-select form-select-lg" required>
+                                <option value="" disabled {{ old('wid') ? '' : 'selected' }}>اختر السلاح</option>
+
+                                @foreach($weapons as $weapon)
                                 <option value="{{ $weapon->wid }}" {{ old('wid') == $weapon->wid ? 'selected' : '' }}>
                                     {{ $weapon->name }}
                                 </option>
-                            @endforeach
-                        </select>
-                        @error('wid')
+                                @endforeach
+                            </select>
+                            @error('wid')
                             <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
 
-                    {{-- Gender --}}
-                    <div class="mb-3">
-                        <label for="gender" class="form-label">النوع</label>
-                        <select name="gender" id="gender" class="form-select" required>
-                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>ذكر</option>
-                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>أنثى</option>
-                        </select>
-                        @error('gender')
+                        {{-- Gender --}}
+                        <div class="mb-3 w-50 d-flex  align-items-center justify-content-center gap-3">
+                            <div>
+                                <input id="male" type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+                                <label for="male">ذكر</label>
+                            </div>
+                            <div>
+                                <input id="female" type="radio" name="gender" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+                                <label for="female">أنثى</label>
+                            </div>
+
+                            @error('gender')
                             <div class="text-danger small">{{ $message }}</div>
-                        @enderror
+                            @enderror
+                        </div>
                     </div>
+                    <div class= "d-flex gap-3 " >
 
-                    {{-- Age From --}}
-                    <div class="mb-3">
-                        <label for="age_from" class="form-label">العمر من</label>
-                        <input type="number" name="age_from" id="age_from" class="form-control"
-                               value="{{ old('age_from') }}" min="1" required>
-                        @error('age_from')
+                        {{-- Age From --}}
+                        <div class="mb-3 w-25">
+                            <label for="age_from" class="form-label ">العمر من</label>
+                            <input type="number" name="age_from" id="age_from" class="form-control text-center "
+                                value="{{ old('age_from') }}" min="1" required placeholder="العمر من ">
+                            @error('age_from')
                             <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
 
-                    {{-- Age To --}}
-                    <div class="mb-3">
-                        <label for="age_to" class="form-label">العمر إلى</label>
-                        <input type="number" name="age_to" id="age_to" class="form-control"
-                               value="{{ old('age_to') }}" min="0">
-                        @error('age_to')
+                        {{-- Age To --}}
+                        <div class="mb-3 w-25">
+                            <label for="age_to" class="form-label">العمر إلى</label>
+                            <input type="number" name="age_to" id="age_to" class="form-control text-center"
+                                value="{{ old('age_to') }}" min="0" placeholder="العمر الي ">
+                            @error('age_to')
                             <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
 
-                    {{-- Success Degree --}}
-                    <div class="mb-3">
-                        <label for="success_degree" class="form-label">العلامة المؤهلة</label>
-                        <input type="number" name="success_degree" id="success_degree" class="form-control"
-                               value="{{ old('success_degree') }}" min="0" max="100" required>
-                        @error('success_degree')
+                        {{-- Success Degree --}}
+                        <div class="mb-3 w-25">
+                            <label for="success_degree" class="form-label">العلامة المؤهلة</label>
+                            <input type="number" name="success_degree" id="success_degree" class="form-control text-center"
+                                value="{{ old('success_degree') }}" min="0" max="100" required placeholder="العلامه المؤهلة للتصفيات الاولية">
+                            @error('success_degree')
                             <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
 
-                    {{-- Submit --}}
-                    <button type="submit" class="btn btn-primary">حفظ</button>
+                        {{-- Submit --}}
+                        
+                    </div>
+                    <div >
+                    <button type="submit" class="btn btn-primary  ">حفظ</button>
+
+                    </div>
                 </form>
             </div>
         </div>
@@ -134,30 +147,30 @@
                 </thead>
                 <tbody>
                     @foreach($clubsWeapons as $clubWeapon)
-                        <tr>
-                            <td>{{ $clubWeapon->weapon->name }}</td>
-                            <td>{{ $clubWeapon->gender }}</td>
-                            <td>{{ $clubWeapon->age_from }}</td>
-                            <td>{{ $clubWeapon->age_to }}</td>
-                            <td>{{ $clubWeapon->success_degree }}</td>
-                            <td>
-                                <a href="{{ route('clubs-weapons.edit', [$club->cid, $clubWeapon->wid]) }}" class="btn btn-sm btn-warning">تعديل</a>
-                                <form action="{{ route('clubs-weapons.destroy', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                                </form>
-                                <form action="{{ route('clubs-weapons.toggle-status', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-secondary">
-                                        {{ $clubWeapon->active ? 'تعطيل' : 'تفعيل' }}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ $clubWeapon->weapon->name }}</td>
+                        <td>{{ $clubWeapon->gender == "female" ? "إناث" : "ذكور" }}</td>
+                        <td>{{ $clubWeapon->age_from }}</td>
+                        <td>{{ $clubWeapon->age_to }}</td>
+                        <td>{{ $clubWeapon->success_degree }}</td>
+                        <td>
+                            <a href="{{ route('clubs-weapons.edit', [$club->cid, $clubWeapon->wid]) }}" class="btn btn-sm btn-warning">تعديل</a>
+                            <form action="{{ route('clubs-weapons.destroy', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                            </form>
+                            <form action="{{ route('clubs-weapons.toggle-status', [$club->cid, $clubWeapon->wid]) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-secondary">
+                                    {{ $clubWeapon->active ? 'تعطيل' : 'تفعيل' }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-@endsection
+    @endsection

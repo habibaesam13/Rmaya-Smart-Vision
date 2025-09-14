@@ -22,6 +22,7 @@ class ClubsWeaponsController extends Controller
         $this->weaponsService = $weaponsService;
     }
 
+    
     /**
      * Display a listing of the resource.
      */

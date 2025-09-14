@@ -207,7 +207,7 @@ Route::group(
             //Clubs-Weapons routes
             Route::prefix('clubs-weapons')->group(function () {
                 Route::get('{cid}', [ClubsWeaponsController::class, 'index'])->name('clubs-weapons.index');
-                Route::post('store', [ClubsWeaponsController::class, 'store'])->name('clubs-weapons.store'); // لاحظ هنا بدون {cid}
+                Route::post('store', [ClubsWeaponsController::class, 'store'])->name('clubs-weapons.store');
                 Route::get('{cid}/{wid}/edit', [ClubsWeaponsController::class, 'edit'])->name('clubs-weapons.edit');
                 Route::put('{cid}/{wid}', [ClubsWeaponsController::class, 'update'])->name('clubs-weapons.update');
                 Route::delete('{cid}/{wid}', [ClubsWeaponsController::class, 'destroy'])->name('clubs-weapons.destroy');

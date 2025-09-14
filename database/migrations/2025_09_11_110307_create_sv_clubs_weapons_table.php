@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer("age_to")->nullable()->min(0)->max(100);
             $table->integer("success_degree")->min(1)->max(100);
             $table->boolean("active")->default(true);
-            $table->unique(['cid', 'wid']);
             $table->timestamps();
         });
     }
