@@ -182,7 +182,7 @@
                                     method="POST" class="d-inline">
                                     @csrf
                                     <input type="hidden" name="cid" value="{{ $club->cid }}">
-                                    <button type="submit" class="icon-btn text-secondary"
+                                    <button type="submit" class="icon-btn text-success"
                                         title="{{ $clubWeapon->active ? 'تعطيل' : 'تفعيل' }}" >
                                         <i class="fas fa-{{ $clubWeapon->active ? 'pause' : 'play' }}"></i>
                                     </button>
