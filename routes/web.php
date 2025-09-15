@@ -136,6 +136,9 @@ Route::name('admin.')->group(
         //                auth()->guard('web')->logout();
         //                Session::flush();
         //                session()->regenerate(true);
+
+
+        
         //                Logs::create(
         //                    [
         //                        'admin_id' => $id,
