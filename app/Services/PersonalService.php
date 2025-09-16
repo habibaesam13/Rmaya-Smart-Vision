@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Member_group;
+use App\Models\Sv_member;
 use App\Services\ClubService;
 use App\Services\WeaponService;
 use App\Services\CountriesService;
@@ -35,5 +36,9 @@ class PersonalService
         'clubs'=>$clubs,
         'weapons'=>$weapons
     ];
+    }
+    public function delete($id){
+        $member=Sv_member::findOrfail($id);
+        return $member->delete();
     }
 }
