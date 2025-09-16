@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\ClubsWeaponsController;
+use App\Http\Controllers\PersonalController;
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -215,6 +216,14 @@ Route::group(
                 Route::put('{cwid}', [ClubsWeaponsController::class, 'update'])->name('clubs-weapons.update');
                 Route::delete('{cwid}', [ClubsWeaponsController::class, 'destroy'])->name('clubs-weapons.destroy');
                 Route::post('{cwid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
+            });
+
+            Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
+
+            //Personal Routes
+            Route::prefix('personal')->group(
+                function(){
+                    Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
             });
         });
     }

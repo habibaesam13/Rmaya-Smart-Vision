@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreClubWeaponRequest;
-use App\Services\ClubsWeaponsService;
 use App\Services\ClubService;
 use App\Services\WeaponService;
+use Illuminate\Support\Facades\DB;
+use App\Services\ClubsWeaponsService;
+use App\Http\Requests\StoreClubWeaponRequest;
 
 class ClubsWeaponsController extends Controller
 {
@@ -22,7 +23,41 @@ class ClubsWeaponsController extends Controller
         $this->weaponsService = $weaponsService;
     }
 
-    
+    public function getClubWeapons($cid)
+    {
+        try {
+
+            $clubWeapons = DB::table('sv_clubs_weapons')
+                ->where('cid', $cid)
+                ->where('active', 1)
+                ->get();
+            if ($clubWeapons->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'weapons' => [],
+                    'message' => 'No active weapons found for this club'
+                ]);
+            }
+            $weapons = DB::table('sv_clubs_weapons')
+                ->join('sv_weapons', 'sv_clubs_weapons.wid', '=', 'sv_weapons.wid')
+                ->where('sv_clubs_weapons.cid', $cid)
+                ->where('sv_clubs_weapons.active', 1)
+                ->select('sv_weapons.wid', 'sv_weapons.name')
+                ->distinct()
+                ->orderBy('sv_weapons.name')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'weapons' => $weapons
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,7 +65,7 @@ class ClubsWeaponsController extends Controller
     {
         $clubsWeapons = $this->clubsWeaponsService->getClubsWeaponsByClubId($club_id);
         $club = $this->clubsService->getClubById($club_id);
-        $weapons = $this->weaponsService->getAllWeapons();//for add form
+        $weapons = $this->weaponsService->getAllWeapons(); //for add form
 
         return view('clubs_weapons.index', compact('clubsWeapons', 'club', 'weapons'));
     }
@@ -66,7 +101,7 @@ class ClubsWeaponsController extends Controller
         $club = $this->clubsService->getClubById($clubWeapon->cid);
         $weapons = $this->weaponsService->getAllWeapons();
 
-        return view('clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
+        return view('sv_clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
     }
 
     /**
@@ -74,10 +109,9 @@ class ClubsWeaponsController extends Controller
      */
     public function update(Request $request, $cwid)
     {
-        try{
+        try {
             $this->clubsWeaponsService->updateClubWeapon($cwid, $request->all());
-        }
-        catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
         $club_id = $request->input('cid');
@@ -103,7 +137,7 @@ class ClubsWeaponsController extends Controller
     {
         $this->clubsWeaponsService->toggleClubWeaponStatus($cwid);
         $club_id = $request->input('cid'); // Get club_id from hidden input
-        
+
         return redirect()->route('clubs-weapons.index', $club_id)
             ->with('success', 'تم تحديث حالة السلاح');
     }
