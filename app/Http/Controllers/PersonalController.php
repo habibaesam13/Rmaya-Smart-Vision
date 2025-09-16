@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Sv_member;
 use App\Services\PersonalService;
-
+use Illuminate\Support\Facades\Redis;
 
 class PersonalController extends Controller
 {
@@ -36,5 +36,11 @@ class PersonalController extends Controller
         $this->personalService->delete($id);
          return redirect()->route('personal-registration')
             ->with('success', 'تم حذف الشخص من النادي');
+    }
+    public function toggleAcivationStatus(Request $request){
+        $id=$request->input('mid');
+        $this->personalService->toggleActivation($id);
+        return redirect()->route('personal-registration')
+            ->with('success', 'تم تحديث حالة الشخص');
     }
 }

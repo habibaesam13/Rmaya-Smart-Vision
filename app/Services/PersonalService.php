@@ -38,7 +38,13 @@ class PersonalService
     ];
     }
     public function delete($id){
-        $member=Sv_member::findOrfail($id);
+        $member=Sv_member::findorfail($id);
         return $member->delete();
+    }
+    public function toggleActivation($id){
+        $member=Sv_member::findorfail($id);
+        $member->active=!$member->active;
+        $member->save();
+        return $member;
     }
 }
