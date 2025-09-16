@@ -27,6 +27,9 @@ class Sv_member extends Model
         'phone2',
         'front_id_pic',
         'back_id_pic',
+        'active',
+        'mgid',
+        'reg_club',
     ];
 
     

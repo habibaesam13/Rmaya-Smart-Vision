@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('team_id')
                 ->references('tid')
                 ->on('sv_teams')
-                ->onDelete('cascade');
+                ->onDelete('cascade')->nullable();
 
             $table->string('name');
 
