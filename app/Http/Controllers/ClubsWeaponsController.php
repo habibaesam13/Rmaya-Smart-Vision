@@ -67,7 +67,7 @@ class ClubsWeaponsController extends Controller
         $club = $this->clubsService->getClubById($club_id);
         $weapons = $this->weaponsService->getAllWeapons(); //for add form
 
-        return view('sv_clubs_weapons.index', compact('clubsWeapons', 'club', 'weapons'));
+        return view('clubs_weapons.index', compact('clubsWeapons', 'club', 'weapons'));
     }
 
     /**

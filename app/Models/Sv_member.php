@@ -30,6 +30,7 @@ class Sv_member extends Model
         'active',
         'mgid',
         'reg_club',
+        'registration_date',
     ];
 
     
