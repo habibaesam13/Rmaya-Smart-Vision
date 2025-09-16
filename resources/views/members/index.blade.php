@@ -167,6 +167,7 @@
     {{-- Filtered Data --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            @if($members->count()>0)
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -193,22 +194,21 @@
                         <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
                         <td>{{ $member->age_calculation()}}</td>
                         <td>{{ $member->weapon->name}}</td>
-                        <td>{{ $member->weapon?->name ?? '---' }}</td>
-                        <td>{{ $member->club?->name ?? '---' }}</td> 
-                        <td>{{ $member->registrationClub?->name ?? '---' }}</td> 
-                        <td>{{ $member->nationality?->country_name_ar?country_name_ar:country_name}}</td>
-                        <td>{{ $member->member_group->name}}</td>
+                        <td>{{ $member->club?->name ?? '---' }}</td>
+                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                        <td>{{ $member->nationality ? ($member->nationality->country_name_ar ?? $member->nationality->country_name) : '---' }}
+                        </td>
+                        <td>{{ $member->member_group?->name ?? '---' }}</td>
                         <td>{{ $member->registration_date}}</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 {{-- Edit Button --}}
-                                <a href=""
-                                    class="icon-btn text-warning" title="تعديل">
+                                <a href="" class="icon-btn text-warning" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 {{-- Delete Button --}}
-                                <form action="" method="POST"
-                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
+                                <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
 
                                     @csrf
                                     <input type="hidden" name="mid" value="{{ $member->mid }}">
@@ -219,8 +219,7 @@
                                 </form>
 
                                 {{-- Toggle Status Button --}}
-                                <form action="" method="POST"
-                                    class="d-inline">
+                                <form action="" method="POST" class="d-inline">
                                     @csrf
                                     <input type="hidden" name="cid" value="{{ $member->mid }}">
                                     <button type="submit" class="icon-btn text-success"
@@ -234,6 +233,15 @@
                     @endforeach
                 </tbody>
             </table>
+            @else
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-inbox fa-4x text-muted opacity-50"></i>
+                </div>
+                <h5 class="text-muted">لا توجد أندية</h5>
+                <p class="text-muted mb-0">ابدأ بإضافة أول نادي من النموذج أعلاه</p>
+            </div>
+            @endif
         </div>
     </div>
 </div>

@@ -57,8 +57,9 @@ class Sv_member extends Model
     {
         return $this->belongsTo(Sv_weapons::class, 'weapon_id', 'wid');
     }
-    public function member_group(){
-        return $this->belongsTo(Member_group::class);
+    public function member_group()
+    {
+        return $this->belongsTo(Member_group::class, 'mgid', 'mgid');
     }
 
     public function scopeFilter($query, $request)

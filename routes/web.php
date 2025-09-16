@@ -224,6 +224,7 @@ Route::group(
             Route::prefix('personal')->group(
                 function(){
                     Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
+                    Route::delete('registered',[PersonalController::class,'destroy'])->name('personal-registration-delete');
             });
         });
     }
