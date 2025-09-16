@@ -15,8 +15,11 @@ class PersonalController extends Controller
         
     }
     public function index(){
-        $memberGroups=$this->personalService->get_members_data();
-        return view('members.index',compact('memberGroups'));
+        $memberGroups=$this->personalService->get_members_data()['Membergroups'];
+        $countries=$this->personalService->get_members_data()['countries'];
+        $clubs=$this->personalService->get_members_data()['clubs'];
+        $weapons=$this->personalService->get_members_data()['weapons'];
+        return view('members.index',compact('memberGroups','countries','clubs','weapons'));
     }
 
 }

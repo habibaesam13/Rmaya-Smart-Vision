@@ -218,6 +218,7 @@ Route::group(
                 Route::post('{cwid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
             });
 
+            Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
             //Personal Routes
             Route::prefix('Personal')->group(
                 function(){
