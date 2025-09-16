@@ -219,10 +219,11 @@ Route::group(
             });
 
             Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
+
             //Personal Routes
             Route::prefix('personal')->group(
                 function(){
-                    Route::get('registered',[PersonalController::class,'index']);
+                    Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
             });
         });
     }

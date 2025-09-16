@@ -12,7 +12,7 @@
                 تصفية البيانات
             </h2>
 
-            <form action="" method="GET">
+            <form action="{{route('personal-registration')}}" method="get">
                 <div class="row g-3">
                     {{-- Member Groups --}}
                     <div class="col-md-6">
@@ -85,7 +85,8 @@
 
                     {{-- Search Input --}}
                     <div class="col-md-4">
-                        <input class="form-control form-control-lg" type="text" name="q" placeholder="الاسم / رقم الهوية / رقم الهاتف">
+                        <input class="form-control form-control-lg" type="text" name="q"
+                            placeholder="الاسم / رقم الهوية / رقم الهاتف">
                     </div>
 
                     {{-- gender --}}
@@ -154,19 +155,86 @@
 
                 {{-- Action Buttons --}}
                 <div class="d-flex gap-2 mt-4"> <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search me-2"></i>بحث </button> <a href="{{ url()->current() }}"
-                    class="btn btn-secondary"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
+                        <i class="fas fa-search me-2"></i>بحث </button> <a href="{{ url()->current() }}"
+                        class="btn btn-secondary"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
                 </div>
             </form>
 
 
 
         </div>
+    </div>
+    {{-- Filtered Data --}}
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>رقم الهوية</th>
+                        <th>الهاتف</th>
+                        <th>العمر</th>
+                        <th>السلاح</th>
+                        <th>نادي الرماية</th>
+                        <th>مكان التسجيل</th>
+                        <th>الجنسية</th>
+                        <th>المجموعات</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>ادوات تحكم</th>
+                    </tr>
+                </thead>
 
+                <tbody>
 
-        {{-- Filtered Data --}}
+                    @foreach($members as $member)
+                    <tr>
+                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->ID}}</td>
+                        <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
+                        <td>{{ $member->age_calculation()}}</td>
+                        <td>{{ $member->weapon->name}}</td>
+                        <td>{{ $member->weapon?->name ?? '---' }}</td>
+                        <td>{{ $member->club?->name ?? '---' }}</td> 
+                        <td>{{ $member->registrationClub?->name ?? '---' }}</td> 
+                        <td>{{ $member->nationality?->country_name_ar?country_name_ar:country_name}}</td>
+                        <td>{{ $member->member_group->name}}</td>
+                        <td>{{ $member->registration_date}}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                {{-- Edit Button --}}
+                                <a href=""
+                                    class="icon-btn text-warning" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {{-- Delete Button --}}
+                                <form action="" method="POST"
+                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
 
+                                    @csrf
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                    @method('DELETE')
+                                    <button type="submit" class="icon-btn text-danger" title="حذف">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
 
+                                {{-- Toggle Status Button --}}
+                                <form action="" method="POST"
+                                    class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="cid" value="{{ $member->mid }}">
+                                    <button type="submit" class="icon-btn text-success"
+                                        title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
+                                        <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
