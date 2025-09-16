@@ -219,9 +219,9 @@
                                 </form>
 
                                 {{-- Toggle Status Button --}}
-                                <form action="" method="POST" class="d-inline">
+                                <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
                                     @csrf
-                                    <input type="hidden" name="cid" value="{{ $member->mid }}">
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
                                     <button type="submit" class="icon-btn text-success"
                                         title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
                                         <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>

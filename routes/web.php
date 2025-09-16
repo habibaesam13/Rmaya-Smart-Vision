@@ -225,6 +225,7 @@ Route::group(
                 function(){
                     Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
                     Route::delete('registered',[PersonalController::class,'destroy'])->name('personal-registration-delete');
+                    Route::post('registered/toggle',[PersonalController::class,'toggleAcivationStatus'])->name('personal-registration-toggle');
             });
         });
     }

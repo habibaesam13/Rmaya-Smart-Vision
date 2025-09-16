@@ -136,7 +136,7 @@ class ClubsWeaponsController extends Controller
     public function toggleStatus(Request $request, $cwid)
     {
         $this->clubsWeaponsService->toggleClubWeaponStatus($cwid);
-        $club_id = $request->input('cid'); // Get club_id from hidden input
+        $club_id = $request->input('cid'); 
 
         return redirect()->route('clubs-weapons.index', $club_id)
             ->with('success', 'تم تحديث حالة السلاح');
