@@ -275,6 +275,7 @@ return [
     'delete' => 'الغاء',
     'give_permissions_to_role' => 'تعيين اذونات لهذة الصلاحية',
     'Clubs'=>'الأندية',
+    'Personal'=>'الأفراد المسجلين',
     'Weapons'=>'الأسلحة',
 
 //    'This is an electronically generated invoice, hence does not require a signature or stamp'

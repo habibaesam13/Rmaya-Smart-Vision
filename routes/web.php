@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\Admin\LogsController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WeaponController;
-use App\Http\Controllers\ClubsController;
-use App\Http\Controllers\ClubsWeaponsController;
-use App\Http\Controllers\PersonalController;
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\ClubsController;
+use App\Http\Controllers\WeaponController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\Admin\LogsController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ClubsWeaponsController;
+use App\Http\Controllers\MemberExportController;
+use App\Http\Controllers\Admin\SettingController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -226,6 +227,7 @@ Route::group(
                     Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
                     Route::delete('registered',[PersonalController::class,'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle',[PersonalController::class,'toggleAcivationStatus'])->name('personal-registration-toggle');
+                    Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
             });
         });
     }

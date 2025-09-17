@@ -7,10 +7,33 @@
     {{-- Filter Form Section --}}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-            <h2 class="card-title mb-4">
-                <i class="ri-filter-line text-success me-2" style="font-size:2rem !important"></i>
-                تصفية البيانات
-            </h2>
+            {{-- Header with Title and Export Buttons --}}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="card-title mb-0">
+                    <i class="ri-filter-line text-success me-2" style="font-size:2rem !important"></i>
+                    تصفية البيانات
+                </h2>
+
+                {{-- Export Buttons --}}
+                <div class="documents d-flex gap-2">
+                    <form action="{{ route('members.export.excel') }}" method="post" class="mb-0">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>طباعة اكسيل</span>
+                        </button>
+                    </form>
+
+                    <form action="" method="post" class="mb-0">
+                        @csrf
+                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>طباعة PDF</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
 
             <form action="{{route('personal-registration')}}" method="get">
                 <div class="row g-3">
@@ -53,9 +76,9 @@
                     <div class="col-md-4">
                         <label for="nat" class="form-label">الجنسية</label>
                         <select name="nat" id="nat" class="form-select form-select-lg">
+                            <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
                             @foreach($countries as $country)
-                            <option value="{{ $country->id }}"
-                                {{ request('nat') == $country->id ? 'selected' : ( !request('nat') && $country->id == 222 ? 'selected' : '') }}>
+                            <option value="{{ $country->id }}">
                                 {{ $country->country_name_ar ? $country->country_name_ar : $country->country_name }}
                             </option>
                             @endforeach
@@ -154,9 +177,9 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="d-flex gap-2 mt-4"> <button type="submit" class="btn btn-primary">
+                <div class="d-flex gap-2 mt-4"> <button type="submit" class="btn btn-success">
                         <i class="fas fa-search me-2"></i>بحث </button> <a href="{{ url()->current() }}"
-                        class="btn btn-secondary"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
+                        class="btn btn-danger"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
                 </div>
             </form>
 
@@ -267,7 +290,60 @@
         </div>
     </div>
 </div>
+<style>
+.documents {
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
 
+.documents .btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.documents .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.documents .btn i {
+    font-size: 1rem;
+}
+
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
+    .documents {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .documents .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    opacity: 0.8;
+}
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const clubSelect = document.getElementById('club_id');
