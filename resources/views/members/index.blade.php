@@ -236,10 +236,32 @@
             @else
             <div class="text-center py-5">
                 <div class="mb-4">
-                    <i class="fas fa-inbox fa-4x text-muted opacity-50"></i>
+                    <i class="fas fa-users fa-4x text-primary opacity-75"></i>
                 </div>
-                <h5 class="text-muted">لا توجد أندية</h5>
-                <p class="text-muted mb-0">ابدأ بإضافة أول نادي من النموذج أعلاه</p>
+                <h4 class="text-muted mb-3">لا توجد نتائج مطابقة</h4>
+                <p class="text-muted mb-4">
+                    لم يتم العثور على أعضاء يطابقون معايير البحث المحددة.<br>
+                    يرجى المحاولة مع معايير مختلفة أو إعادة تعيين المرشحات.
+                </p>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url()->current() }}" class="btn btn-outline-primary">
+                        <i class="fas fa-undo me-2"></i>
+                        إعادة تعيين المرشحات
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary"
+                        onclick="document.querySelector('input[name=q]').focus()">
+                        <i class="fas fa-search me-2"></i>
+                        تجربة بحث جديد
+                    </button>
+                </div>
+
+                <div class="mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-lightbulb me-1"></i>
+                        نصيحة: جرب استخدام كلمات مفتاحية أقل أو تغيير المرشحات المحددة
+                    </small>
+                </div>
             </div>
             @endif
         </div>
