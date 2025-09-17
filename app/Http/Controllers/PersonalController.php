@@ -21,24 +21,24 @@ class PersonalController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        $members = collect();
-        if ($request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club'])) {
-            $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
-                ->filter($request)
-                ->get();
-        }
-
-
+        $members =  $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type','personal')
+            ->when(
+                $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
+                fn($q) => $q->filter($request)
+            )
+            ->orderBy('mid')->cursorPaginate(1);
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members'));
     }
-    public function destroy(Request $request){
-        $id=$request->input('mid');
+    public function destroy(Request $request)
+    {
+        $id = $request->input('mid');
         $this->personalService->delete($id);
-         return redirect()->route('personal-registration')
+        return redirect()->route('personal-registration')
             ->with('success', 'تم حذف الشخص من النادي');
     }
-    public function toggleAcivationStatus(Request $request){
-        $id=$request->input('mid');
+    public function toggleAcivationStatus(Request $request)
+    {
+        $id = $request->input('mid');
         $this->personalService->toggleActivation($id);
         return redirect()->route('personal-registration')
             ->with('success', 'تم تحديث حالة الشخص');

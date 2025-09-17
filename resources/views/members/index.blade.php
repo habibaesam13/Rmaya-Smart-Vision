@@ -18,11 +18,15 @@
                 <div class="documents d-flex gap-2">
                     <form action="{{ route('members.export.excel') }}" method="post" class="mb-0">
                         @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
                         <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
                             <i class="fa-solid fa-file-excel"></i>
                             <span>طباعة اكسيل</span>
                         </button>
                     </form>
+
 
                     <form action="" method="post" class="mb-0">
                         @csrf
@@ -190,7 +194,6 @@
     {{-- Filtered Data --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            @if($members->count()>0)
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -256,130 +259,103 @@
                     @endforeach
                 </tbody>
             </table>
-            @else
-            <div class="text-center py-5">
-                <div class="mb-4">
-                    <i class="fas fa-users fa-4x text-primary opacity-75"></i>
-                </div>
-                <h4 class="text-muted mb-3">لا توجد نتائج مطابقة</h4>
-                <p class="text-muted mb-4">
-                    لم يتم العثور على أعضاء يطابقون معايير البحث المحددة.<br>
-                    يرجى المحاولة مع معايير مختلفة أو إعادة تعيين المرشحات.
-                </p>
-
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ url()->current() }}" class="btn btn-outline-primary">
-                        <i class="fas fa-undo me-2"></i>
-                        إعادة تعيين المرشحات
-                    </a>
-                    <button type="button" class="btn btn-outline-secondary"
-                        onclick="document.querySelector('input[name=q]').focus()">
-                        <i class="fas fa-search me-2"></i>
-                        تجربة بحث جديد
-                    </button>
-                </div>
-
-                <div class="mt-4">
-                    <small class="text-muted">
-                        <i class="fas fa-lightbulb me-1"></i>
-                        نصيحة: جرب استخدام كلمات مفتاحية أقل أو تغيير المرشحات المحددة
-                    </small>
-                </div>
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $members->appends(request()->query())->links() }}
             </div>
-            @endif
+
         </div>
     </div>
 </div>
 <style>
-.documents {
-    flex-shrink: 0;
-    /* Prevent shrinking */
-}
-
-.documents .btn {
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
-    white-space: nowrap;
-}
-
-.documents .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.documents .btn i {
-    font-size: 1rem;
-}
-
-
-@media (max-width: 768px) {
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 1rem;
-    }
-
     .documents {
-        width: 100%;
-        justify-content: flex-end;
+        flex-shrink: 0;
+        /* Prevent shrinking */
     }
 
     .documents .btn {
-        flex: 1;
-        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
     }
-}
 
-.icon-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
+    .documents .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
 
-.icon-btn:hover {
-    opacity: 0.8;
-}
+    .documents .btn i {
+        font-size: 1rem;
+    }
+
+
+    @media (max-width: 768px) {
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .documents {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .documents .btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
 </style>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const clubSelect = document.getElementById('club_id');
-    const weaponSelect = document.getElementById('weapon_id');
+    document.addEventListener('DOMContentLoaded', function() {
+        const clubSelect = document.getElementById('club_id');
+        const weaponSelect = document.getElementById('weapon_id');
 
-    clubSelect.addEventListener('change', function() {
-        const clubId = this.value;
+        clubSelect.addEventListener('change', function() {
+            const clubId = this.value;
 
-        // Clear weapons dropdown
-        weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
+            // Clear weapons dropdown
+            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-        if (clubId) {
-            // Fetch weapons for selected club
-            fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                .then(response => response.json())
-                .then(data => {
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>اختر السلاح</option>';
+            if (clubId) {
+                // Fetch weapons for selected club
+                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
+                    .then(response => response.json())
+                    .then(data => {
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>اختر السلاح</option>';
 
-                    data.weapons.forEach(weapon => {
-                        const option = document.createElement('option');
-                        option.value = weapon.wid;
-                        option.textContent = weapon.name;
-                        weaponSelect.appendChild(option);
+                        data.weapons.forEach(weapon => {
+                            const option = document.createElement('option');
+                            option.value = weapon.wid;
+                            option.textContent = weapon.name;
+                            weaponSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
                     });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>حدث خطأ في التحميل</option>';
-                });
-        } else {
-            weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-        }
+            } else {
+                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
+            }
+        });
     });
-});
 </script>
 
 @endsection
