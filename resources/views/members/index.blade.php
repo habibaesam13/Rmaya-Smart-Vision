@@ -83,7 +83,7 @@
                             <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
                             @foreach($countries as $country)
                             <option value="{{ $country->id }}">
-                                {{ $country->country_name_ar ? $country->country_name_ar : $country->country_name }}
+                                {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
                             </option>
                             @endforeach
                         </select>
@@ -222,16 +222,29 @@
                         <td>{{ $member->weapon->name}}</td>
                         <td>{{ $member->club?->name ?? '---' }}</td>
                         <td>{{ $member->registrationClub?->name ?? '---' }}</td>
-                        <td>{{ $member->nationality ? ($member->nationality->country_name_ar ?? $member->nationality->country_name) : '---' }}
+                        <td>
+                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
+                            ? $member->nationality->country_name_ar 
+                            : (trim($member->nationality->country_name ?? '') !== '' 
+                                ? $member->nationality->country_name 
+                                : '---') 
+                            }}
+                        </td>
+
+
                         </td>
                         <td>{{ $member->member_group?->name ?? '---' }}</td>
                         <td>{{ $member->registration_date}}</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 {{-- Edit Button --}}
-                                <a href="" class="icon-btn text-warning" title="تعديل">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="nid" value="{{ $member->ID }}">
+                                    <button type="submit" class="icon-btn text-warning" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </form>
                                 {{-- Delete Button --}}
                                 <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
                                     onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">

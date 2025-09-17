@@ -43,4 +43,10 @@ class PersonalController extends Controller
         return redirect()->route('personal-registration')
             ->with('success', 'تم تحديث حالة الشخص');
     }
+
+
+
+    public function edit(Request $request){
+        return view('members.edit');
+    }
 }
