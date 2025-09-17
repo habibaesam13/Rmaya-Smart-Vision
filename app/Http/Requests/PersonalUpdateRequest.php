@@ -22,15 +22,15 @@ class PersonalUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ID'=>'string|Sv_member:exist|unique:Sv_member',
-            'bod'=>'date',
-            'name'=>'string',
-            'Id_expire_date'=>'date|boe:now',
-            'nat'=>'countries:exist',
-            'gender'=>'in:male,female',
-            'club_id'=>'Sv_clubs:exist',
-            'weapon_id'=>'Sv_weapons:exist',
-            'phone1'=>'unique:Sv_members',
+            'ID' => 'string|unique:sv_members',
+            'dob' => 'date',
+            'name' => 'string',
+            'Id_expire_date' => 'date|after:today',
+            'nat' => 'exists:countries,id',
+            'gender' => 'in:male,female',
+            'club_id' => 'exists:sv_clubs,id',
+            'weapon_id' => 'exists:sv_weapons,id',
+            'phone1' => 'string|unique:sv_members,phone1,' . $this->route('id') . ',mid',
         ];
     }
 }
