@@ -65,7 +65,7 @@ class Sv_member extends Model
     public function scopeFilter($query, $request)
     {
         return $query
-            ->where('reg_type','personal')
+            ->where('reg_type', 'personal')
             ->when($request->mgid, fn($q) => $q->where('mgid', $request->mgid))
             ->when($request->nat, fn($q) => $q->where('nat', $request->nat))
             ->when($request->club_id, fn($q) => $q->where('club_id', $request->club_id))
