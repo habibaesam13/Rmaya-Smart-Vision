@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 <!-- Menu -->
 <!-- Sidenav Menu Start -->
 <div class="sidenav-menu">
@@ -163,7 +164,13 @@
                         <span class="menu-text">{{ __('lang.Clubs') }}</span>
                     </a>
                 </li>
-
+                {{-- Personal Registered --}}
+                <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
+                    <a href="{{ route('personal-registration') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="fa-solid fa-users-line"></i></span>
+                        <span class="menu-text">{{ __('lang.Personal') }}</span>
+                    </a>
+                </li>
             </ul>
             @if(checkModulePermission('logs', 'view'))
             <li class="side-nav-item">

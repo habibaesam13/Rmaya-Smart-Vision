@@ -105,7 +105,7 @@ return [
     'approval_action_period' => 'Approval Action Period',
     'to_approval_date' => 'Approval to date',
     'from_approval_date' => 'Approval from date',
-
+    'Personal'=>'Registered Persons',
     'from_created_at' => 'Creation date from',
     'to_created_at' => 'Creation date to',
     'event_approval_periods_reports' => 'Event Approval Periods\' Reports',
