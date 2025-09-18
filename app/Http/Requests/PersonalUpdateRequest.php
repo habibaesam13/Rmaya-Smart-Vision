@@ -30,7 +30,9 @@ class PersonalUpdateRequest extends FormRequest
             'gender' => 'in:male,female',
             'club_id' => 'exists:sv_clubs,id',
             'weapon_id' => 'exists:sv_weapons,id',
-            'phone1' => 'string|unique:sv_members,phone1,' . $this->route('id') . ',mid',
+            'phone1' => 'string',
+            'phone2' =>'string',
+
         ];
     }
 }
