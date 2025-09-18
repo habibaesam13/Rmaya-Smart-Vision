@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
+use App\Models\Member_group;
+use App\Models\Sv_clubs;
 use Illuminate\Http\Request;
 use App\Models\Sv_member;
+use App\Models\Sv_weapons;
 use App\Services\PersonalService;
 use Illuminate\Support\Facades\Redis;
 
@@ -47,6 +51,11 @@ class PersonalController extends Controller
 
 
     public function edit(Request $request){
-        return view('members.edit');
+        $countries=Country::all();
+        $weapons=Sv_weapons::all();
+        $clubs=Sv_clubs::all();
+        $memberGroups=Member_group::all();
+        $id=$request->input('nid');
+        return view('members.edit',compact('countries','weapons','clubs','memberGroups','id'));
     }
 }

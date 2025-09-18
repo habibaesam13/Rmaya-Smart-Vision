@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sv_clubs;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
+use App\Models\Sv_clubs_weapons;
 use App\Http\Requests\StoreClubRequest;
+
+
 class ClubsController extends Controller
 {
     protected $clubService;
@@ -25,7 +29,7 @@ class ClubsController extends Controller
         ]);
     }
 
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -33,7 +37,6 @@ class ClubsController extends Controller
     {
         $this->clubService->createClub($request->validated());
         return redirect()->route('clubs.index')->with('success', 'تم إضافة النادي بنجاح.');
-        
     }
 
     /**
@@ -59,8 +62,8 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $validated = $request->validate([
-        'name' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
         ]);
         $this->clubService->updateClub($id, $validated);
         return redirect()->route('clubs.index')->with('success', 'تم تحديث النادي بنجاح.');
@@ -79,5 +82,37 @@ class ClubsController extends Controller
     {
         $this->clubService->toggleActiveStatus($id);
         return redirect()->route('clubs.index')->with('success', 'تم تحديث حالة النادي بنجاح.');
+    }
+
+    public function getWeaponsByAge($clubId, Request $request)
+    {
+        $dob = $request->dob;
+        $gender = $request->gender;
+
+        if (!$dob || !$gender) {
+            return response()->json(['weapons' => []]);
+        }
+
+        $age = Carbon::parse($dob)->age;
+        $weapons = Sv_clubs_weapons::where('cid', $clubId)
+            ->where('gender', $gender)
+            ->where('active', 1)
+            ->where('age_from', '<=', $age)
+            ->where(function ($q) use ($age) {
+                $q->whereNull('age_to')
+                    ->orWhere('age_to', '>=', $age);
+            })
+            ->with('weapon')
+            ->get();
+
+
+        return response()->json([
+            'weapons' => $weapons->map(function ($cw) {
+                return [
+                    'wid' => $cw->wid,
+                    'name' => $cw->weapon->name ?? '---'
+                ];
+            })
+        ]);
     }
 }

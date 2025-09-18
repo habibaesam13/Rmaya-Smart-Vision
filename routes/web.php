@@ -140,7 +140,7 @@ Route::name('admin.')->group(
         //                session()->regenerate(true);
 
 
-        
+
         //                Logs::create(
         //                    [
         //                        'admin_id' => $id,
@@ -163,7 +163,7 @@ Route::name('admin.')->group(
             auth()->guard('web')->logout();
             Session::flush();
             session()->regenerate(true);
- 
+
             Logs::create(
                 [
                     'admin_id' => $id,
@@ -207,7 +207,9 @@ Route::group(
             Route::put('clubs/{id}', [ClubsController::class, 'update'])->name('clubs.update');
             Route::delete('clubs/{id}', [ClubsController::class, 'destroy'])->name('clubs.destroy');
             Route::post('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
-
+            Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
+            Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
+             ->name('clubs.weapons.by.age');
 
             //Clubs-Weapons routes
             Route::prefix('clubs-weapons')->group(function () {
@@ -219,18 +221,28 @@ Route::group(
                 Route::post('{cwid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
             });
 
-            Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
+            
 
             //Personal Routes
             Route::prefix('personal')->group(
-                function(){
-                    Route::get('registered',[PersonalController::class,'index'])->name('personal-registration');
-                    Route::delete('registered',[PersonalController::class,'destroy'])->name('personal-registration-delete');
-                    Route::post('registered/toggle',[PersonalController::class,'toggleAcivationStatus'])->name('personal-registration-toggle');
+                function () {
+                    Route::get('registered', [PersonalController::class, 'index'])->name('personal-registration');
+                    Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
+                    Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
-                    Route::get('registered/edit',[PersonalController::class,'edit'])->name('personal.edit');
-                    Route::post('registered/{id}/update',[PersonalController::class,'update'])->name('personal.update');
-            });
+                    Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
+                    Route::post('registered/{id}/update', [PersonalController::class, 'update'])->name('personal.update');
+                }
+            );
+            //age calculation
+            Route::get('/calculate-age', function (\Illuminate\Http\Request $request) {
+                if ($request->has('dob')) {
+                    $dob = \Carbon\Carbon::parse($request->dob);
+                    $age = $dob->age; 
+                    return response()->json(['age' => $age]);
+                }
+                return response()->json(['age' => null]);
+            })->name('calculate.age');
         });
     }
 );
