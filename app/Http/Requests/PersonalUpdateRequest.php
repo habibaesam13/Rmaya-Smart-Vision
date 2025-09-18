@@ -22,7 +22,7 @@ class PersonalUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ID' => 'string|unique:sv_members',
+            'ID' => 'string|exists:sv_members',
             'dob' => 'date',
             'name' => 'string',
             'Id_expire_date' => 'date|after:today',
