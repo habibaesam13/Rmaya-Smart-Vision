@@ -209,7 +209,7 @@ Route::group(
             Route::post('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
             Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
             Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
-             ->name('clubs.weapons.by.age');
+                ->name('clubs.weapons.by.age');
 
             //Clubs-Weapons routes
             Route::prefix('clubs-weapons')->group(function () {
@@ -221,7 +221,7 @@ Route::group(
                 Route::post('{cwid}/toggle', [ClubsWeaponsController::class, 'toggleStatus'])->name('clubs-weapons.toggle-status');
             });
 
-            
+
 
             //Personal Routes
             Route::prefix('personal')->group(
@@ -238,7 +238,7 @@ Route::group(
             Route::get('/calculate-age', function (\Illuminate\Http\Request $request) {
                 if ($request->has('dob')) {
                     $dob = \Carbon\Carbon::parse($request->dob);
-                    $age = $dob->age; 
+                    $age = $dob->age;
                     return response()->json(['age' => $age]);
                 }
                 return response()->json(['age' => null]);

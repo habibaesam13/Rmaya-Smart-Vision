@@ -61,8 +61,11 @@ class PersonalController extends Controller
         $member = Sv_member::findorfail($id);
         return view('members.edit', compact('countries', 'weapons', 'clubs', 'memberGroups', 'member'));
     }
-    public function update(PersonalUpdateRequest $request)
+    public function update(PersonalUpdateRequest $request, $mid)
     {
         $data = $request->validated();
+        $this->personalService->updatePersonalData($data, $mid, $request);
+        return redirect()->route('personal-registration')
+            ->with('success', 'تم تعديل البيانات بنجاح');
     }
 }

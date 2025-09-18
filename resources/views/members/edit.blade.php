@@ -22,35 +22,41 @@ use Carbon\Carbon;
             @endif
 
             <div class="form">
-                <form action="{{route('personal.update',$member->mid)}}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('personal.update',$member->mid) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row g-3">
                         {{-- رقم الهوية + الاسم --}}
                         <div class="col-md-6">
                             <label for="ID" class="col-form-label">رقم بطاقة الهوية</label>
-                            <input type="number" class="form-control text-center" name="ID" id="ID" value="{{$member->ID}}">
+                            <input type="number" class="form-control text-center" name="ID" id="ID"
+                                value="{{ old('ID', $member->ID) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="full-name" class="col-form-label">الاسم بالكامل</label>
-                            <input type="text" class="form-control" id="full-name" name="name">
+                            <input type="text" class="form-control" id="full-name" name="name"
+                                value="{{ old('name', $member->name) }}">
                         </div>
 
                         {{-- تاريخ الميلاد + تاريخ انتهاء --}}
                         <div class="col-md-6">
                             <label for="birth-date" class="col-form-label">تاريخ الميلاد</label>
-                            <input type="date" class="form-control" id="birth-date" name="dob">
+                            <input type="date" class="form-control" id="birth-date" name="dob"
+                                value="{{ old('dob', $member->dob ? Carbon::parse($member->dob)->format('Y-m-d') : '') }}">
                         </div>
                         <div class="col-md-6">
                             <label for="expire-date" class="col-form-label">تاريخ انتهاء الهوية</label>
-                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date">
+                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date"
+                                value="{{ old('Id_expire_date', $member->Id_expire_date ? Carbon::parse($member->Id_expire_date)->format('Y-m-d') : '') }}">
                         </div>
 
                         {{-- الجنسية --}}
                         <div class="col-md-12">
                             <label for="nat" class="form-label">الجنسية</label>
                             <select name="nat" id="nat" class="form-select form-select-lg">
-                                <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
+                                <option value="" disabled>اختر الجنسية</option>
                                 @foreach($countries as $country)
-                                <option value="{{ $country->id }}">
+                                <option value="{{ $country->id }}"
+                                    {{ old('nat', $member->nat) == $country->id ? 'selected' : '' }}>
                                     {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
                                 </option>
                                 @endforeach
@@ -61,12 +67,12 @@ use Carbon\Carbon;
                         <div class="col-md-12 d-flex align-items-center gap-4">
                             <div>
                                 <input id="male" type="radio" name="gender" value="male"
-                                    {{ request('gender') == 'male' ? 'checked' : '' }}>
+                                    {{ old('gender', $member->gender) == 'male' ? 'checked' : '' }}>
                                 <label for="male">ذكر</label>
                             </div>
                             <div>
                                 <input id="female" type="radio" name="gender" value="female"
-                                    {{ request('gender') == 'female' ? 'checked' : '' }}>
+                                    {{ old('gender', $member->gender) == 'female' ? 'checked' : '' }}>
                                 <label for="female">أنثى</label>
                             </div>
                             @error('gender')
@@ -77,16 +83,18 @@ use Carbon\Carbon;
                         {{-- العمر --}}
                         <div class="col-md-12">
                             <label for="age">العمر</label>
-                            <input type="text" class="form-control" readonly id="age">
+                            <input type="text" class="form-control" readonly id="age"
+                                value="{{ $member->dob ? Carbon::parse($member->dob)->age : '' }}">
                         </div>
 
                         {{-- النادي + السلاح --}}
                         <div class="col-md-6">
                             <label for="club_id" class="form-label">النادي</label>
                             <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي</option>
+                                <option value="" disabled>اختر النادي</option>
                                 @foreach($clubs as $club)
-                                <option value="{{ $club->cid }}" {{ request('club_id') == $club->cid ? 'selected' : '' }}>
+                                <option value="{{ $club->cid }}"
+                                    {{ old('club_id', $member->club_id) == $club->cid ? 'selected' : '' }}>
                                     {{ $club->name }}
                                 </option>
                                 @endforeach
@@ -95,7 +103,10 @@ use Carbon\Carbon;
                         <div class="col-md-6">
                             <label for="weapon_id" class="form-label">السلاح</label>
                             <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                <option value="" disabled selected>اختر النادي أولاً</option>
+                                <option value="" disabled>اختر النادي أولاً</option>
+                                @if($member->weapon_id && $member->weapon)
+                                <option value="{{ $member->weapon_id }}" selected>{{ $member->weapon->name }}</option>
+                                @endif
                             </select>
                         </div>
 
@@ -103,10 +114,10 @@ use Carbon\Carbon;
                         <div class="col-md-12">
                             <label for="mgid" class="form-label">المجموعات</label>
                             <select name="mgid" id="mgid" class="form-select form-select-lg">
-                                <option value="" disabled selected>اختر المجموعة</option>
+                                <option value="" disabled>اختر المجموعة</option>
                                 @foreach($memberGroups as $memberGroup)
                                 <option value="{{ $memberGroup->mgid }}"
-                                    {{ request('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
+                                    {{ old('mgid', $member->mgid) == $memberGroup->mgid ? 'selected' : '' }}>
                                     {{ $memberGroup->name }}
                                 </option>
                                 @endforeach
@@ -116,11 +127,13 @@ use Carbon\Carbon;
                         {{-- الهاتف --}}
                         <div class="col-md-6">
                             <label for="phone1" class="form-label">رقم الهاتف 1</label>
-                            <input type="number" name="phone1" class="form-control" id="phone1">
+                            <input type="number" name="phone1" class="form-control" id="phone1"
+                                value="{{ old('phone1', $member->phone1) }}">
                         </div>
                         <div class="col-md-6">
                             <label for="phone2" class="form-label">رقم الهاتف 2</label>
-                            <input type="number" name="phone2" class="form-control" id="phone2">
+                            <input type="number" name="phone2" class="form-control" id="phone2"
+                                value="{{ old('phone2', $member->phone2) }}">
                         </div>
 
                         {{-- الصور --}}
@@ -133,9 +146,10 @@ use Carbon\Carbon;
                             <input type="file" class="form-control" id="back-id" name="back_id_pic">
                         </div>
                     </div>
-                    @csrf
+
                     <button type="submit" class="btn btn-primary mt-3">تعديل</button>
                 </form>
+
             </div>
         </div>
     </div>

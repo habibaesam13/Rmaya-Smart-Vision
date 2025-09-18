@@ -33,15 +33,13 @@ class PersonalUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'mid.required' => 'معرف العضو مطلوب.',
-            'mid.exists'   => 'العضو غير موجود.',
-
             'ID.required' => 'رقم الهوية مطلوب.',
             'ID.string'   => 'رقم الهوية يجب أن يكون نصياً.',
             'ID.exists'   => 'رقم الهوية غير موجود في قاعدة البيانات.',
 
-            'dob.date' => 'تاريخ الميلاد يجب أن يكون تاريخاً صحيحاً.',
-            'dob.before'=>'يجب ان لا يقل السن عن سنه',
+            'dob.date'   => 'تاريخ الميلاد يجب أن يكون تاريخاً صحيحاً.',
+            'dob.before' => 'يجب ان لا يقل السن عن سنه',
+
             'name.string' => 'الاسم يجب أن يكون نصياً.',
 
             'Id_expire_date.date'  => 'تاريخ انتهاء الهوية يجب أن يكون تاريخاً صحيحاً.',
