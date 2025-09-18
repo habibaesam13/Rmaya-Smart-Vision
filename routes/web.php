@@ -231,7 +231,7 @@ Route::group(
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
-                    Route::post('registered/{id}/update', [PersonalController::class, 'update'])->name('personal.update');
+                    Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
                 }
             );
             //age calculation

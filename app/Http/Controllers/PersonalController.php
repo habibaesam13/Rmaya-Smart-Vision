@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonalUpdateRequest;
 use App\Models\Country;
 use App\Models\Member_group;
 use App\Models\Sv_clubs;
@@ -25,7 +26,7 @@ class PersonalController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        $members =  $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type','personal')
+        $members =  $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
@@ -50,12 +51,18 @@ class PersonalController extends Controller
 
 
 
-    public function edit(Request $request){
-        $countries=Country::all();
-        $weapons=Sv_weapons::all();
-        $clubs=Sv_clubs::all();
-        $memberGroups=Member_group::all();
-        $id=$request->input('nid');
-        return view('members.edit',compact('countries','weapons','clubs','memberGroups','id'));
+    public function edit(Request $request)
+    {
+        $countries = Country::all();
+        $weapons = Sv_weapons::all();
+        $clubs = Sv_clubs::all();
+        $memberGroups = Member_group::all();
+        $id = $request->input('mid');
+        $member = Sv_member::findorfail($id);
+        return view('members.edit', compact('countries', 'weapons', 'clubs', 'memberGroups', 'member'));
+    }
+    public function update(PersonalUpdateRequest $request)
+    {
+        $data = $request->validated();
     }
 }

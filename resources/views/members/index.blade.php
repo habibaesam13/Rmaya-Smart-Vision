@@ -240,7 +240,7 @@
                                 {{-- Edit Button --}}
                                 <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                     @csrf
-                                    <input type="hidden" name="nid" value="{{ $member->ID }}">
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
                                     <button type="submit" class="icon-btn text-warning" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </button>
