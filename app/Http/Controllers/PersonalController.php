@@ -32,7 +32,7 @@ class PersonalController extends Controller
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')->cursorPaginate(1);
+            ->orderBy('mid')->cursorPaginate(3);
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members'));
     }
     public function destroy(Request $request)

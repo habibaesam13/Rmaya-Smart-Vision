@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\PDFController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -227,13 +228,17 @@ Route::group(
             Route::prefix('personal')->group(
                 function () {
                     Route::get('registered', [PersonalController::class, 'index'])->name('personal-registration');
-                    Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
-                    Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
-                    Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
                     Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
-                    Route::get('register',[PersonalController::class, 'create'])->name('personal-create');
-                    Route::post('register',[PersonalController::class, 'store'])->name('personal-store');
+                    Route::get('register', [PersonalController::class, 'create'])->name('personal-create');
+                    Route::post('register', [PersonalController::class, 'store'])->name('personal-store');
+                    Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
+                    Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
+                    //excel
+                    Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
+                    //pdf
+                    Route::get('members/view-pdf', [PDFController::class, 'viewPDF'])->name('view-pdf');
+                    Route::get('members/download-pdf', [PDFController::class, 'downloadPDF'])->name('download-pdf');
                 }
             );
             //age calculation

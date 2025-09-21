@@ -28,13 +28,16 @@
                     </form>
 
 
-                    <form action="" method="post" class="mb-0">
-                        @csrf
+                    <form action="{{ route('download-pdf') }}" method="get" class="mb-0">
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
                         <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                             <i class="fa-solid fa-file-pdf"></i>
-                            <span>طباعة PDF</span>
+                            <span>تحميل PDF</span>
                         </button>
                     </form>
+
                 </div>
             </div>
 
@@ -280,95 +283,95 @@
     </div>
 </div>
 <style>
+.documents {
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.documents .btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.documents .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.documents .btn i {
+    font-size: 1rem;
+}
+
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
     .documents {
-        flex-shrink: 0;
-        /* Prevent shrinking */
+        width: 100%;
+        justify-content: flex-end;
     }
 
     .documents .btn {
-        font-size: 0.875rem;
-        font-weight: 500;
-        border-radius: 6px;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
+        flex: 1;
+        justify-content: center;
     }
+}
 
-    .documents .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
 
-    .documents .btn i {
-        font-size: 1rem;
-    }
-
-
-    @media (max-width: 768px) {
-        .d-flex.justify-content-between.align-items-center {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 1rem;
-        }
-
-        .documents {
-            width: 100%;
-            justify-content: flex-end;
-        }
-
-        .documents .btn {
-            flex: 1;
-            justify-content: center;
-        }
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 1.2rem;
-        cursor: pointer;
-    }
-
-    .icon-btn:hover {
-        opacity: 0.8;
-    }
+.icon-btn:hover {
+    opacity: 0.8;
+}
 </style>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const clubSelect = document.getElementById('club_id');
-        const weaponSelect = document.getElementById('weapon_id');
+document.addEventListener('DOMContentLoaded', function() {
+    const clubSelect = document.getElementById('club_id');
+    const weaponSelect = document.getElementById('weapon_id');
 
-        clubSelect.addEventListener('change', function() {
-            const clubId = this.value;
+    clubSelect.addEventListener('change', function() {
+        const clubId = this.value;
 
-            // Clear weapons dropdown
-            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
+        // Clear weapons dropdown
+        weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-            if (clubId) {
-                // Fetch weapons for selected club
-                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                    .then(response => response.json())
-                    .then(data => {
-                        weaponSelect.innerHTML =
-                            '<option value="" disabled selected>اختر السلاح</option>';
+        if (clubId) {
+            // Fetch weapons for selected club
+            fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
+                .then(response => response.json())
+                .then(data => {
+                    weaponSelect.innerHTML =
+                        '<option value="" disabled selected>اختر السلاح</option>';
 
-                        data.weapons.forEach(weapon => {
-                            const option = document.createElement('option');
-                            option.value = weapon.wid;
-                            option.textContent = weapon.name;
-                            weaponSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        weaponSelect.innerHTML =
-                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
+                    data.weapons.forEach(weapon => {
+                        const option = document.createElement('option');
+                        option.value = weapon.wid;
+                        option.textContent = weapon.name;
+                        weaponSelect.appendChild(option);
                     });
-            } else {
-                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-            }
-        });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    weaponSelect.innerHTML =
+                        '<option value="" disabled selected>حدث خطأ في التحميل</option>';
+                });
+        } else {
+            weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
+        }
     });
+});
 </script>
 
 @endsection
