@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PersonalUpdateRequest;
 use App\Models\Country;
-use App\Models\Member_group;
 use App\Models\Sv_clubs;
-use Illuminate\Http\Request;
 use App\Models\Sv_member;
 use App\Models\Sv_weapons;
+use App\Models\Member_group;
+use Illuminate\Http\Request;
 use App\Services\PersonalService;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Requests\StorePersonalRequest;
+use App\Http\Requests\PersonalUpdateRequest;
 
 class PersonalController extends Controller
 {
@@ -77,7 +78,12 @@ class PersonalController extends Controller
         $memberGroups = Member_group::all();
         return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));
     }
-    public function store(){
-        
+    public function store(StorePersonalRequest $request){
+        $data=$request->validated();
+        $member=$this->personalService->RegisterNewMember($data,$request);
+        if (!$member){
+        return redirect()->route('personal-create')->with('error','حدث خطأ أثناء التسجيل');
+        }
+        return redirect()->route('personal-create')->with('success','تم التسجيل بنجاح');
     }
 }

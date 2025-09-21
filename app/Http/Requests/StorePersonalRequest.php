@@ -25,6 +25,7 @@ class StorePersonalRequest extends FormRequest
     {
         $this->merge([
             'reg_type' => $this->input('reg_type', 'personal'),
+            'registration_date' => $this->input('registration_date', now()->toDateString()),
         ]);
     }
     public function rules(): array
@@ -32,8 +33,9 @@ class StorePersonalRequest extends FormRequest
         return [
             'reg_type' => 'required|in:personal,group',
             'group_id' => 'nullable|exists:sv_teams,tid',
+            'name' => 'required|string',
             'Id_expire_date' => 'required|date|after:today',
-            'dob' => 'required|date|before_or_equal:' . now()->subYear()->toDateString(),
+            'dob' => 'required|date|before_or_equal:' . now()->subYear(16)->toDateString(),
             'nat' => 'required|exists:countries,id',
             'gender' => 'required|in:female,male',
             'club_id' => 'required|exists:sv_clubs,cid',
@@ -47,6 +49,9 @@ class StorePersonalRequest extends FormRequest
             'registration_date' => 'required|date',
             'ID' => [
                 'required',
+                'string',
+                'min:15',
+                'max:15',
                 Rule::unique('sv_members')->where(function ($query) {
                     if ($this->reg_type === 'personal') {
                         return $query->where('reg_type', 'personal');
@@ -116,6 +121,8 @@ class StorePersonalRequest extends FormRequest
 
             'ID.required' => 'رقم الهوية مطلوب.',
             'ID.unique' => 'هذا الرقم مسجل بالفعل.',
+            'ID.min' => 'رقم الهوية يجب ان يكون 15 رقم ',
+            'ID.max' => 'رقم الهوية يجب ان يكون 15 رقم ',
         ];
     }
 }

@@ -82,4 +82,17 @@ class PersonalService
 
         return $member;
     }
+    public function RegisterNewMember($data,$request){
+         if ($request->hasFile('front_id_pic')) {
+            $data['front_id_pic'] = $request->file('front_id_pic')->store('national_ids', 'public');
+        }
+
+        if ($request->hasFile('back_id_pic')) {
+            Log::info('Updating back_id_pic');
+            $data['back_id_pic'] = $request->file('back_id_pic')->store('national_ids', 'public');
+        }
+
+        return Sv_member::create($data);
+        
+    }
 }

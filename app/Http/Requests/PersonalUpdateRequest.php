@@ -15,7 +15,7 @@ class PersonalUpdateRequest extends FormRequest
     {
         return [
             'ID'             => 'required|string|exists:sv_members,ID',
-            'dob'            => 'nullable|date|before:-1 year',
+            'dob'            => 'nullable|date|before:before_or_equal:' . now()->subYear(16)->toDateString(),
             'name'           => 'nullable|string',
             'Id_expire_date' => 'nullable|date|after:today',
             'nat'            => 'nullable|exists:countries,id',
@@ -38,7 +38,7 @@ class PersonalUpdateRequest extends FormRequest
             'ID.exists'   => 'رقم الهوية غير موجود في قاعدة البيانات.',
 
             'dob.date'   => 'تاريخ الميلاد يجب أن يكون تاريخاً صحيحاً.',
-            'dob.before' => 'يجب ان لا يقل السن عن سنه',
+            'dob.before' => 'يجب ان لا يقل السن عن 16 سنه',
 
             'name.string' => 'الاسم يجب أن يكون نصياً.',
 

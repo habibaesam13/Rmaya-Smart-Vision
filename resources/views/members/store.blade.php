@@ -11,61 +11,79 @@ use Carbon\Carbon;
                 <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
                 التسجيل الفردى فى المسابقات
             </h2>
-            @if ($errors->any())
+
+            @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if (session('error'))
             <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ session('error') }}
             </div>
             @endif
 
             <div class="form">
-                <form action="{{ route('personal.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('personal-store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-3">
                         {{-- رقم الهوية + الاسم --}}
                         <div class="col-md-6">
                             <label for="ID" class="col-form-label">رقم بطاقة الهوية</label>
-                            <input type="number" class="form-control text-center" name="ID" id="ID">
+                            <input type="number" class="form-control text-center" name="ID" id="ID" value="{{ old('ID') }}">
+                            @error('ID')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="full-name" class="col-form-label">الاسم بالكامل</label>
-                            <input type="text" class="form-control" id="full-name" name="name">
+                            <input type="text" class="form-control" id="full-name" name="name" value="{{ old('name') }}">
+                            @error('name')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- تاريخ الميلاد + تاريخ انتهاء --}}
                         <div class="col-md-6">
                             <label for="birth-date" class="col-form-label">تاريخ الميلاد</label>
-                            <input type="date" class="form-control" id="birth-date" name="dob">
+                            <input type="date" class="form-control" id="birth-date" name="dob" value="{{ old('dob') }}">
+                            @error('dob')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="expire-date" class="col-form-label">تاريخ انتهاء الهوية</label>
-                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date">
+                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date" value="{{ old('Id_expire_date') }}">
+                            @error('Id_expire_date')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- الجنسية --}}
                         <div class="col-md-12">
                             <label for="nat" class="form-label">الجنسية</label>
                             <select name="nat" id="nat" class="form-select form-select-lg">
-                                <option="" disabled>اختر الجنسية</option>
+                                <option value="" disabled>اختر الجنسية</option>
                                 @foreach($countries as $country)
-                                <option="{{ $country->id }}">
-                                    {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
+                                <option value="{{ $country->id }}" {{ old('nat') == $country->id ? 'selected' : '' }}>
+                                    {{ $country?->country_name_ar ?: $country->country_name }}
                                 </option>
                                 @endforeach
                             </select>
+                            @error('nat')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- الجنس --}}
                         <div class="col-md-12 d-flex align-items-center gap-4">
                             <div>
-                                <input id="male" type="radio" name="gender" value="male">
+                                <input id="male" type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
                                 <label for="male">ذكر</label>
                             </div>
                             <div>
-                                <input id="female" type="radio" name="gender" value="female">
+                                <input id="female" type="radio" name="gender" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
                                 <label for="female">أنثى</label>
                             </div>
                             @error('gender')
@@ -76,22 +94,23 @@ use Carbon\Carbon;
                         {{-- العمر --}}
                         <div class="col-md-12">
                             <label for="age">العمر</label>
-                            <input type="text" class="form-control" readonly id="age">
+                            <input type="text" class="form-control" readonly id="age" value="{{ old('age') }}">
                         </div>
 
                         {{-- Clubs --}}
                         <div class="col-md-4">
                             <label for="club_id" class="form-label">النادي</label>
                             <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
-                                </option>
+                                <option value="" disabled {{ old('club_id') ? '' : 'selected' }}>اختر النادي</option>
                                 @foreach($clubs as $club)
-                                <option value="{{ $club->cid }}"
-                                    {{ request('club_id') == $club->cid ? 'selected' : '' }}>
+                                <option value="{{ $club->cid }}" {{ old('club_id') == $club->cid ? 'selected' : '' }}>
                                     {{ $club->name }}
                                 </option>
                                 @endforeach
                             </select>
+                            @error('club_id')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- Weapons --}}
@@ -100,46 +119,78 @@ use Carbon\Carbon;
                             <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
                                 <option value="" disabled selected>اختر النادي أولاً</option>
                             </select>
+                            @error('weapon_id')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
+
+                        {{-- Registration Club --}}
+                        <div class="col-md-4">
+                            <label for="reg_club" class="form-label">مكان التسجيل</label>
+                            <select name="reg_club" id="reg_club" class="form-select form-select-lg">
+                                <option value="" disabled {{ old('reg_club') ? '' : 'selected' }}>اختر النادي</option>
+                                @foreach($clubs as $club)
+                                <option value="{{ $club->cid }}" {{ old('reg_club') == $club->cid ? 'selected' : '' }}>
+                                    {{ $club->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('reg_club')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         {{-- المجموعات --}}
                         <div class="col-md-12">
                             <label for="mgid" class="form-label">المجموعات</label>
                             <select name="mgid" id="mgid" class="form-select form-select-lg">
-                                <option="" disabled>اختر المجموعة</option>
+                                <option value="" disabled>اختر المجموعة</option>
                                 @foreach($memberGroups as $memberGroup)
-                                <option value="{{ $memberGroup->mgid }}">
+                                <option value="{{ $memberGroup->mgid }}" {{ old('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
                                     {{ $memberGroup->name }}
                                 </option>
                                 @endforeach
                             </select>
+                            @error('mgid')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- الهاتف --}}
                         <div class="col-md-6">
                             <label for="phone1" class="form-label">رقم الهاتف 1</label>
-                            <input type="number" name="phone1" class="form-control"
-                                id="phone1">
+                            <input type="number" name="phone1" class="form-control" id="phone1" value="{{ old('phone1') }}">
+                            @error('phone1')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="phone2" class="form-label">رقم الهاتف 2</label>
-                            <input type="number" name="phone2" class="form-control"
-                                id="phone2">
+                            <input type="number" name="phone2" class="form-control" id="phone2" value="{{ old('phone2') }}">
+                            @error('phone2')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- الصور --}}
                         <div class="col-md-6">
                             <label for="front-id" class="form-label">صورة الهوية الأمامية</label>
                             <input type="file" class="form-control" id="front-id" name="front_id_pic">
+                            @error('front_id_pic')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="back-id" class="form-label">صورة الهوية الخلفية</label>
                             <input type="file" class="form-control" id="back-id" name="back_id_pic">
+                            @error('back_id_pic')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary mt-3">تسجيل</button>
                 </form>
-
             </div>
         </div>
     </div>

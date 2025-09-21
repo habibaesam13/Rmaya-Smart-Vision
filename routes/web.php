@@ -233,7 +233,7 @@ Route::group(
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
                     Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
                     Route::get('register',[PersonalController::class, 'create'])->name('personal-create');
-                    Route::post('register',[PersonalController::class, 'store'])->name('personal.store');
+                    Route::post('register',[PersonalController::class, 'store'])->name('personal-store');
                 }
             );
             //age calculation
