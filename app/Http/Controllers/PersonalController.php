@@ -68,4 +68,16 @@ class PersonalController extends Controller
         return redirect()->route('personal-registration')
             ->with('success', 'تم تعديل البيانات بنجاح');
     }
+
+
+    public function create(){
+        $countries = Country::all();
+        $weapons = Sv_weapons::all();
+        $clubs = Sv_clubs::all();
+        $memberGroups = Member_group::all();
+        return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));
+    }
+    public function store(){
+        
+    }
 }

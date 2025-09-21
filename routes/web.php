@@ -232,6 +232,8 @@ Route::group(
                     Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
                     Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
+                    Route::get('register',[PersonalController::class, 'create'])->name('personal-create');
+                    Route::post('register',[PersonalController::class, 'store'])->name('personal.store');
                 }
             );
             //age calculation

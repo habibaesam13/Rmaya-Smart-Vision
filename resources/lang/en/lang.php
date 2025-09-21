@@ -168,7 +168,7 @@ return [
     'users' => 'Users',
     'events' => 'Events',
     'event_places' => 'Event Places',
-
+    'PersonalCreate'=>'Personal Registration',
     'module_name' => 'Module Name',
     'action' => 'Action',
     'admin' => 'Admin',

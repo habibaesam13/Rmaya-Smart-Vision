@@ -15,7 +15,7 @@ class PersonalUpdateRequest extends FormRequest
     {
         return [
             'ID'             => 'required|string|exists:sv_members,ID',
-            'dob'            => 'nullable|date|before:today',
+            'dob'            => 'nullable|date|before:-1 year',
             'name'           => 'nullable|string',
             'Id_expire_date' => 'nullable|date|after:today',
             'nat'            => 'nullable|exists:countries,id',

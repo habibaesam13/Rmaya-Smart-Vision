@@ -171,6 +171,13 @@
                         <span class="menu-text">{{ __('lang.Personal') }}</span>
                     </a>
                 </li>
+                {{-- Personal Registration --}}
+                <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
+                    <a href="{{ route('personal-create') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="fa-solid fa-person"></i></span>
+                        <span class="menu-text">{{ __('lang.PersonalCreate') }}</span>
+                    </a>
+                </li>
             </ul>
             @if(checkModulePermission('logs', 'view'))
             <li class="side-nav-item">
