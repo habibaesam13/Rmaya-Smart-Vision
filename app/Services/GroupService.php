@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Sv_member;
 use App\Models\Sv_team;
 use App\Models\Sv_weapons;
 use Illuminate\Http\Request;
@@ -15,9 +16,12 @@ class GroupService
     {
         //
     }
+    public function getGroupById($tid){
+        return Sv_team::findOrfail($tid);
+    }
     public function getGroups(){
         $weapons=Sv_weapons::all();
-        $groups=Sv_team::with(['club','weapon'])->orderBy('tid')->cursorPaginate(2);
+        $groups=Sv_team::with(['club','weapon'])->orderBy('tid')->cursorPaginate(20);
         return $groups;
     }
     public function searchQuery(Request $request)
@@ -37,11 +41,19 @@ class GroupService
     public function search(Request $request)
     {
         return $this->searchQuery($request)
-            ->cursorPaginate(3)
+            ->cursorPaginate(20)
             ->appends($request->query());
     }
     public function daleteGroup($tid){
-        $group=Sv_team::findOrfail($tid);
+        $group=$this->getGroupById($tid);
         return $group->delete();
+    }
+    public function viewGroupMembers($tid){
+        $group=$this->getGroupById($tid);
+        
+        if($group){
+            return Sv_member::where('reg_type','group')->where('team_id',$tid)->get();
+        }
+        return false;
     }
 }

@@ -259,6 +259,7 @@ Route::group(
                     Route::get('registered',[GroupController::class,'index'])->name('group-registration');
                     Route::get('search',[GroupController::class,'search'])->name('group-search');
                     Route::delete('registered',[GroupController::class,'delete'])->name('group-destroy');
+                    Route::get('registered/members',[GroupController::class,'show'])->name('group-members');
                     //excel
                     Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
                 }

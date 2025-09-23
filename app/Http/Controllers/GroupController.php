@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\WeaponService;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class GroupController extends Controller
 {
@@ -37,5 +38,13 @@ class GroupController extends Controller
         $this->groupService->daleteGroup($tid);
         return redirect()->route('group-registration')
             ->with('success', 'تم حذف الفريق بنجاح ');
+    }
+    public function show(Request $request){
+        $tid=intval($request->input('tid'));
+        $TeamMembers=$this->groupService->viewGroupMembers($tid);
+        if(!$TeamMembers){
+            return redirect()->route('group-registration')->with('error', '  الفريق غير مسجل');
+        }
+        return view('groups.group_members',compact('TeamMembers'));
     }
 }
