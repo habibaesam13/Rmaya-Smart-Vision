@@ -1,6 +1,6 @@
 @extends('admin.master')
 @section('content')
-<div class="container my-4">
+<div class="page-container my-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <h4 class="card-title mb-4">تعديل سلاح</h4>
@@ -22,7 +22,7 @@
                     @enderror
                 </div>
                 <button type="submit" class="btn btn-primary px-4">تحديث</button>
-                <a href="{{ route('weapons.index') }}" class="btn btn-secondary px-4 ms-2">إلغاء</a>
+                <a href="{{ route('weapons.index') }}" class="btn btn-danger px-4 ms-2">إلغاء</a>
             </form>
         </div>
     </div>

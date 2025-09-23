@@ -7,6 +7,18 @@
                 <i class="fa-solid fa-circle-info text-success me-0" style="font-size:2rem !important"></i>
                 المسجلين فرق
             </h2>
+            <div class="documents d-flex gap-2">
+                    <form action="{{route('groups.export.excel')}}" method="post" class="mb-0">
+                        @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>طباعة اكسيل</span>
+                        </button>
+                    </form>
+            </div>
 
             <div class="col-md-4">
                 <form action="{{ route('group-search') }}" method="get">
@@ -44,11 +56,6 @@
                             <a href="{{ url()->current() }}" class="btn btn-danger">
                                 <i class="fas fa-undo me-2"></i>إعادة تعيين
                             </a>
-                            <button type="submit" formaction=""
-                                class="btn btn-success btn-lg d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-file-excel"></i>
-                                <span>طباعة اكسيل</span>
-                            </button>
                         </div>
                     </div>
                 </form>

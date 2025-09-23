@@ -17,10 +17,10 @@ class GroupService
     }
     public function getGroups(){
         $weapons=Sv_weapons::all();
-        $groups=Sv_team::with(['club','weapon'])->orderBy('tid')->cursorPaginate(1);
+        $groups=Sv_team::with(['club','weapon'])->orderBy('tid')->cursorPaginate(2);
         return $groups;
     }
-    public function search(Request $request)
+    public function searchQuery(Request $request)
     {
         return Sv_team::with(['club', 'weapon'])
             ->when($request->team_name, fn($q) => $q->where('name', 'like', "%{$request->team_name}%"))
@@ -30,8 +30,15 @@ class GroupService
             )
             ->when($request->date_to, fn($q) =>
                 $q->whereDate('created_at', '<=', $request->date_to)
-            )->orderBy('tid')->cursorPaginate()->appends(request()->query());
-            
+            )
+            ->orderBy('tid');
+    }
+
+    public function search(Request $request)
+    {
+        return $this->searchQuery($request)
+            ->cursorPaginate(3)
+            ->appends($request->query());
     }
     public function daleteGroup($tid){
         $group=Sv_team::findOrfail($tid);

@@ -3,19 +3,20 @@
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ClubsController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\GroupExportController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\PDFController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -236,7 +237,7 @@ Route::group(
                     Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     //excel
-                    Route::post('/admin/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
+                    Route::post('/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     //pdf
                     Route::get('members/view-pdf', [PDFController::class, 'viewPDF'])->name('view-pdf');
                     Route::get('members/download-pdf', [PDFController::class, 'downloadPDF'])->name('download-pdf');
@@ -258,6 +259,8 @@ Route::group(
                     Route::get('registered',[GroupController::class,'index'])->name('group-registration');
                     Route::get('search',[GroupController::class,'search'])->name('group-search');
                     Route::delete('registered',[GroupController::class,'delete'])->name('group-destroy');
+                    //excel
+                    Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
                 }
             );
         });

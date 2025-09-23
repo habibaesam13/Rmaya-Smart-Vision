@@ -30,4 +30,5 @@ class Sv_team extends Model
             get: fn($value) => Carbon::parse($value)->format('Y-m-d'),
         );
     }
+    
 }
