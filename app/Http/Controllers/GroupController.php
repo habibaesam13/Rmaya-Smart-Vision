@@ -24,8 +24,8 @@ class GroupController extends Controller
     }
     public function search(Request $request)
     {
-        $groups = $this->groupService->search($request);  // paginated groups
-        $weapons = $this->weaponService->getAllWeapons(); // for the dropdown
+        $groups = $this->groupService->search($request);
+        $weapons = $this->weaponService->getAllWeapons();
 
         return view('groups.registered_groups', [
             'groups'  => $groups,
