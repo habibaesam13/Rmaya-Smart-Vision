@@ -8,7 +8,7 @@ use Carbon\Carbon;
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <h2 class="card-title mb-2">
-                <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
+                <i class="fas fa-save text-success me-2" style="font-size:2rem !important"></i>
                 التسجيل الفردى فى المسابقات
             </h2>
 

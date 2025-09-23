@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PDFController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -250,6 +251,15 @@ Route::group(
                 }
                 return response()->json(['age' => null]);
             })->name('calculate.age');
+
+            //registered groups
+            Route::prefix('groups')->group(
+                function(){
+                    Route::get('registered',[GroupController::class,'index'])->name('group-registration');
+                    Route::get('search',[GroupController::class,'search'])->name('group-search');
+                    Route::delete('registered',[GroupController::class,'delete'])->name('group-destroy');
+                }
+            );
         });
     }
 );

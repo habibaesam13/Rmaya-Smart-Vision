@@ -19,4 +19,7 @@ class Sv_clubs extends Model
             'wid'                 
         )->withPivot(['gender', 'age_from', 'age_to', 'success_degree', 'active']); 
     }
+    public function team(){
+        return $this->hasMany(Sv_team::class, 'club_id', 'cid');
+    }
 }
