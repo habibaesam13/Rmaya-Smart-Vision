@@ -98,9 +98,6 @@
                     </tr>
                     @endforelse
                 </tbody>
-
-
-
             </table>
             <div class="mt-4 d-flex justify-content-center">
                 {{ $groups->appends(request()->query())->links() }}

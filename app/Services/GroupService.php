@@ -30,7 +30,7 @@ class GroupService
             )
             ->when($request->date_to, fn($q) =>
                 $q->whereDate('created_at', '<=', $request->date_to)
-            )->orderBy('tid')->cursorPaginate(1)->appends(request()->query());
+            )->orderBy('tid')->cursorPaginate()->appends(request()->query());
             
     }
     public function daleteGroup($tid){

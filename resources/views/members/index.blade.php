@@ -216,7 +216,7 @@
 
                 <tbody>
 
-                    @foreach($members as $member)
+                    @forelse($members as $member)
                     <tr>
                         <td>{{ $member->name }}</td>
                         <td>{{ $member->ID}}</td>
@@ -272,7 +272,13 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">
+                            لا توجد نتائج مطابقة للبحث
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
             <div class="mt-4 d-flex justify-content-center">
