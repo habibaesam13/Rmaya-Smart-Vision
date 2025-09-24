@@ -24,29 +24,37 @@
                 @method('PUT')
                 <div class="mb-3">
                     <label for="name" class="form-label">اسم الفريق</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $group->name) }}" placeholder="اكتب اسم الفريق">
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $group->name) }}"
+                        placeholder="اكتب اسم الفريق">
                     @error('name')
-                        <div class="text-danger small">{{ $message }}</div>
+                    <div class="text-danger small">{{ $message }}</div>
                     @enderror
-                    {{-- Clubs --}}
-                    <div class="col-md-4">
-                        <label for="club_id" class="form-label">النادي</label>
-                        <select name="club_id" id="club_id" class="form-select form-select-lg">
-                            <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي</option>
-                            @foreach($clubs as $club)
-                            <option value="{{ $club->cid }}" {{ request('club_id') == $club->cid ? 'selected' : '' }}>
-                                {{ $club->name }}
-                            </option>
-                            @endforeach
-                        </select>
+                    {{-- Clubs + Weapons in the same row --}}
+                    <div class="row">
+                        {{-- Clubs --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="club_id" class="form-label">النادي</label>
+                            <select name="club_id" id="club_id" class="form-select form-select-lg">
+                                <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
+                                </option>
+                                @foreach($clubs as $club)
+                                <option value="{{ $club->cid }}"
+                                    {{ request('club_id') == $club->cid ? 'selected' : '' }}>
+                                    {{ $club->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Weapons --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="weapon_id" class="form-label">السلاح</label>
+                            <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
+                                <option value="" disabled selected>اختر النادي أولاً</option>
+                            </select>
+                        </div>
                     </div>
-                    {{-- Weapons --}}
-                    <div class="col-md-4">
-                        <label for="weapon_id" class="form-label">السلاح</label>
-                        <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                            <option value="" disabled selected>اختر النادي أولاً</option>
-                        </select>
-                    </div>
+
 
                 </div>
                 <button type="submit" class="btn btn-primary px-4">تحديث</button>

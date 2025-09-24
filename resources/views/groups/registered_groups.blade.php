@@ -9,6 +9,13 @@
                     <i class="fa-solid fa-circle-info text-success me-2" style="font-size:2rem !important"></i>
                     المسجلين فرق
                 </h2>
+                {{-- Success Message --}}
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
