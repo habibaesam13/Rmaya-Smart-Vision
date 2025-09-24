@@ -19,7 +19,7 @@ class WeaponService
             'name' => $data['name'],
         ]);
     }
-
+    
     public function getAllWeapons()
     {
         return Sv_weapons::all();

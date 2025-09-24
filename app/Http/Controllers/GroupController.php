@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ClubService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\WeaponService;
@@ -11,10 +12,12 @@ class GroupController extends Controller
 {
     protected GroupService $groupService;
     protected WeaponService $weaponService;
-    public function __construct(GroupService $groupService, WeaponService $weaponService)
+    protected ClubService $clubService;
+    public function __construct(GroupService $groupService, WeaponService $weaponService,ClubService $clubService)
     {
         $this->groupService = $groupService;
         $this->weaponService = $weaponService;
+        $this->clubService=$clubService;
     }
     public function index()
     {
@@ -50,7 +53,14 @@ class GroupController extends Controller
     }
     public function edit(Request $request){
         $tid=intval($request->input('tid'));
+        $clubs=$this->clubService->getAllClubs();
+        $weapons=$this->weaponService->getAllWeapons();
         $group=$this->groupService->getGroupById($tid);
-        return view('groups.group_edit',compact('group'));
+        return view('groups.group_edit',compact(['group','clubs','group']));
+    }
+    public function update(Request $request,$tid){
+        //dd($tid);
+        dd($request->all());
+        $group=$this->groupService->updateGroupData();
     }
 }
