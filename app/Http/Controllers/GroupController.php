@@ -67,4 +67,9 @@ class GroupController extends Controller
         }
         return redirect()->route('group-registration')->with('success','تم تحديث بيانات الفريق بنجاح');
     }
+
+    public function getMembersWithGroups(){
+        $members=$this->groupService->getMembersWithGroups();
+        return view('groups.groups_members',compact('members'));
+    }
 }

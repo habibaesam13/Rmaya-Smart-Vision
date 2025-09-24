@@ -16,6 +16,7 @@ class GroupService
     {
         //
     }
+    
     public function getGroupById($tid){
         return Sv_team::findOrfail($tid);
     }
@@ -27,6 +28,10 @@ class GroupService
         $weapons=Sv_weapons::all();
         $groups=Sv_team::with(['club','weapon'])->orderBy('tid')->cursorPaginate(20);
         return $groups;
+    }
+    public function getMembersWithGroups(){
+        return Sv_member::with(['team','club','weapon'])
+        ->where('reg_type','group')->orderBy('mid')->cursorPaginate(10);
     }
     public function searchQuery(Request $request)
     {

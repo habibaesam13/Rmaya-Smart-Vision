@@ -262,6 +262,8 @@ Route::group(
                     Route::get('registered/members',[GroupController::class,'show'])->name('group-members');
                     Route::get('registered/edit',[GroupController::class,'edit'])->name('group-edit');
                     Route::put('registered/{tid}/edit',[GroupController::class,'update'])->name('group-update');
+
+                    Route::get('members',[GroupController::class,'getMembersWithGroups'])->name('groups-members');
                     //excel
                     Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
                 }
