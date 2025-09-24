@@ -60,8 +60,11 @@ class GroupService
         }
         return false;
     }
-    public function updateGroupData($tid){
+    public function updateGroupData($data,$tid){
         $group=$this->getGroupById($tid);
-        dd($group);
+        if($group){
+            return $group->update($data);
+        }
+        return false;
     }
 }

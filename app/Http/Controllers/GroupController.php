@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditGroupRequest;
 use App\Services\ClubService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
@@ -58,9 +59,12 @@ class GroupController extends Controller
         $group=$this->groupService->getGroupById($tid);
         return view('groups.group_edit',compact(['group','clubs','group']));
     }
-    public function update(Request $request,$tid){
-        //dd($tid);
-        dd($request->all());
-        $group=$this->groupService->updateGroupData();
+    public function update(EditGroupRequest $request,$tid){
+        $data=$request->validated();
+        $group=$this->groupService->updateGroupData($data,$tid);
+        if(!$group){
+            return redirect()->route('group-registration')->with('error','حدث خطأ أثناء التحديث');
+        }
+        return redirect()->route('group-registration')->with('success','تم تحديث بيانات الفريق بنجاح');
     }
 }
