@@ -178,6 +178,13 @@
                         <span class="menu-text">{{ __('lang.PersonalCreate') }}</span>
                     </a>
                 </li>
+                {{-- Registered Groups --}}
+                <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
+                    <a href="{{ route('group-registration') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="fa-solid fa-people-group"></i></span>
+                        <span class="menu-text">{{ __('lang.RegisteredGroups') }}</span>
+                    </a>
+                </li>
             </ul>
             @if(checkModulePermission('logs', 'view'))
             <li class="side-nav-item">

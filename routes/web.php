@@ -260,6 +260,7 @@ Route::group(
                     Route::get('search',[GroupController::class,'search'])->name('group-search');
                     Route::delete('registered',[GroupController::class,'delete'])->name('group-destroy');
                     Route::get('registered/members',[GroupController::class,'show'])->name('group-members');
+                    Route::get('registered/edit',[GroupController::class,'edit'])->name('group-edit');
                     //excel
                     Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
                 }

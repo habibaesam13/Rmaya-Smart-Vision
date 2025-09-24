@@ -5,6 +5,11 @@
 <div class="page-container my-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            <h2 class="card-title mb-4">
+                <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
+                 الأفراد المسجلين بفريق {{$groupName}}
+            </h2>
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -16,7 +21,6 @@
                         <th>نادي الرماية</th>
                         <th>مكان التسجيل</th>
                         <th>الجنسية</th>
-                        <th>المجموعات</th>
                         <th>تاريخ التسجيل</th>
                         <th>ادوات تحكم</th>
                     </tr>
@@ -41,10 +45,6 @@
                                 : '---') 
                             }}
                         </td>
-
-
-                        </td>
-                        <td>{{ $member->member_group?->name ?? '---' }}</td>
                         <td>{{ $member->registration_date}}</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
@@ -89,11 +89,20 @@
                     @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 d-flex justify-content-center">
-                {{ $members->appends(request()->query())->links() }}
-            </div>
-
         </div>
     </div>
 </div>
+<style>
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
+</style>
 @endsection
