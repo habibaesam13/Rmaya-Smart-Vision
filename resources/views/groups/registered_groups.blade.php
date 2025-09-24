@@ -110,9 +110,9 @@
                                     </button>
                                 </form>
                                 {{-- Edit Button --}}
-                                <form action="" method="GET" class="d-inline">
+                                <form action="{{route('group-edit')}}" method="GET" class="d-inline">
                                     @csrf
-                                    <input type="hidden" name="mid" value="{{ $group->tid}}">
+                                    <input type="hidden" name="tid" value="{{ $group->tid}}">
                                     <button type="submit" class="icon-btn text-warning" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </button>

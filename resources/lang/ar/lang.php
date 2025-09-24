@@ -271,14 +271,14 @@ return [
     'Refunded' => 'المبلغ المرتجع',
     'press to insert' => 'اضغط لتاكيد الرقم',
     'inserted successfully' => 'تم ادخال الرقم بنجاح',
-'last_test_in_invoice' => 'هذة فاتورة مصدرة الكترونيا , لا تحتاج الي توقيع او ختم',
+    'last_test_in_invoice' => 'هذة فاتورة مصدرة الكترونيا , لا تحتاج الي توقيع او ختم',
     'delete' => 'الغاء',
     'give_permissions_to_role' => 'تعيين اذونات لهذة الصلاحية',
     'Clubs'=>'الأندية',
     'Personal'=>'الأفراد المسجلين',
     'PersonalCreate'=>'التسجيل الفردى فى المسابقات',
     'Weapons'=>'الأسلحة',
-
+    'RegisteredGroups'=>'الفرق المسجلة',
 //    'This is an electronically generated invoice, hence does not require a signature or stamp'
 
     'logs_' . 'update' => 'تعديل عنصر في ',

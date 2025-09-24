@@ -204,7 +204,7 @@ return [
     'Weapons' => 'Weapons',
     'Add slider' => 'Add Slider',
     'Show sliders' => 'Show Slider',
-
+    'RegisteredGroups'=>'Registered Groups',
     'google_play_link' => 'Google Play Link',
     'event_types' => 'Event Types',
     'image' => 'Image',
