@@ -276,6 +276,6 @@ return [
     'Refunded' => 'Refunded',
     'press to insert' => 'Press to insert',
     'inserted successfully' => 'Number Inserted successfully',
-
+    'GroupsMembers'=>'Groups Registered Members',
     'last_test_in_invoice' => 'This is an electronically generated invoice, hence does not require a signature or stamp',
 ];

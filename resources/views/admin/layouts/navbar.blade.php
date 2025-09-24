@@ -167,7 +167,7 @@
                 {{-- Personal Registered --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-registration') }}" class="side-nav-link">
-                        <span class="menu-icon"><i class="fa-solid fa-users-line"></i></span>
+                        <span class="menu-icon"><i class="fa-solid fa-user"></i></span>
                         <span class="menu-text">{{ __('lang.Personal') }}</span>
                     </a>
                 </li>
@@ -183,6 +183,13 @@
                     <a href="{{ route('group-registration') }}" class="side-nav-link">
                         <span class="menu-icon"><i class="fa-solid fa-people-group"></i></span>
                         <span class="menu-text">{{ __('lang.RegisteredGroups') }}</span>
+                    </a>
+                </li>
+                {{-- Memebrs in Groups --}}
+                <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
+                    <a href="{{ route('groups-members') }}" class="side-nav-link">
+                        <span class="menu-icon"><i class="fa-solid fa-users-line"></i></span>
+                        <span class="menu-text">{{ __('lang.GroupsMembers') }}</span>
                     </a>
                 </li>
             </ul>

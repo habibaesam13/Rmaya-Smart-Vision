@@ -3,7 +3,7 @@
 use App\Models\Logs;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PDFController;
+use App\Http\Controllers\MembersPDFController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\GroupController;
@@ -17,6 +17,7 @@ use App\Http\Controllers\GroupExportController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\MembersGroupsPDF;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -239,8 +240,8 @@ Route::group(
                     //excel
                     Route::post('/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     //pdf
-                    Route::get('members/view-pdf', [PDFController::class, 'viewPDF'])->name('view-pdf');
-                    Route::get('members/download-pdf', [PDFController::class, 'downloadPDF'])->name('download-pdf');
+                    Route::get('members/view-pdf', [MembersPDFController::class, 'viewPDF'])->name('members-view-pdf');
+                    Route::get('members/download-pdf', [MembersPDFController::class, 'downloadPDF'])->name('members-download-pdf');
                 }
             );
             //age calculation
@@ -264,8 +265,13 @@ Route::group(
                     Route::put('registered/{tid}/edit',[GroupController::class,'update'])->name('group-update');
 
                     Route::get('members',[GroupController::class,'getMembersWithGroups'])->name('groups-members');
+                    Route::get('members-search',[GroupController::class,'membersByGroupSearch'])->name('groups-members-search');
                     //excel
                     Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
+
+                    //pdf
+                    Route::get('members/view-pdf', [MembersGroupsPDF::class, 'viewPDF'])->name('groups-view-pdf');
+                    Route::get('members/download-pdf', [MembersGroupsPDF::class, 'downloadPDF'])->name('groups-download-pdf');
                 }
             );
         });

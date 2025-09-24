@@ -28,7 +28,7 @@
                     </form>
 
 
-                    <form action="{{ route('download-pdf') }}" method="get" class="mb-0">
+                    <form action="{{ route('members-download-pdf') }}" method="get" class="mb-0">
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach

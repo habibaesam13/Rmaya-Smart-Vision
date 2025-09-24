@@ -275,10 +275,11 @@ return [
     'delete' => 'الغاء',
     'give_permissions_to_role' => 'تعيين اذونات لهذة الصلاحية',
     'Clubs'=>'الأندية',
-    'Personal'=>'الأفراد المسجلين',
-    'PersonalCreate'=>'التسجيل الفردى فى المسابقات',
+    'Personal'=>'المسجلين - أفراد',
+    'PersonalCreate'=>'تسجيل فردي - داخلي',
     'Weapons'=>'الأسلحة',
-    'RegisteredGroups'=>'الفرق المسجلة',
+    'RegisteredGroups'=>'المسجلين - فرق',
+    'GroupsMembers'=>'تقرير الفرق',
 //    'This is an electronically generated invoice, hence does not require a signature or stamp'
 
     'logs_' . 'update' => 'تعديل عنصر في ',

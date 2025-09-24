@@ -7,7 +7,7 @@ use App\Models\Sv_member;
 use Mpdf\Mpdf;
 use ArPHP\I18N\Arabic;
 
-class PDFController extends Controller
+class MembersPDFController extends Controller
 {
     public function viewPDF(Request $request)
     {
@@ -18,23 +18,14 @@ class PDFController extends Controller
                 fn($q) => $q->filter($request)
             )
             ->get();
-
-        
-       
-
-   
         $html = view('pdf.members', compact('members'))->render();
-
-        // 🔹 create mPDF
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'dejavusans', 
             'directionality' => 'rtl',
         ]);
-
         $mpdf->WriteHTML($html);
-
         return $mpdf->Output('members-details.pdf', 'I');
     }
 
@@ -47,20 +38,15 @@ class PDFController extends Controller
                 fn($q) => $q->filter($request)
             )
             ->get();
-
         $Arabic = new Arabic('Glyphs');
-
         $html = view('pdf.members', compact('members'))->render();
-
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'dejavusans',
             'directionality' => 'rtl',
         ]);
-
         $mpdf->WriteHTML($html);
-
         return $mpdf->Output('members-details.pdf', 'D'); 
     }
 }

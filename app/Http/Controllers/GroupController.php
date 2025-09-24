@@ -70,6 +70,14 @@ class GroupController extends Controller
 
     public function getMembersWithGroups(){
         $members=$this->groupService->getMembersWithGroups();
-        return view('groups.groups_members',compact('members'));
+        $groups = $this->groupService->getGroups();
+        $weapons = $this->weaponService->getAllWeapons();
+        return view('groups.groups_members',compact(['members','groups','weapons']));
+    }
+    public function membersByGroupSearch(Request $request){
+        $members=$this->groupService->membersByGroupSearch($request);
+        $groups = $this->groupService->getGroups();
+        $weapons = $this->weaponService->getAllWeapons();
+        return view('groups.groups_members',compact(['members','groups','weapons']));
     }
 }

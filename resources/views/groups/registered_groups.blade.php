@@ -106,7 +106,7 @@
                     <tr>
                         <td>{{ $group->name }}</td>
                         <td>{{ $group->weapon?->name ?? '---' }}</td>
-                        <td>{{ $group->createdAt}}</td>
+                        <td>{{ $group->created_at}}</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 <form action="{{route('group-members')}}" method="GET" class="d-inline">
