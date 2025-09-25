@@ -82,7 +82,7 @@ class GroupService
             ->cursorPaginate(20)
             ->appends($request->query());
     }
-    public function daleteGroup($tid)
+    public function deleteGroup($tid)
     {
         $group = $this->getGroupById($tid);
         return $group->delete();
