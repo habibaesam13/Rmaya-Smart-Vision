@@ -57,7 +57,7 @@ class GroupController extends Controller
         $clubs=$this->clubService->getAllClubs();
         $weapons=$this->weaponService->getAllWeapons();
         $group=$this->groupService->getGroupById($tid);
-        return view('groups.group_edit',compact(['group','clubs','group']));
+        return view('groups.group_edit',compact(['group','clubs','weapons']));
     }
     public function update(EditGroupRequest $request,$tid){
         $data=$request->validated();
