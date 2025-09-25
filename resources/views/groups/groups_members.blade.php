@@ -73,7 +73,8 @@
                         <th>الاسم</th>
                         <th>الهاتف</th>
                         <th>العمر</th>
-                        <th>الفريق / السلاح</th>
+                        <th>الفريق</th>
+                        <th>السلاح</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,8 +86,8 @@
                             <td>{{ $member->age_calculation() }}</td>
                             <td>
                                 {{ $member->team?->name ?? '---' }}
-                                <span class="text-muted">({{ $member->weapon->name }})</span>
                             </td>
+                            <td>{{ $member->weapon->name ?? '---' }}</td>
                         </tr>
                     @empty
                         <tr>
