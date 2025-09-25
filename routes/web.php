@@ -1,9 +1,12 @@
 <?php
 
 use App\Models\Logs;
+use Illuminate\Http\Request;
+use App\Services\GroupsMembersProvider;
+use App\Services\PersonalMembersProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MembersPDFController;
+use App\Http\Controllers\PDFController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\GroupController;
@@ -17,7 +20,6 @@ use App\Http\Controllers\GroupExportController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\MembersGroupsPDF;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -239,9 +241,16 @@ Route::group(
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     //excel
                     Route::post('/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
-                    //pdf
-                    Route::get('members/view-pdf', [MembersPDFController::class, 'viewPDF'])->name('members-view-pdf');
-                    Route::get('members/download-pdf', [MembersPDFController::class, 'downloadPDF'])->name('members-download-pdf');
+                    // Personal PDF
+                    Route::get('members/view-pdf', function (Request $request, PersonalMembersProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.members');
+                        return $controller->viewPDF($request);
+                    })->name('members-view-pdf');
+
+                    Route::get('members/download-pdf', function (Request $request, PersonalMembersProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.members');
+                        return $controller->downloadPDF($request);
+                    })->name('members-download-pdf');
                 }
             );
             //age calculation
@@ -256,22 +265,29 @@ Route::group(
 
             //registered groups
             Route::prefix('groups')->group(
-                function(){
-                    Route::get('registered',[GroupController::class,'index'])->name('group-registration');
-                    Route::get('search',[GroupController::class,'search'])->name('group-search');
-                    Route::delete('registered',[GroupController::class,'delete'])->name('group-destroy');
-                    Route::get('registered/members',[GroupController::class,'show'])->name('group-members');
-                    Route::get('registered/edit',[GroupController::class,'edit'])->name('group-edit');
-                    Route::put('registered/{tid}/edit',[GroupController::class,'update'])->name('group-update');
+                function () {
+                    Route::get('registered', [GroupController::class, 'index'])->name('group-registration');
+                    Route::get('search', [GroupController::class, 'search'])->name('group-search');
+                    Route::delete('registered', [GroupController::class, 'delete'])->name('group-destroy');
+                    Route::get('registered/members', [GroupController::class, 'show'])->name('group-members');
+                    Route::get('registered/edit', [GroupController::class, 'edit'])->name('group-edit');
+                    Route::put('registered/{tid}/edit', [GroupController::class, 'update'])->name('group-update');
 
-                    Route::get('members',[GroupController::class,'getMembersWithGroups'])->name('groups-members');
-                    Route::get('members-search',[GroupController::class,'membersByGroupSearch'])->name('groups-members-search');
+                    Route::get('members', [GroupController::class, 'getMembersWithGroups'])->name('groups-members');
+                    Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
                     Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
 
-                    //pdf
-                    Route::get('members/view-pdf', [MembersGroupsPDF::class, 'viewPDF'])->name('groups-view-pdf');
-                    Route::get('members/download-pdf', [MembersGroupsPDF::class, 'downloadPDF'])->name('groups-download-pdf');
+                    // Groups PDF
+                    Route::get('groups/members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.groups_members');
+                        return $controller->viewPDF($request);
+                    })->name('groups-view-pdf');
+
+                    Route::get('groups/members/download-pdf', function (Request $request, GroupsMembersProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.groups_members');
+                        return $controller->downloadPDF($request);
+                    })->name('groups-download-pdf');
                 }
             );
         });
