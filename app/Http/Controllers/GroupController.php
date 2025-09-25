@@ -39,7 +39,7 @@ class GroupController extends Controller
     }
     public function delete(Request $request){
         $tid=$request->input('tid');
-        $this->groupService->daleteGroup($tid);
+        $this->groupService->deleteGroup($tid);
         return redirect()->route('group-registration')
             ->with('success', 'تم حذف الفريق بنجاح ');
     }
