@@ -17,6 +17,16 @@
                     <span class="badge bg-light text-success fs-5 px-3 py-2">
                         عدد الأفراد المسجلين : {{$members_count}}
                     </span>
+                    <form action="{{route('groups.members.export.excel')}}" method="post" class="mb-0">
+                            @csrf
+                            @foreach(request()->query() as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                            @endforeach
+                            <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>طباعة اكسيل</span>
+                            </button>
+                    </form>
                     <form action="{{ route('groups-view-pdf') }}" method="get" class="mb-0">
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">

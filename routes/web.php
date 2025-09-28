@@ -280,7 +280,7 @@ Route::group(
                     Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
                     Route::post('export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
-
+                    Route::post('/members/export-excel', [GroupExportController::class, 'exportGroupsMembers'])->name('groups.members.export.excel');
                     // Groups PDF
                     Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members');

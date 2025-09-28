@@ -42,19 +42,19 @@ class GroupService
     }
     //تقرير الفرق
     public function getMembersWithGroups()
-{
-    $query = Sv_member::with(['team', 'club', 'weapon'])
-        ->where('reg_type', 'group');
+    {
+        $query = Sv_member::with(['team', 'club', 'weapon'])
+            ->where('reg_type', 'group');
 
-    $members_count = $query->count(); // total count
+        $members_count = $query->count(); // total count
 
-    $members = $query->orderBy('mid')->cursorPaginate(20); // actual data
+        $members = $query->orderBy('mid')->cursorPaginate(20); // actual data
 
-    return [
-        'members' => $members,
-        'members_count' => $members_count,
-    ];
-}
+        return [
+            'members' => $members,
+            'members_count' => $members_count,
+        ];
+    }
 
 
     public function searchQuery(Request $request)

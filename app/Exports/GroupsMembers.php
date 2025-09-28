@@ -2,11 +2,14 @@
 
 namespace App\Exports;
 
+
+use App\Models\Sv_member;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class GroupsMembers implements FromCollection
+class GroupsMembers implements FromCollection,WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -22,14 +25,26 @@ class GroupsMembers implements FromCollection
 
     public function collection()
     {
-        return $this->groupService->searchQuery($this->request)
-            ->get()
-            ->map(function($group){
+        return Sv_member::with(['team', 'club', 'weapon'])
+        ->where('reg_type', 'group')
+        ->when($this->request->weapon_id, fn($q) =>
+            $q->where('sv_members.weapon_id', $this->request->weapon_id)
+        )
+        ->when($this->request->team_name, fn($q) =>
+            $q->whereHas('team', fn($t) =>
+                $t->where('name', 'LIKE', "%{$this->request->team_name}%")
+            )
+        )
+        ->orderBy('mid')
+        ->get()
+            ->map(function($member){
                 return [
-                    'اسم الفريق'   => $group->name,
-                    'اسم النادي'   => $group->club?->name,
-                    'اسم السلاح'   => $group->weapon?->name,
-                    'تاريخ التسجيل'=> $group->created_at,
+                    'رقم الهوية'   => $member->ID,
+                    'الأسم'   => $member->name,
+                    'الهاتف'   => $member->phone1,
+                    'العمر'=> $member->age_calculation(),
+                    'الفريق'=>$member->club?->name,
+                    'السلاح'=>$member->weapon?->name,
                 ];
             });
     }
@@ -37,10 +52,12 @@ class GroupsMembers implements FromCollection
     public function headings(): array
     {
         return [
-            'اسم الفريق',
-            'اسم النادي',
-            'اسم السلاح',
-            'تاريخ التسجيل',
+            'رقم الهوية',
+            'الأسم',
+            'الهاتف',
+            'العمر',
+            'الفريق',
+            'السلاح',
         ];
     }
 }
