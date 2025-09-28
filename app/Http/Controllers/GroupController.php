@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EditGroupRequest;
-use App\Services\ClubService;
 use Illuminate\Http\Request;
+use App\Services\ClubService;
 use App\Services\GroupService;
-use App\Services\PersonalService;
 use App\Services\WeaponService;
+use App\Services\PersonalService;
+use App\Http\Requests\EditGroupRequest;
 use Maatwebsite\Excel\Concerns\ToArray;
+use App\Http\Requests\EditGroupMemberDataRequest;
 
 class GroupController extends Controller
 {
@@ -25,10 +26,11 @@ class GroupController extends Controller
     }
     public function index()
     {
-        $groups = $this->groupService->getGroups();
+        $groups = $this->groupService->getGroups()['groups'];
+        $groupsCount= $this->groupService->getGroups()['groupsCount'];
         $weapons = $this->weaponService->getAllWeapons();
 
-        return view('groups.registered_groups', ['groups' => $groups, 'weapons' => $weapons]);
+        return view('groups.registered_groups', ['groups' => $groups, 'weapons' => $weapons,'groupsCount'=>$groupsCount]);
     }
     public function search(Request $request)
     {
@@ -89,5 +91,14 @@ class GroupController extends Controller
         $mid=$request->input('mid');
         $member=$this->personalService->getMemberByID($mid);
         return view('groups.member_group_edit',compact('member'));
+    }
+    public function updateMemberData(EditGroupMemberDataRequest $editGroupMemberRequest,$mid){
+        $data=$editGroupMemberRequest->validated();
+        $this->groupService->updateMemberData($data,$mid,$editGroupMemberRequest);
+        $member=$this->personalService->getMemberByID($mid);
+       return redirect()->route('group-members', ['tid' => $member->team_id])
+    ->with('success', 'تم تعديل البيانات بنجاح');
+
+
     }
 }

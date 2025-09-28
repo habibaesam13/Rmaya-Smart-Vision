@@ -5,9 +5,17 @@
 <div class="page-container my-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            {{-- Success Message --}}
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            @endif
             <h2 class="card-title mb-4">
                 <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
-                الأفراد المسجلين بفريق {{$group->name}} - سلاح : {{$group?->weapon?->name}} - نادي : {{$group?->club?->name}}
+                الأفراد المسجلين بفريق {{$group->name}} - سلاح : {{$group?->weapon?->name}} - نادي :
+                {{$group?->club?->name}}
             </h2>
 
             <table class="table table-bordered">
@@ -49,7 +57,7 @@
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 {{-- Edit Button --}}
-                                <form action="{{route('memeber-update')}}" method="GET" class="d-inline">
+                                <form action="{{route('memeber-edit')}}" method="GET" class="d-inline">
                                     @csrf
                                     <input type="hidden" name="mid" value="{{ $member->mid }}">
                                     <button type="submit" class="icon-btn text-warning" title="تعديل">

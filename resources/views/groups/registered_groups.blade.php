@@ -25,17 +25,22 @@
                     </ul>
                 </div>
                 @endif
-                <div class="documents">
-                    <form action="{{route('groups.export.excel')}}" method="post" class="mb-0">
-                        @csrf
-                        @foreach(request()->query() as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                        @endforeach
-                        <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-file-excel"></i>
-                            <span>طباعة اكسيل</span>
-                        </button>
-                    </form>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-light text-success fs-5 px-3 py-2">
+                        عدد الفرق المسجلة : {{$groupsCount}}
+                    </span>
+                    <div class="documents">
+                        <form action="{{route('groups.export.excel')}}" method="post" class="mb-0">
+                            @csrf
+                            @foreach(request()->query() as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                            @endforeach
+                            <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>طباعة اكسيل</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -154,16 +159,16 @@
 </div>
 
 <style>
-    .icon-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 1.2rem;
-        cursor: pointer;
-    }
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
 
-    .icon-btn:hover {
-        opacity: 0.8;
-    }
+.icon-btn:hover {
+    opacity: 0.8;
+}
 </style>
 @endsection

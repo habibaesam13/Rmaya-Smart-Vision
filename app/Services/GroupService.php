@@ -2,19 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\Sv_member;
 use App\Models\Sv_team;
+use App\Models\Sv_member;
 use App\Models\Sv_weapons;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GroupService
 {
+    protected PersonalService $personalService;
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    
+    public function __construct(PersonalService $personalService)
     {
-        //
+        $this->personalService=$personalService;
     }
 
     //Helpers
@@ -32,9 +35,10 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        
-        $groups = Sv_team::with(['club', 'weapon'])->orderBy('tid')->cursorPaginate(20);
-        return $groups;
+        $groups=Sv_team::with(['club', 'weapon']);
+        $groupsCount=$groups->count();
+        $groups = $groups->orderBy('tid')->cursorPaginate(20);
+        return ['groups'=>$groups,'groupsCount'=>$groupsCount];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
@@ -112,5 +116,30 @@ class GroupService
             return $group->update($data);
         }
         return false;
+    }
+
+
+    //update member group data
+    public function updateMemberData($data, $mid, Request $request)
+    {
+    
+        $member = $this->personalService->getMemberByID($mid);
+        if ($request->hasFile('front_id_pic')) {
+            if ($member->front_id_pic && Storage::disk('public')->exists($member->front_id_pic)) {
+                Storage::disk('public')->delete($member->front_id_pic);
+            }
+
+            $data['front_id_pic'] = $request->file('front_id_pic')->store('national_ids', 'public');
+        }
+
+        if ($request->hasFile('back_id_pic')) {
+            if ($member->back_id_pic && Storage::disk('public')->exists($member->back_id_pic)) {
+                Storage::disk('public')->delete($member->back_id_pic);
+            }
+
+            $data['back_id_pic'] = $request->file('back_id_pic')->store('national_ids', 'public');
+        }
+        $member->update($data);
+        return $member;
     }
 }

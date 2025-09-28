@@ -22,8 +22,9 @@ use Carbon\Carbon;
             @endif
 
             <div class="form">
-                <form action="{{ route('personal.update',$member->mid) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('memeber-update',$member->mid) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div class="row g-3">
                         {{-- رقم الهوية + الاسم --}}
                         <div class="col-md-6">
@@ -87,8 +88,6 @@ use Carbon\Carbon;
     document.addEventListener('DOMContentLoaded', function() {
         const dobInput = document.getElementById('birth-date');
         const ageInput = document.getElementById('age');
-        // Events
-        dobInput.addEventListener('change', loadWeapons);
         // حساب العمر عند اختيار تاريخ الميلاد
         dobInput.addEventListener('change', function() {
             const dob = this.value;
