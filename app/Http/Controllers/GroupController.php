@@ -74,10 +74,11 @@ class GroupController extends Controller
     }
 
     public function getMembersWithGroups(){
-        $members=$this->groupService->getMembersWithGroups();
+        $members=$this->groupService->getMembersWithGroups()['members'];
+        $members_count=$this->groupService->getMembersWithGroups()['members_count'];
         $groups = $this->groupService->getGroups();
         $weapons = $this->weaponService->getAllWeapons();
-        return view('groups.groups_members',compact(['members','groups','weapons']));
+        return view('groups.groups_members',compact(['members','groups','weapons','members_count']));
     }
     public function membersByGroupSearch(Request $request){
         $members=$this->groupService->membersByGroupSearch($request);

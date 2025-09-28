@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 
 @section('content')
+
 <div class="page-container my-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
@@ -12,15 +13,20 @@
                     <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
                     المسجلين فرق تفصيلي
                 </h2>
-                <form action="{{ route('groups-view-pdf') }}" method="get" class="mb-0">
-                    @foreach(request()->query() as $key => $value)
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-light text-success fs-5 px-3 py-2">
+                        عدد الأفراد المسجلين : {{$members_count}}
+                    </span>
+                    <form action="{{ route('groups-view-pdf') }}" method="get" class="mb-0">
+                        @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                    <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span>تحميل PDF</span>
-                    </button>
-                </form>
+                        @endforeach
+                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>تحميل PDF</span>
+                        </button>
+                    </form>
+                </div>
             </div>
 
             {{-- Search Form --}}
@@ -41,7 +47,7 @@
                                 <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
                                     <option value="" disabled selected>اختر السلاح</option>
                                     @foreach($weapons as $weapon)
-                                        <option value="{{ $weapon->wid }}">{{ $weapon->name }}</option>
+                                    <option value="{{ $weapon->wid }}">{{ $weapon->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -79,22 +85,22 @@
                 </thead>
                 <tbody>
                     @forelse($members as $member)
-                        <tr>
-                            <td>{{ $member->ID }}</td>
-                            <td>{{ $member->name }}</td>
-                            <td>{{ $member->phone1 ? $member->phone1 : $member->phone2 }}</td>
-                            <td>{{ $member->age_calculation() }}</td>
-                            <td>
-                                {{ $member->team?->name ?? '---' }}
-                            </td>
-                            <td>{{ $member->weapon->name ?? '---' }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $member->ID }}</td>
+                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->phone1 ? $member->phone1 : $member->phone2 }}</td>
+                        <td>{{ $member->age_calculation() }}</td>
+                        <td>
+                            {{ $member->team?->name ?? '---' }}
+                        </td>
+                        <td>{{ $member->weapon->name ?? '---' }}</td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">
-                                لا يوجد فرق مسجلة
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            لا يوجد فرق مسجلة
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
