@@ -7,7 +7,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
-                 الأفراد المسجلين بفريق {{$groupName}}
+                الأفراد المسجلين بفريق {{$groupName}}
             </h2>
 
             <table class="table table-bordered">
@@ -83,7 +83,7 @@
                     @empty
                     <tr>
                         <td colspan="11" class="text-center text-muted">
-                            لا توجد نتائج مطابقة للبحث
+                            لا يوجد أفراد مسجلين في الفريق
                         </td>
                     </tr>
                     @endforelse
@@ -93,16 +93,16 @@
     </div>
 </div>
 <style>
-    .icon-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 1.2rem;
-        cursor: pointer;
-    }
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
 
-    .icon-btn:hover {
-        opacity: 0.8;
-    }
+.icon-btn:hover {
+    opacity: 0.8;
+}
 </style>
 @endsection

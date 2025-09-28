@@ -276,15 +276,15 @@ Route::group(
                     Route::get('members', [GroupController::class, 'getMembersWithGroups'])->name('groups-members');
                     Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
-                    Route::post('/groups/export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
+                    Route::post('export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
 
                     // Groups PDF
-                    Route::get('groups/members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
+                    Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members');
                         return $controller->viewPDF($request);
                     })->name('groups-view-pdf');
 
-                    Route::get('groups/members/download-pdf', function (Request $request, GroupsMembersProvider $provider) {
+                    Route::get('members/download-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members');
                         return $controller->downloadPDF($request);
                     })->name('groups-download-pdf');

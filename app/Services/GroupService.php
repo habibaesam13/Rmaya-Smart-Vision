@@ -16,7 +16,8 @@ class GroupService
     {
         //
     }
-
+    
+    //Helpers
     public function getGroupById($tid)
     {
         return Sv_team::findOrfail($tid);
@@ -26,17 +27,22 @@ class GroupService
         $group = $this->getGroupById($tid);
         return $group->name;
     }
+
+
+    //المسجلين فرق
     public function getGroups()
     {
-        $weapons = Sv_weapons::all();
+        
         $groups = Sv_team::with(['club', 'weapon'])->orderBy('tid')->cursorPaginate(20);
         return $groups;
     }
+    //تقرير الفرق
     public function getMembersWithGroups()
     {
         return Sv_member::with(['team', 'club', 'weapon'])
             ->where('reg_type', 'group')->orderBy('mid')->cursorPaginate(10);
     }
+
     public function searchQuery(Request $request)
     {
         return Sv_team::with(['club', 'weapon'])
@@ -55,6 +61,14 @@ class GroupService
             ->orderBy('tid');
     }
 
+    public function search(Request $request)
+    {
+        return $this->searchQuery($request)
+            ->cursorPaginate(20)
+            ->appends($request->query());
+    }
+
+    //المسجلين فرق
     public function membersByGroupSearch(Request $request)
     {
         return Sv_member::query()
@@ -72,16 +86,11 @@ class GroupService
             )
             ->select('sv_members.*', 't.name as team_name') 
             ->orderBy('sv_members.mid')
-            ->cursorPaginate(10);
+            ->cursorPaginate(5);
     }
 
 
-    public function search(Request $request)
-    {
-        return $this->searchQuery($request)
-            ->cursorPaginate(20)
-            ->appends($request->query());
-    }
+    
     public function deleteGroup($tid)
     {
         $group = $this->getGroupById($tid);
