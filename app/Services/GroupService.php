@@ -16,7 +16,7 @@ class GroupService
     {
         //
     }
-    
+
     //Helpers
     public function getGroupById($tid)
     {
@@ -40,7 +40,7 @@ class GroupService
     public function getMembersWithGroups()
     {
         return Sv_member::with(['team', 'club', 'weapon'])
-            ->where('reg_type', 'group')->orderBy('mid')->cursorPaginate(10);
+            ->where('reg_type', 'group')->orderBy('mid')->cursorPaginate(20);
     }
 
     public function searchQuery(Request $request)
