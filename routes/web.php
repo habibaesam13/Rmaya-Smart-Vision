@@ -2,17 +2,18 @@
 
 use App\Models\Logs;
 use Illuminate\Http\Request;
-use App\Services\GroupsMembersProvider;
-use App\Services\PersonalMembersProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PDFController;
+use App\Services\GroupsMembersProvider;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\GroupController;
+use App\Services\PersonalMembersProvider;
 use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\GroupsPDFController;
 use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -280,7 +281,7 @@ Route::group(
                     Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
                     Route::post('export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
-                    Route::post('/members/export-excel', [GroupExportController::class, 'exportGroupsMembers'])->name('groups.members.export.excel');
+                    Route::post('/members/export-excel', [GroupExportController::class, 'exportGroupsMembers'])->name('groups.members.export.excel');//extra
                     // Groups PDF
                     Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members');
@@ -291,6 +292,10 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.groups_members');
                         return $controller->downloadPDF($request);
                     })->name('groups-download-pdf');
+
+                    //groups details pdf
+                    Route::get('groups-details/view-pdf', [GroupsPDFController::class, 'viewPDF'])->name('view-groups-details-pdf');
+                    Route::get('groups-details/download-pdf', [GroupsPDFController::class, 'downloadPDF'])->name('download-groups-details-pdf');
                 }
             );
         });
