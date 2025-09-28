@@ -7,7 +7,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
-                الأفراد المسجلين بفريق {{$groupName}}
+                الأفراد المسجلين بفريق {{$group->name}} - سلاح : {{$group?->weapon?->name}} - نادي : {{$group?->club?->name}}
             </h2>
 
             <table class="table table-bordered">

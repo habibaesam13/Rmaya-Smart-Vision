@@ -45,12 +45,12 @@ class GroupController extends Controller
     }
     public function show(Request $request){
         $tid=intval($request->input('tid'));
-        $groupName=$this->groupService->getGroupName($tid);
+        $group=$this->groupService->getGroupById($tid);
         $TeamMembers=$this->groupService->viewGroupMembers($tid);
         if(!$TeamMembers){
             return redirect()->route('group-registration')->with('error', '  الفريق غير مسجل');
         }
-        return view('groups.group_members',compact('TeamMembers','groupName'));
+        return view('groups.group_members',compact('TeamMembers','group'));
     }
     public function edit(Request $request){
         $tid=intval($request->input('tid'));
