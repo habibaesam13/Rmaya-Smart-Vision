@@ -9,7 +9,9 @@ use App\Services\WeaponService;
 use App\Services\PersonalService;
 use App\Http\Requests\EditGroupRequest;
 use Maatwebsite\Excel\Concerns\ToArray;
+use App\Models\Sv_member;
 use App\Http\Requests\EditGroupMemberDataRequest;
+use App\Models\Sv_team;
 
 class GroupController extends Controller
 {
@@ -36,10 +38,11 @@ class GroupController extends Controller
     {
         $groups = $this->groupService->search($request);
         $weapons = $this->weaponService->getAllWeapons();
-
+        $groupsCount=Sv_team::count();
         return view('groups.registered_groups', [
             'groups'  => $groups,
-            'weapons' => $weapons
+            'weapons' => $weapons,
+            'groupsCount'=>$groupsCount,
         ]);
     }
     public function delete(Request $request){
@@ -84,7 +87,8 @@ class GroupController extends Controller
         $members=$this->groupService->membersByGroupSearch($request);
         $groups = $this->groupService->getGroups();
         $weapons = $this->weaponService->getAllWeapons();
-        return view('groups.groups_members',compact(['members','groups','weapons']));
+        $members_count=$query = Sv_member::where('reg_type', 'group')->count();
+        return view('groups.groups_members',compact(['members','groups','weapons','members_count']));
     }
 
     //edit group member personal data

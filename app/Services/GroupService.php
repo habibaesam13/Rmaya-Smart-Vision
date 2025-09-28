@@ -14,10 +14,10 @@ class GroupService
     /**
      * Create a new class instance.
      */
-
+    
     public function __construct(PersonalService $personalService)
     {
-        $this->personalService = $personalService;
+        $this->personalService=$personalService;
     }
 
     //Helpers
@@ -35,26 +35,26 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        $groups = Sv_team::with(['club', 'weapon']);
-        $groupsCount = $groups->count();
+        $groups=Sv_team::with(['club', 'weapon']);
+        $groupsCount=$groups->count();
         $groups = $groups->orderBy('tid')->cursorPaginate(20);
-        return ['groups' => $groups, 'groupsCount' => $groupsCount];
+        return ['groups'=>$groups,'groupsCount'=>$groupsCount];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
-    {
-        $query = Sv_member::with(['team', 'club', 'weapon'])
-            ->where('reg_type', 'group');
+{
+    $query = Sv_member::with(['team', 'club', 'weapon'])
+        ->where('reg_type', 'group');
 
-        $members_count = $query->count(); // total count
+    $members_count = $query->count(); // total count
 
-        $members = $query->orderBy('mid')->cursorPaginate(20); // actual data
+    $members = $query->orderBy('mid')->cursorPaginate(20); // actual data
 
-        return [
-            'members' => $members,
-            'members_count' => $members_count,
-        ];
-    }
+    return [
+        'members' => $members,
+        'members_count' => $members_count,
+    ];
+}
 
 
     public function searchQuery(Request $request)
@@ -98,13 +98,13 @@ class GroupService
                 fn($q) =>
                 $q->where('t.name', 'LIKE', "%{$request->team_name}%")
             )
-            ->select('sv_members.*', 't.name as team_name')
+            ->select('sv_members.*', 't.name as team_name') 
             ->orderBy('sv_members.mid')
             ->cursorPaginate(5);
     }
 
 
-
+    
     public function deleteGroup($tid)
     {
         $group = $this->getGroupById($tid);
@@ -132,7 +132,7 @@ class GroupService
     //update member group data
     public function updateMemberData($data, $mid, Request $request)
     {
-
+    
         $member = $this->personalService->getMemberByID($mid);
         if ($request->hasFile('front_id_pic')) {
             if ($member->front_id_pic && Storage::disk('public')->exists($member->front_id_pic)) {
