@@ -12,13 +12,22 @@ use App\Services\PersonalService;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Requests\StorePersonalRequest;
 use App\Http\Requests\PersonalUpdateRequest;
+use App\Services\ClubService;
+use App\Services\CountriesService;
+use App\Services\WeaponService;
 
 class PersonalController extends Controller
 {
     protected PersonalService $personalService;
-    public function __construct(PersonalService $personal_service)
+    protected CountriesService $countryService;
+    protected WeaponService $weaponService;
+    protected ClubService $clubService;
+    public function __construct(PersonalService $personal_service,CountriesService $countryService,WeaponService $weaponService,ClubService $clubService)
     {
         $this->personalService = $personal_service;
+        $this->countryService=$countryService;
+        $this->weaponService=$weaponService;
+        $this->clubService=$clubService;
     }
     public function index(Request $request)
     {
@@ -54,12 +63,12 @@ class PersonalController extends Controller
 
     public function edit(Request $request)
     {
-        $countries = Country::all();
-        $weapons = Sv_weapons::all();
-        $clubs = Sv_clubs::all();
+        $countries = $this->countryService->getAllCountries();
+        $weapons = $this->weaponService->getAllWeapons();
+        $clubs = $this->clubService->getAllClubs();
         $memberGroups = Member_group::all();
         $id = $request->input('mid');
-        $member = Sv_member::findorfail($id);
+        $member = $this->personalService->getMemberByID($id);
         return view('members.edit', compact('countries', 'weapons', 'clubs', 'memberGroups', 'member'));
     }
     public function update(PersonalUpdateRequest $request, $mid)
@@ -72,9 +81,9 @@ class PersonalController extends Controller
 
 
     public function create(){
-        $countries = Country::all();
-        $weapons = Sv_weapons::all();
-        $clubs = Sv_clubs::all();
+        $countries = $this->countryService->getAllCountries();
+        $weapons = $this->weaponService->getAllWeapons();
+        $clubs = $this->clubService->getAllClubs();
         $memberGroups = Member_group::all();
         return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));
     }

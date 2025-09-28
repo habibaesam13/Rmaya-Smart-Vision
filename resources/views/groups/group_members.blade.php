@@ -49,7 +49,7 @@
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 {{-- Edit Button --}}
-                                <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
+                                <form action="{{route('memeber-update')}}" method="GET" class="d-inline">
                                     @csrf
                                     <input type="hidden" name="mid" value="{{ $member->mid }}">
                                     <button type="submit" class="icon-btn text-warning" title="تعديل">

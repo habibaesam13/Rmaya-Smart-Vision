@@ -6,6 +6,7 @@ use App\Http\Requests\EditGroupRequest;
 use App\Services\ClubService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
+use App\Services\PersonalService;
 use App\Services\WeaponService;
 use Maatwebsite\Excel\Concerns\ToArray;
 
@@ -14,11 +15,13 @@ class GroupController extends Controller
     protected GroupService $groupService;
     protected WeaponService $weaponService;
     protected ClubService $clubService;
-    public function __construct(GroupService $groupService, WeaponService $weaponService,ClubService $clubService)
+    protected PersonalService $personalService;
+    public function __construct(GroupService $groupService, WeaponService $weaponService,ClubService $clubService,PersonalService $personalService)
     {
         $this->groupService = $groupService;
         $this->weaponService = $weaponService;
         $this->clubService=$clubService;
+        $this->personalService=$personalService;
     }
     public function index()
     {
@@ -79,5 +82,12 @@ class GroupController extends Controller
         $groups = $this->groupService->getGroups();
         $weapons = $this->weaponService->getAllWeapons();
         return view('groups.groups_members',compact(['members','groups','weapons']));
+    }
+
+    //edit group member personal data
+    public function editMemberData(Request $request){
+        $mid=$request->input('mid');
+        $member=$this->personalService->getMemberByID($mid);
+        return view('groups.member_group_edit',compact('member'));
     }
 }

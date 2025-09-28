@@ -14,7 +14,7 @@ class CountriesService
         //
     }
 
-    public function get_all_countries(){
+    public function getAllCountries(){
         return Country::all();
     }
 }

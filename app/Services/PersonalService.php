@@ -27,10 +27,13 @@ class PersonalService
         $this->clubsService = $clubsService;
         $this->weaponsService = $weaponsService;
     }
+    public function getMemberByID($mid){
+        return Sv_member::findorfail($mid);
+    }
     public function get_members_data()
     {
         $Membergroups = Member_group::all();
-        $countries = $this->countriesService->get_all_countries();
+        $countries = $this->countriesService->getAllCountries();
         $clubs = $this->clubsService->getAllClubs();
         $weapons = $this->weaponsService->getAllWeapons();
         return [
@@ -42,12 +45,12 @@ class PersonalService
     }
     public function delete($id)
     {
-        $member = Sv_member::findorfail($id);
+        $member = $this->getMemberByID($id);
         return $member->delete();
     }
     public function toggleActivation($id)
     {
-        $member = Sv_member::findorfail($id);
+        $member = $this->getMemberByID($id);
         $member->active = !$member->active;
         $member->save();
         return $member;
@@ -56,7 +59,7 @@ class PersonalService
     {
         Log::info('Update started', ['mid' => $mid, 'data' => $data]);
 
-        $member = Sv_member::findOrFail($mid);
+        $member = $this->getMemberByID($mid);
 
         if ($request->hasFile('front_id_pic')) {
             Log::info('Updating front_id_pic');
