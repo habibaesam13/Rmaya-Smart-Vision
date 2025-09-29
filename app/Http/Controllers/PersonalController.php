@@ -36,13 +36,14 @@ class PersonalController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
+        $membersCount=Sv_member::where('reg_type','personal')->count();
         $members =  $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')->cursorPaginate(3);
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members'));
+            ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount'));
     }
     public function destroy(Request $request)
     {

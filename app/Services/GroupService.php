@@ -37,7 +37,7 @@ class GroupService
     {
         $groups=Sv_team::with(['club', 'weapon']);
         $groupsCount=$groups->count();
-        $groups = $groups->orderBy('tid')->cursorPaginate(20);
+        $groups = $groups->orderBy('tid')->cursorPaginate(config('app.admin_pagination_number'));
         return ['groups'=>$groups,'groupsCount'=>$groupsCount];
     }
     //تقرير الفرق
@@ -48,7 +48,7 @@ class GroupService
 
         $members_count = $query->count(); // total count
 
-        $members = $query->orderBy('mid')->cursorPaginate(20); // actual data
+        $members = $query->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
 
         return [
             'members' => $members,
@@ -78,7 +78,7 @@ class GroupService
     public function search(Request $request)
     {
         return $this->searchQuery($request)
-            ->cursorPaginate(20)
+            ->cursorPaginate(config('app.admin_pagination_number'))
             ->appends($request->query());
     }
 
@@ -100,7 +100,7 @@ class GroupService
             )
             ->select('sv_members.*', 't.name as team_name') 
             ->orderBy('sv_members.mid')
-            ->cursorPaginate(5);
+            ->cursorPaginate(config('app.admin_pagination_number'));
     }
 
 

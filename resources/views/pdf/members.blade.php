@@ -25,6 +25,19 @@
 
 <body>
     <div class="page-container my-4">
+        @if($siteSettings !==null)
+        <div>
+            <h2 class="text-center mb-0">{{ $siteSettings->company_name }}</h2>
+            <p class="text-center mb-0">{{ $siteSettings->address }}</p>
+            <p class="text-center mb-0">{{$siteSettings->company_department_name}}</p>
+            <img src="{{public_path($siteSettings->logo) }}" alt="">
+            <p class="text-center mb-0">هاتف: {{ $siteSettings->phone }}</p>
+            <p class="text-center mb-0">البريد الإلكتروني: {{ $siteSettings->email }}</p>
+            <p class="text-center mb-0">  {{ $siteSettings->whatsapp }}</p>
+            
+            <hr>
+        </div>
+        @endif
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <table class="table table-bordered">

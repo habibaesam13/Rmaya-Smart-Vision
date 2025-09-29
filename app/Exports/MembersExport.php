@@ -18,9 +18,9 @@ class MembersExport implements FromCollection, WithHeadings
         $this->request = $request;
     }
 
-   public function collection()
+    public function collection()
     {
-        return Sv_member::with(['club', 'registrationClub','weapon', 'nationality', 'member_group'])
+        return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality', 'member_group'])
             ->filter($this->request)
             ->get()
             ->map(function ($member) {
@@ -32,7 +32,11 @@ class MembersExport implements FromCollection, WithHeadings
                     'weapon_id'         => $member->weapon?->name,
                     'club_id'           => $member->club?->name,
                     'reg_club'          => $member->registrationClub?->name,
-                    'nat'               => $member->nationality?->name,
+                    'nat'               => $member->nationality && trim($member->nationality->country_name_ar ?? '') !== ''
+                        ? $member->nationality->country_name_ar
+                        : (trim($member->nationality->country_name ?? '') !== ''
+                            ? $member->nationality->country_name
+                            : '---'),
                     'mgid'              => $member->member_group?->name,
                     'registration_date' => $member->registration_date,
                 ];

@@ -27,7 +27,7 @@
                                 <span>طباعة اكسيل</span>
                             </button>
                     </form>
-                    <form action="{{ route('groups-view-pdf') }}" method="get" class="mb-0">
+                    <form action="{{ route('groups-download-pdf') }}" method="get" class="mb-0">
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach

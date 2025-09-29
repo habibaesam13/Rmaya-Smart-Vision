@@ -7,20 +7,22 @@ use Mpdf\Mpdf;
 use ArPHP\I18N\Arabic;
 use Illuminate\Http\Request;
 use App\Contracts\PDFProviderInterface;
+use App\Models\SiteSettings;
 
 class PDFController extends Controller
 {
     protected $provider;
     protected $view;
-
-    public function __construct(PDFProviderInterface $provider,string $view)
+    protected $fileName;
+    public function __construct(PDFProviderInterface $provider,string $view,string $fileName)
     {
         $this->provider=$provider;
         $this->view=$view;
+        $this->fileName=$fileName;
     }
 
-    public function generatePDF($data,$filename,$mode='I'){
-        $html = view($this->view, compact('data'))->render();
+    public function generatePDF($data,$mode='I',$siteSettings=null){
+        $html = view($this->view, compact('data','siteSettings'))->render();
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -28,14 +30,15 @@ class PDFController extends Controller
             'directionality' => 'rtl',
         ]);
         $mpdf->WriteHTML($html);
-        return $mpdf->Output($filename,$mode);
+        return $mpdf->Output($this->fileName,$mode);
     }
     public function viewPDF(Request $request){
         $data=$this->provider->getData($request);
-        return $this->generatePDF($data,'data-details.pdf','I');
+        return $this->generatePDF($data,'I');
     }
     public function downloadPDF(Request $request){
         $data=$this->provider->getData($request);
-        return $this->generatePDF($data,'data-details.pdf','I');
+        $siteSettings=SiteSettings::first();
+        return $this->generatePDF($data,'D',$siteSettings);
     }
 }

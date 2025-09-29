@@ -16,6 +16,9 @@
 
                 {{-- Export Buttons --}}
                 <div class="documents d-flex gap-2">
+                    <span class="badge bg-light text-success fs-5 px-3 py-2">
+                        عدد الأفراد المسجلين : {{$membersCount}}
+                    </span>
                     <form action="{{ route('members.export.excel') }}" method="post" class="mb-0">
                         @csrf
                         @foreach(request()->query() as $key => $value)
