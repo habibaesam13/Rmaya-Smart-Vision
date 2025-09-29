@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Contracts\MembersProviderInterface;
 use Mpdf\Mpdf;
+
 use ArPHP\I18N\Arabic;
+use Illuminate\Http\Request;
+use App\Contracts\PDFProviderInterface;
 
 class PDFController extends Controller
 {
     protected $provider;
     protected $view;
 
-    public function __construct(MembersProviderInterface $provider,string $view)
+    public function __construct(PDFProviderInterface $provider,string $view)
     {
         $this->provider=$provider;
         $this->view=$view;
     }
 
-    public function generatePDF($members,$filename,$mode='I'){
-        $html = view($this->view, compact('members'))->render();
+    public function generatePDF($data,$filename,$mode='I'){
+        $html = view($this->view, compact('data'))->render();
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -30,11 +31,11 @@ class PDFController extends Controller
         return $mpdf->Output($filename,$mode);
     }
     public function viewPDF(Request $request){
-        $members=$this->provider->getMembers($request);
-        return $this->generatePDF($members,'members-details.pdf','I');
+        $data=$this->provider->getData($request);
+        return $this->generatePDF($data,'data-details.pdf','I');
     }
     public function downloadPDF(Request $request){
-        $members=$this->provider->getMembers($request);
-        return $this->generatePDF($members,'members-details.pdf','I');
+        $data=$this->provider->getData($request);
+        return $this->generatePDF($data,'data-details.pdf','I');
     }
 }

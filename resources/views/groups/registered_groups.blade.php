@@ -21,42 +21,42 @@
             @endif
 
             {{-- Header with title, count badge, and action buttons in one row --}}
-            <div class="row align-items-center mb-4">
-                <div class="col-md-4">
-                    <h2 class="card-title mb-0">
-                        <i class="fa-solid fa-circle-info text-success me-2" style="font-size:2rem !important"></i>
-                        المسجلين فرق
-                    </h2>
-                </div>
-                <div class="col-md-3">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h2 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-circle-info text-success me-2" style="font-size:2rem !important"></i>
+                    المسجلين فرق
+                </h2>
+
+                <div class="d-flex align-items-center gap-3">
                     <span class="badge bg-light text-success fs-5 px-3 py-2">
                         عدد الفرق المسجلة : {{$groupsCount}}
                     </span>
-                </div>
-                <div class="col-md-5">
-                    <div class="d-flex justify-content-end gap-2">
-                        {{-- Excel Export Form --}}
-                        <form action="{{route('groups.export.excel')}}" method="post" class="mb-0">
-                            @csrf
-                            @foreach(request()->query() as $key => $value)
-                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-file-excel"></i>
-                                <span>طباعة اكسيل</span>
-                            </button>
-                        </form>
-                        {{-- PDF Export Form --}}
-                        <form action="{{ route('view-groups-details-pdf') }}" method="get" class="mb-0">
-                            @foreach(request()->query() as $key => $value)
-                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <span>تحميل PDF</span>
-                            </button>
-                        </form>
-                    </div>
+
+
+
+                    {{-- Excel Export Form --}}
+                    <form action="{{route('groups.export.excel')}}" method="post" class="mb-0">
+                        @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>طباعة اكسيل</span>
+                        </button>
+                    </form>
+                    {{-- PDF Export Form --}}
+                    <form action="{{ route('view-groups-details-pdf') }}" method="get" class="mb-0">
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>تحميل PDF</span>
+                        </button>
+                    </form>
+
                 </div>
             </div>
 

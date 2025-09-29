@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registered Members</title>
+    <title>Registered items</title>
 </head>
 <style>
     body {
@@ -43,25 +43,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($members as $member)
+                        @foreach($data as $item)
                         <tr>
-                            <td>{{ $member->name }}</td>
-                            <td>{{ $member->ID }}</td>
-                            <td>{{ $member->phone1 ?? $member->phone2 ?? '---' }}</td>
-                            <td>{{ $member->age_calculation() }}</td>
-                            <td>{{ $member->weapon?->name ?? '---' }}</td>
-                            <td>{{ $member->club?->name ?? '---' }}</td>
-                            <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->ID }}</td>
+                            <td>{{ $item->phone1 ?? $item->phone2 ?? '---' }}</td>
+                            <td>{{ $item->age_calculation() }}</td>
+                            <td>{{ $item->weapon?->name ?? '---' }}</td>
+                            <td>{{ $item->club?->name ?? '---' }}</td>
+                            <td>{{ $item->registrationClub?->name ?? '---' }}</td>
                             <td>
-                                {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
-                                ? $member->nationality->country_name_ar 
-                                : (trim($member->nationality->country_name ?? '') !== '' 
-                                    ? $member->nationality->country_name 
+                                {{ $item->nationality && trim($item->nationality->country_name_ar ?? '') !== '' 
+                                ? $item->nationality->country_name_ar 
+                                : (trim($item->nationality->country_name ?? '') !== '' 
+                                    ? $item->nationality->country_name 
                                     : '---') 
                             }}
                             </td>
-                            <td>{{ $member->member_group?->name ?? '---' }}</td>
-                            <td>{{ $member->registration_date }}</td>
+                            <td>{{ $item->member_group?->name ?? '---' }}</td>
+                            <td>{{ $item->registration_date }}</td>
                         </tr>
                         @endforeach
                     </tbody>

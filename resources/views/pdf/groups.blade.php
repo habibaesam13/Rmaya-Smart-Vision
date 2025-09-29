@@ -37,12 +37,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($groups as $group)
+                        @foreach($data as $item)
                         <tr>
-                            <td>{{ $group->name }}</td>
-                            <td>{{ $group?->weapon?->name}}</td>
-                            <td>{{ $group?->club?->name}}</td>
-                            <td>{{ $group->created_at}}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item?->weapon?->name}}</td>
+                            <td>{{ $item?->club?->name}}</td>
+                            <td>{{ $item->created_at}}</td>
                         </tr>
                         @endforeach
                     </tbody>

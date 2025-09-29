@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registered Groups Members</title>
+    <title>Registered Groups items</title>
 </head>
 <style>
     body {
@@ -40,14 +40,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                       @forelse($members as $member)
+                       @forelse($data as $item)
                     <tr>
-                        <td>{{ $member->ID}}</td>
-                        <td>{{ $member->name }}</td>
-                        <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
-                        <td>{{ $member->age_calculation()}}</td>
-                        <td>{{ $member->weapon->name}}</td>
-                        <td>{{ $member->team?->name ?? '---' }}</td>
+                        <td>{{ $item->ID}}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->phone1 ?$item->phone1:$item->phone2}}</td>
+                        <td>{{ $item->age_calculation()}}</td>
+                        <td>{{ $item->weapon->name}}</td>
+                        <td>{{ $item->team?->name ?? '---' }}</td>
                     </tr>
                     @empty
                     <tr>

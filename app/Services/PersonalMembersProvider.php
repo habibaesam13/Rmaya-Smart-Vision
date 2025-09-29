@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Contracts\MembersProviderInterface;
+use App\Contracts\PDFProviderInterface;
 use Illuminate\Http\Request;
 use App\Models\Sv_member;
-class PersonalMembersProvider implements MembersProviderInterface
+class PersonalMembersProvider implements PDFProviderInterface
 {
     /**
      * Create a new class instance.
@@ -14,7 +14,7 @@ class PersonalMembersProvider implements MembersProviderInterface
     {
         //
     }
-    public function getMembers(Request $request)
+    public function getData(Request $request)
     {
         return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality', 'member_group'])
             ->where('reg_type', 'personal')

@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Contracts\MembersProviderInterface;
-use App\Services\GroupService;
-use Illuminate\Http\Request;
 
-class GroupsMembersProvider implements MembersProviderInterface
+use Illuminate\Http\Request;
+use App\Services\GroupService;
+use App\Contracts\PDFProviderInterface;
+
+class GroupsMembersProvider implements PDFProviderInterface
 {
     /**
      * Create a new class instance.
@@ -16,7 +17,7 @@ class GroupsMembersProvider implements MembersProviderInterface
     {
         $this->groupService=$groupService;
     }
-    public function getMembers(Request $request)
+    public function getData(Request $request)
     {
         return $this->groupService->membersByGroupSearch($request);
     }
