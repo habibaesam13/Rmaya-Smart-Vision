@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registered items</title>
 </head>
-<style>
+    <style>
         body {
             font-family: 'cairo', DejaVu Sans, sans-serif;
             direction: rtl;
@@ -50,6 +50,12 @@
             text-align: center;
             vertical-align: middle;
         }
+        .header-center img {
+            width: 50px;
+            height: 50px;
+            display: block;
+            margin: 0 auto;
+        }
 
         .header-left {
             width: 35%;
@@ -57,22 +63,15 @@
             direction: ltr;
         }
 
-        .header-center img {
-            max-width: 70px;
-            max-height: 60px;
-            display: inline-block;
-        }
-
         .header-right p,
         .header-left p {
-            margin: 4px 0;
+          
             line-height: 1.5;
         }
 
         hr {
             border: none;
             border-top: 2px solid #000;
-            margin: 15px 0;
         }
     </style>
 
@@ -83,21 +82,20 @@
         <table class="header-table">
             <tr>
                 <td class="header-right">
-                    <p><strong>{{ $siteSettings->company_name }}</strong></p>
-                    <p>{{ $siteSettings->address }}</p>
-                    <p>هاتف: {{ $siteSettings->phone }}</p>
-                    <p>واتساب: {{ $siteSettings->whatsapp }}</p>
-                    <p>{{ $siteSettings->email }}</p>
+                    <p><strong>{{ $siteSettings->company_name_ar }}</strong></p>
+                    <p>{{ $siteSettings->address_ar }}</p>
+                    <p>{{ $siteSettings->phone }}</p>
                 </td>
                 <td class="header-center">
                     <img src="{{ public_path($siteSettings->logo) }}" alt="logo">
+                    <br><br>
+                    <h4>المسجلين أفراد</h4>
+                    
                 </td>
                 <td class="header-left">
                     <p><strong>{{ $siteSettings->company_name }}</strong></p>
                     <p>{{ $siteSettings->address }}</p>
-                    <p>Phone: {{ $siteSettings->phone }}</p>
-                    <p>WhatsApp: {{ $siteSettings->whatsapp }}</p>
-                    <p>{{ $siteSettings->email }}</p>
+                    <p>{{ $siteSettings->phone }}</p>
                 </td>
             </tr>
         </table>

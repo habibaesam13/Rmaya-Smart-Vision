@@ -57,21 +57,20 @@
         }
 
         .header-center img {
-            max-width: 70px;
-            max-height: 60px;
+            max-width: 25px;
+            max-height: 25px;
             display: inline-block;
         }
 
         .header-right p,
         .header-left p {
-            margin: 4px 0;
+          
             line-height: 1.5;
         }
 
         hr {
             border: none;
             border-top: 2px solid #000;
-            margin: 15px 0;
         }
     </style>
 </head>
@@ -83,21 +82,20 @@
         <table class="header-table">
             <tr>
                 <td class="header-right">
-                    <p><strong>{{ $siteSettings->company_name }}</strong></p>
-                    <p>{{ $siteSettings->address }}</p>
-                    <p>هاتف: {{ $siteSettings->phone }}</p>
-                    <p>واتساب: {{ $siteSettings->whatsapp }}</p>
-                    <p>{{ $siteSettings->email }}</p>
+                    <p><strong>{{ $siteSettings->company_name_ar }}</strong></p>
+                    <p>{{ $siteSettings->address_ar }}</p>
+                    <p>{{ $siteSettings->phone }}</p>
+                    
                 </td>
                 <td class="header-center">
                     <img src="{{ public_path($siteSettings->logo) }}" alt="logo">
+                    <br><br>
+                    <h4>تقرير الفرق</h4>
                 </td>
                 <td class="header-left">
                     <p><strong>{{ $siteSettings->company_name }}</strong></p>
                     <p>{{ $siteSettings->address }}</p>
-                    <p>Phone: {{ $siteSettings->phone }}</p>
-                    <p>WhatsApp: {{ $siteSettings->whatsapp }}</p>
-                    <p>{{ $siteSettings->email }}</p>
+                    <p>{{ $siteSettings->phone }}</p>
                 </td>
             </tr>
         </table>
