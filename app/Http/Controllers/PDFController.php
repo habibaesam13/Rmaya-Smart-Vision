@@ -39,6 +39,6 @@ class PDFController extends Controller
     public function downloadPDF(Request $request){
         $data=$this->provider->getData($request);
         $siteSettings=SiteSettings::first();
-        return $this->generatePDF($data,'D',$siteSettings);
+        return $this->generatePDF($data,'I',$siteSettings);
     }
 }

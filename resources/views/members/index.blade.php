@@ -19,7 +19,7 @@
                     <span class="badge bg-light text-success fs-5 px-3 py-2">
                         عدد الأفراد المسجلين : {{$membersCount}}
                     </span>
-                    <form action="{{ route('members.export.excel') }}" method="post" class="mb-0">
+                    <form action="{{ route('members.export.excel') }}" method="post" class="m  b-0">
                         @csrf
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">

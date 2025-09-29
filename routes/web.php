@@ -304,7 +304,10 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.groups','Registered_Groups_Details.pdf');
                         return $controller->downloadPDF($request);
                     })->name('download-groups-details-pdf');
+                    
                 }
+
+                
             );
         });
     }
