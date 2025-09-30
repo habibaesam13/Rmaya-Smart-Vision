@@ -1,4 +1,3 @@
-
 @extends('admin.master')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 
@@ -198,93 +197,95 @@
 
         </div>
     </div>
+
+
     {{-- Filtered Data --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
             @if($reportSection)
-<div class="card border-success mb-3 rounded-3 overflow-hidden">
-    <div class="card-header bg-success text-white">
-        <h5 class="mb-0">
-            <i class="fas fa-file-alt me-2"></i>
-            إضافة تقرير يومي
-        </h5>
-    </div>
-    <div class="card-body">
-        {{-- خلي الفورم يغطي التاريخ + الديتيل + الجدول --}}
-        <form action="{{ route('generate-report-registered-members') }}" method="POST">
-            @csrf
-            <div class="row g-3 align-items-end mb-3">
-                <div class="col-md-4">
-                    <label for="report_date" class="form-label">التاريخ</label>
-                    <input type="date" name="date" id="report_date" class="form-control form-control-lg" required>
+            <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>
+                        إضافة تقرير يومي
+                    </h5>
                 </div>
-                <div class="col-md-4">
-                    <label for="detail_number" class="form-label">رقم الديتيل</label>
-                    <input type="text" name="detail_number" id="detail_number"
-                        class="form-control form-control-lg"
-                        placeholder="أدخل رقم الديتيل" required>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-success btn-lg w-100">
-                        <i class="fas fa-save me-2"></i>
-                        حفظ التقرير
-                    </button>
-                </div>
-            </div>
+                <div class="card-body">
+                    {{-- خلي الفورم يغطي التاريخ + الديتيل + الجدول --}}
+                    <form action="{{ route('generate-report-registered-members') }}" method="POST">
+                        @csrf
+                        <div class="row g-3 align-items-end mb-3">
+                            <div class="col-md-4">
+                                <label for="report_date" class="form-label">التاريخ</label>
+                                <input type="date" name="date" id="report_date" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="detail_number" class="form-label">رقم الديتيل</label>
+                                <input type="text" name="detail_number" id="detail_number"
+                                    class="form-control form-control-lg"
+                                    placeholder="أدخل رقم الديتيل" required>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-save me-2"></i>
+                                    حفظ التقرير
+                                </button>
+                            </div>
+                        </div>
 
-            {{-- جدول الأعضاء --}}
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>الاسم</th>
-                        <th>رقم الهوية</th>
-                        <th>الهاتف</th>
-                        <th>العمر</th>
-                        <th>السلاح</th>
-                        <th>نادي الرماية</th>
-                        <th>مكان التسجيل</th>
-                        <th>الجنسية</th>
-                        <th>المجموعات</th>
-                        <th>تاريخ التسجيل</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($members as $member)
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="checkedMembers[]" value="{{ $member->mid }}">
-                        </td>
-                        <td>{{ $member->name }}</td>
-                        <td>{{ $member->ID }}</td>
-                        <td>{{ $member->phone1 ?? $member->phone2 }}</td>
-                        <td>{{ $member->age_calculation() }}</td>
-                        <td>{{ $member->weapon->name }}</td>
-                        <td>{{ $member->club?->name ?? '---' }}</td>
-                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>
-                        <td>
-                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
+                        {{-- جدول الأعضاء --}}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>الاسم</th>
+                                    <th>رقم الهوية</th>
+                                    <th>الهاتف</th>
+                                    <th>العمر</th>
+                                    <th>السلاح</th>
+                                    <th>نادي الرماية</th>
+                                    <th>مكان التسجيل</th>
+                                    <th>الجنسية</th>
+                                    <th>المجموعات</th>
+                                    <th>تاريخ التسجيل</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($members as $member)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="checkedMembers[]" value="{{ $member->mid }}">
+                                    </td>
+                                    <td>{{ $member->name }}</td>
+                                    <td>{{ $member->ID }}</td>
+                                    <td>{{ $member->phone1 ?? $member->phone2 }}</td>
+                                    <td>{{ $member->age_calculation() }}</td>
+                                    <td>{{ $member->weapon->name }}</td>
+                                    <td>{{ $member->club?->name ?? '---' }}</td>
+                                    <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                                    <td>
+                                        {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
                                 ? $member->nationality->country_name_ar 
                                 : (trim($member->nationality->country_name ?? '') !== '' 
                                     ? $member->nationality->country_name 
                                     : '---') 
                             }}
-                        </td>
-                        <td>{{ $member->member_group?->name ?? '---' }}</td>
-                        <td>{{ $member->registration_date }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </form>
-    </div>
-</div>
-@endif
+                                    </td>
+                                    <td>{{ $member->member_group?->name ?? '---' }}</td>
+                                    <td>{{ $member->registration_date }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            @else
 
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        
+
                         <th>الاسم</th>
                         <th>رقم الهوية</th>
                         <th>الهاتف</th>
@@ -366,6 +367,7 @@
                     @endforelse
                 </tbody>
             </table>
+            @endif
             <div class="mt-4 d-flex justify-content-center">
                 {{ $members->appends(request()->query())->links() }}
             </div>
@@ -428,6 +430,21 @@
     }
 </style>
 <script>
+    //date
+    // Get the current date
+    const today = new Date();
+
+    // Format the date to 'YYYY-MM-DD' for the input type="date"
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = today.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the value of the input field
+    document.getElementById('report_date').value = formattedDate;
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const clubSelect = document.getElementById('club_id');
         const weaponSelect = document.getElementById('weapon_id');
