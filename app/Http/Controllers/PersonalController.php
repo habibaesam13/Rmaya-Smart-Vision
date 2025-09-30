@@ -43,7 +43,8 @@ class PersonalController extends Controller
                 fn($q) => $q->filter($request)
             )
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount'));
+            $reportSection=false;
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection'));
     }
     public function destroy(Request $request)
     {

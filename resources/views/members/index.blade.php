@@ -1,9 +1,11 @@
+
 @extends('admin.master')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 
 @section('content')
 
 <div class="page-container my-4">
+
     {{-- Filter Form Section --}}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
@@ -199,9 +201,90 @@
     {{-- Filtered Data --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            @if($reportSection)
+<div class="card border-success mb-3 rounded-3 overflow-hidden">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-file-alt me-2"></i>
+            إضافة تقرير يومي
+        </h5>
+    </div>
+    <div class="card-body">
+        {{-- خلي الفورم يغطي التاريخ + الديتيل + الجدول --}}
+        <form action="{{ route('generate-report-registered-members') }}" method="POST">
+            @csrf
+            <div class="row g-3 align-items-end mb-3">
+                <div class="col-md-4">
+                    <label for="report_date" class="form-label">التاريخ</label>
+                    <input type="date" name="date" id="report_date" class="form-control form-control-lg" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="detail_number" class="form-label">رقم الديتيل</label>
+                    <input type="text" name="detail_number" id="detail_number"
+                        class="form-control form-control-lg"
+                        placeholder="أدخل رقم الديتيل" required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="fas fa-save me-2"></i>
+                        حفظ التقرير
+                    </button>
+                </div>
+            </div>
+
+            {{-- جدول الأعضاء --}}
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th></th>
+                        <th>الاسم</th>
+                        <th>رقم الهوية</th>
+                        <th>الهاتف</th>
+                        <th>العمر</th>
+                        <th>السلاح</th>
+                        <th>نادي الرماية</th>
+                        <th>مكان التسجيل</th>
+                        <th>الجنسية</th>
+                        <th>المجموعات</th>
+                        <th>تاريخ التسجيل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($members as $member)
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="checkedMembers[]" value="{{ $member->mid }}">
+                        </td>
+                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->ID }}</td>
+                        <td>{{ $member->phone1 ?? $member->phone2 }}</td>
+                        <td>{{ $member->age_calculation() }}</td>
+                        <td>{{ $member->weapon->name }}</td>
+                        <td>{{ $member->club?->name ?? '---' }}</td>
+                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                        <td>
+                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
+                                ? $member->nationality->country_name_ar 
+                                : (trim($member->nationality->country_name ?? '') !== '' 
+                                    ? $member->nationality->country_name 
+                                    : '---') 
+                            }}
+                        </td>
+                        <td>{{ $member->member_group?->name ?? '---' }}</td>
+                        <td>{{ $member->registration_date }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+@endif
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        
                         <th>الاسم</th>
                         <th>رقم الهوية</th>
                         <th>الهاتف</th>
@@ -291,95 +374,95 @@
     </div>
 </div>
 <style>
-.documents {
-    flex-shrink: 0;
-    /* Prevent shrinking */
-}
-
-.documents .btn {
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
-    white-space: nowrap;
-}
-
-.documents .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.documents .btn i {
-    font-size: 1rem;
-}
-
-
-@media (max-width: 768px) {
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 1rem;
-    }
-
     .documents {
-        width: 100%;
-        justify-content: flex-end;
+        flex-shrink: 0;
+        /* Prevent shrinking */
     }
 
     .documents .btn {
-        flex: 1;
-        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
     }
-}
 
-.icon-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
+    .documents .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
 
-.icon-btn:hover {
-    opacity: 0.8;
-}
+    .documents .btn i {
+        font-size: 1rem;
+    }
+
+
+    @media (max-width: 768px) {
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .documents {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .documents .btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
 </style>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const clubSelect = document.getElementById('club_id');
-    const weaponSelect = document.getElementById('weapon_id');
+    document.addEventListener('DOMContentLoaded', function() {
+        const clubSelect = document.getElementById('club_id');
+        const weaponSelect = document.getElementById('weapon_id');
 
-    clubSelect.addEventListener('change', function() {
-        const clubId = this.value;
+        clubSelect.addEventListener('change', function() {
+            const clubId = this.value;
 
-        // Clear weapons dropdown
-        weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
+            // Clear weapons dropdown
+            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-        if (clubId) {
-            // Fetch weapons for selected club
-            fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                .then(response => response.json())
-                .then(data => {
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>اختر السلاح</option>';
+            if (clubId) {
+                // Fetch weapons for selected club
+                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
+                    .then(response => response.json())
+                    .then(data => {
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>اختر السلاح</option>';
 
-                    data.weapons.forEach(weapon => {
-                        const option = document.createElement('option');
-                        option.value = weapon.wid;
-                        option.textContent = weapon.name;
-                        weaponSelect.appendChild(option);
+                        data.weapons.forEach(weapon => {
+                            const option = document.createElement('option');
+                            option.value = weapon.wid;
+                            option.textContent = weapon.name;
+                            weaponSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
                     });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>حدث خطأ في التحميل</option>';
-                });
-        } else {
-            weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-        }
+            } else {
+                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
+            }
+        });
     });
-});
 </script>
 
 @endsection

@@ -21,6 +21,7 @@ use App\Http\Controllers\GroupExportController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\ResultsCotroller;
 use App\Services\GroupsDetailsProvider;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -308,6 +309,12 @@ Route::group(
                 }
 
                 
+            );
+            Route::prefix('results')->group(
+                function(){
+                    Route::get('registered-members',[ResultsCotroller::class,'index'])->name('results-registered-members');
+                    Route::post('generate-report',[ResultsCotroller::class,'store'])->name('generate-report-registered-members');
+                }
             );
         });
     }
