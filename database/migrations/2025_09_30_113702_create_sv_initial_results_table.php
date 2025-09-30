@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('sv_initial_results', function (Blueprint $table) {
             $table->bigIncrements('Rid');
-            $table->date('date')->default(today());
+            $table->date('date')->useCurrent();
             $table->unsignedBigInteger('weapon_id');
-            $table->foregin('weapon_id')->references('wid')->on('sv_weapons')->onDelete("cascade");
+            $table->foreign('weapon_id')->references('wid')->on('sv_weapons')->onDelete("cascade");
             $table->string('attached_file')->nullable();
-            $table->boolean('confirmed')->default('no');
+            $table->boolean('confirmed')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('s_v_initial_results');
+        Schema::dropIfExists('sv_initial_results');
     }
 };
