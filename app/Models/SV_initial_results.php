@@ -18,7 +18,7 @@ class SV_initial_results extends Model
         'confirmed'=>'boolean',
     ];
     // One report has many player results
-    public function players()
+    public function players_results()
     {
         return $this->hasMany(Sv_initial_results_players::class, 'Rid', 'Rid');
     }

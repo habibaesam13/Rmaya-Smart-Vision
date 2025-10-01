@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('date')->useCurrent();
             $table->unsignedBigInteger('weapon_id');
             $table->foreign('weapon_id')->references('wid')->on('sv_weapons')->onDelete("cascade");
+            $table->integer('details');
             $table->string('attached_file')->nullable();
             $table->boolean('confirmed')->default(false);
             $table->timestamps();
