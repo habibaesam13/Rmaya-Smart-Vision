@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReportForMembers;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
 use App\Services\WeaponService;
 use App\Services\PersonalService;
 use App\Services\CountriesService;
 use App\Models\Sv_member;
+use App\Services\ResultsService;
+
 class ResultsCotroller extends Controller
 {
     protected PersonalService $personalService;
     protected CountriesService $countryService;
     protected WeaponService $weaponService;
     protected ClubService $clubService;
-    public function __construct(PersonalService $personal_service,CountriesService $countryService,WeaponService $weaponService,ClubService $clubService)
+    protected ResultsService $resultService;
+    public function __construct(PersonalService $personal_service,CountriesService $countryService,WeaponService $weaponService,ClubService $clubService,ResultsService $resultService)
     {
         $this->personalService = $personal_service;
         $this->countryService=$countryService;
         $this->weaponService=$weaponService;
         $this->clubService=$clubService;
+        $this->resultService=$resultService;
     }
     public function index(Request $request)
     {
@@ -38,7 +43,9 @@ class ResultsCotroller extends Controller
         $reportSection=true;
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection'));
     }
-    public function store(Request $request){
-        dd($request);
+    public function store(StoreReportForMembers $request){
+        $data=$request->validate();
+        dd($data);
+        $this->resultService->createReport();
     }
 }

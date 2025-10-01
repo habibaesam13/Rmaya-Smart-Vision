@@ -23,27 +23,27 @@ class EditGroupRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         return [
-            'name'=>'sometimes|string',
-            'club_id'=>'sometimes|exists:sv_clubs,cid',
-            'weapon_id'=>'sometimes|exists:sv_weapons,wid',
+            'name' => 'sometimes|string',
+            'club_id' => 'sometimes|exists:sv_clubs,cid',
+            'weapon_id' => 'sometimes|exists:sv_weapons,wid',
         ];
     }
 
     public function messages()
     {
-        return[
-            'club_id.exists'=>'النادي المحدد غير موجود',
-            'weapon_id.exists'=>'السلاح المحدد غير موجود',
+        return [
+            'club_id.exists' => 'النادي المحدد غير موجود',
+            'weapon_id.exists' => 'السلاح المحدد غير موجود',
         ];
     }
     public function withValidator($validator)
-{
-    $validator->after(function ($validator) {
-        if (!DB::table('sv_teams')->where('tid', $this->route('tid'))->exists()) {
-            $validator->errors()->add('tid', 'الفريق المحدد غير مسجل');
-        }
-    });
-}
+    {
+        $validator->after(function ($validator) {
+            if (!DB::table('sv_teams')->where('tid', $this->route('tid'))->exists()) {
+                $validator->errors()->add('tid', 'الفريق المحدد غير مسجل');
+            }
+        });
+    }
 }
