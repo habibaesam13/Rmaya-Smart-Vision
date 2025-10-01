@@ -44,8 +44,11 @@ class ResultsCotroller extends Controller
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection'));
     }
     public function store(StoreReportForMembers $request){
-        $data=$request->validate();
-        dd($data);
-        $this->resultService->createReport();
+        dd($request);
+        $memberIds = json_decode($request->checkedMembers, true);
+        $data=$request->validated();
+        $weapon_id=$request->getWeaponId();
+        dd($weapon_id);
+        //$this->resultService->createReport();
     }
 }
