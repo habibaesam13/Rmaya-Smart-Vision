@@ -12,6 +12,7 @@ class SV_initial_results extends Model
         'date',
         'weapon_id',
         'attached_file',
+        'details',
         'confirmed',
     ];
     protected $casts=[

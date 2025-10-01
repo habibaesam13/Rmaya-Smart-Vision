@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Models\Sv_initial_results_players;
+use App\Models\SV_initial_results;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Sv_member;
 
@@ -48,7 +49,7 @@ class StoreReportForMembers extends FormRequest
         ];
     }
 
-    
+
 
     public function withValidator($validator)
     {
@@ -64,8 +65,12 @@ class StoreReportForMembers extends FormRequest
                 if ($weaponId->count() > 1) {
                     $validator->errors()->add('checkedMembers', 'يجب أن يكون نفس السلاح لجميع الأفراد');
                 } elseif ($weaponId->count() === 1) {
-                    // store weapon id for later usage
+                    
                     $this->weaponId = $weaponId->first();
+                }
+                $alreadyExists = Sv_initial_results_players::whereIn('player_id', $memberIds)->exists();
+                if ($alreadyExists) {
+                    $validator->errors()->add('checkedMembers', 'اللاعب مسجل بالفعل في تقرير آخر');
                 }
             }
         });
