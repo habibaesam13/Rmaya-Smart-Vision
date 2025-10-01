@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Mpdf\Image\Svg;
 use App\Models\Sv_member;
+use App\Models\sv_initial_results_players;
 use App\Models\SV_initial_results;
 use Illuminate\Support\Facades\DB;
 
@@ -36,7 +37,11 @@ class ResultsService
             return $report;
         });
     }
-    public function getReportDetails($Rid){
-        
+    public function getReportDetails($reportId){
+        $members= sv_initial_results_players::where('Rid',$reportId)->get();
+        return $members;
+    }
+    public function getReport($rid){
+        return SV_initial_results::where('Rid',$rid)->first();
     }
 }

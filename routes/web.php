@@ -314,6 +314,7 @@ Route::group(
                 function(){
                     Route::get('registered-members',[ResultsCotroller::class,'index'])->name('results-registered-members');
                     Route::post('generate-report',[ResultsCotroller::class,'store'])->name('generate-report-registered-members');
+                    Route::get('report-members/{Rid}',[ResultsCotroller::class,'show'])->name('report-members');
                 }
             );
         });

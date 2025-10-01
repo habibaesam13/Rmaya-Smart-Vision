@@ -17,6 +17,7 @@ class SV_initial_results extends Model
     ];
     protected $casts=[
         'confirmed'=>'boolean',
+        'date'=>'date',
     ];
     // One report has many player results
     public function players_results()

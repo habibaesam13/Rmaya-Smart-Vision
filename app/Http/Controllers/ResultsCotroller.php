@@ -51,17 +51,21 @@ class ResultsCotroller extends Controller
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
-        
-
+        $members=$this->resultService->getReportDetails($report->Rid);
         if ($report) {
-            return view('personalReports.personal_report_members');
+            return view('personalReports.personal_report_members',['members'=>$members]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
     }
 
     //functions for members for specific report
-
+    public function show($Rid)
+    {
+        $report=$this->resultService->getReport($Rid);
+        $members=$this->resultService->getReportDetails($Rid);
+        return view('personalReports.personal_report_members',['report'=>$report,'members'=>$members]);
+    }
 
 
 }
