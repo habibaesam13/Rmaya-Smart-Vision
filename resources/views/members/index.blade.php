@@ -211,17 +211,17 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                   
+
                     <form action="{{ route('generate-report-registered-members') }}" method="POST">
                         @csrf
                         <div class="row g-3 align-items-end mb-3">
                             <div class="col-md-4">
-                                <label for="report_date" class="form-label">التاريخ</label>
+                                <label for="date" class="form-label">التاريخ</label>
                                 <input type="date" name="date" id="report_date" class="form-control form-control-lg" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="detail_number" class="form-label">رقم الديتيل</label>
-                                <input type="text" name="detail_number" id="detail_number"
+                                <input type="text" name="details" id="detail_number"
                                     class="form-control form-control-lg"
                                     placeholder="أدخل رقم الديتيل" required>
                             </div>
@@ -232,14 +232,174 @@
                                 </button>
                             </div>
                         </div>
-                        @include('members.members_table')
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>الاسم</th>
+                                    <th>رقم الهوية</th>
+                                    <th>الهاتف</th>
+                                    <th>العمر</th>
+                                    <th>السلاح</th>
+                                    <th>نادي الرماية</th>
+                                    <th>مكان التسجيل</th>
+                                    <th>الجنسية</th>
+                                    <th>المجموعات</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>ادوات تحكم</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($members as $member)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="checkedMembers[]" value="{{ $member->mid }}">
+                                    </td>
+                                    <td>{{ $member->name }}</td>
+                                    <td>{{ $member->ID }}</td>
+                                    <td>{{ $member->phone1 ?? $member->phone2 }}</td>
+                                    <td>{{ $member->age_calculation() }}</td>
+                                    <td>{{ $member->weapon->name }}</td>
+                                    <td>{{ $member->club?->name ?? '---' }}</td>
+                                    <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                                    <td>
+                                        {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
+                                ? $member->nationality->country_name_ar 
+                                : (trim($member->nationality->country_name ?? '') !== '' 
+                                    ? $member->nationality->country_name 
+                                    : '---') 
+                            }}
+                                    </td>
+                                    <td>{{ $member->member_group?->name ?? '---' }}</td>
+                                    <td>{{ $member->registration_date }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-3">
+                                            {{-- Edit Button --}}
+                                            <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                                <button type="submit" class="icon-btn text-warning" title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </form>
+                                            {{-- Delete Button --}}
+                                            <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
+                                                onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
+
+                                                @csrf
+                                                <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                                @method('DELETE')
+                                                <button type="submit" class="icon-btn text-danger" title="حذف">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+
+                                            {{-- Toggle Status Button --}}
+                                            <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                                <button type="submit" class="icon-btn text-success"
+                                                    title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
+                                                    <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </form>
                 </div>
             </div>
             @else
-            <div class="card shadow-sm border-0">
-            @include('members.members_table')
-            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+
+                        <th>الاسم</th>
+                        <th>رقم الهوية</th>
+                        <th>الهاتف</th>
+                        <th>العمر</th>
+                        <th>السلاح</th>
+                        <th>نادي الرماية</th>
+                        <th>مكان التسجيل</th>
+                        <th>الجنسية</th>
+                        <th>المجموعات</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>ادوات تحكم</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($members as $member)
+                    <tr>
+                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->ID}}</td>
+                        <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
+                        <td>{{ $member->age_calculation()}}</td>
+                        <td>{{ $member->weapon->name}}</td>
+                        <td>{{ $member->club?->name ?? '---' }}</td>
+                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                        <td>
+                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
+                            ? $member->nationality->country_name_ar 
+                            : (trim($member->nationality->country_name ?? '') !== '' 
+                                ? $member->nationality->country_name 
+                                : '---') 
+                            }}
+                        </td>
+
+
+                        </td>
+                        <td>{{ $member->member_group?->name ?? '---' }}</td>
+                        <td>{{ $member->registration_date}}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                {{-- Edit Button --}}
+                                <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                    <button type="submit" class="icon-btn text-warning" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </form>
+                                {{-- Delete Button --}}
+                                <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
+
+                                    @csrf
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                    @method('DELETE')
+                                    <button type="submit" class="icon-btn text-danger" title="حذف">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+
+                                {{-- Toggle Status Button --}}
+                                <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                    <button type="submit" class="icon-btn text-success"
+                                        title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
+                                        <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">
+                            لا توجد نتائج مطابقة للبحث
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
             @endif
             <div class="mt-4 d-flex justify-content-center">
                 {{ $members->appends(request()->query())->links() }}
