@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\SaveMembersReportRequest;
 use App\Models\Sv_member;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
@@ -54,7 +54,7 @@ class ResultsCotroller extends Controller
         $members = $this->resultService->getReportDetails($report->Rid);
 
         if ($report) {
-            return view('personalReports.personal_report_members', ['members' => $members,'report'=>$report,'confirmed'=>false]);
+            return view('personalReports.personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
@@ -64,7 +64,7 @@ class ResultsCotroller extends Controller
     public function show($rid)
     {
         $report = $this->resultService->getReport($rid);
-        if(!$report){
+        if (!$report) {
             return redirect()->route('results-registered-members');
         }
         $members = $this->resultService->getReportDetails($rid);
@@ -73,12 +73,15 @@ class ResultsCotroller extends Controller
     }
     public function confirmReport($rid)
     {
-        $report = $this->resultService->confirmReport($rid);
-        if ($report) {
-            return redirect()->back()->with(['success' => 'تم تأكيد التقرير']);
+        $confirmed = $this->resultService->confirmReport($rid);
+        if ($confirmed) {
+            return redirect()
+                ->route('report-members', $rid)
+                ->with(['success' => 'تم تأكيد التقرير']);
         }
         return redirect()->back()->with('error', 'حدث خطأ أثناء التأكيد');
     }
+
     public function deletePlayerFromReport($rid, $player_id)
     {
         $player = $this->resultService->deleteplayerFromReport($player_id);
@@ -89,11 +92,18 @@ class ResultsCotroller extends Controller
         return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الرامي');
     }
 
-
     public function saveReport(Request $request)
     {
-        dd($request);
+
+        $playersData = json_decode($request->input('players_data'), true);
+
+        if (!$playersData) {
+            return back()->withErrors(['players_data' => 'Invalid players data format']);
+        }
+        $keys = array_keys($playersData);
+        
     }
+
     public function calculateTotal(Request $request)
     {
         try {

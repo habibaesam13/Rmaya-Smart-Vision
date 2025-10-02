@@ -60,7 +60,7 @@
                         <span>إضافة رماة</span>
                     </button>
                 </form>
-
+                @if(!$confirmed)
                 <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
@@ -68,6 +68,7 @@
                         <span>اعتماد وإرسال النتائج الأولية</span>
                     </button>
                 </form>
+                @endif
                 {{-- report save --}}
                 <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
                     method="POST"
@@ -148,44 +149,48 @@
                                     class="form-control form-control-sm"
                                     placeholder="رقم الهدف"
                                     min="1"
-                                    required
-                                    value="{{ old('goal.' . $member->id, $member->goal ?? '') }}">
+                                    value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"
+                                    @if($confirmed) readonly @endif>
                             </td>
 
                             {{-- R1 → R10 --}}
                             @for($i=1; $i<=10; $i++)
                                 <td>
                                 <input type="number"
-                                    name="R{{ $i }}[{{ $member->id }}]"
+                                    name="R{{ $i }}"
                                     data-player="{{ $member->id }}"
                                     class="form-control form-control-sm score-input"
                                     placeholder="0"
                                     min="0"
                                     data-row="{{ $index }}"
-                                    value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}">
+                                    value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"
+                                    @if($confirmed) readonly @endif>
                                 </td>
                                 @endfor
 
                                 {{-- total --}}
                                 <td>
                                     <input type="number"
-                                        name="total[{{ $member->id }}]"
+                                        name="total"
                                         data-player="{{ $member->id }}"
                                         class="form-control form-control-sm bg-light total-input"
                                         placeholder="0"
                                         id="total-{{ $index }}"
-                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}">
+                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}"
+                                        readonly>
                                 </td>
 
                                 {{-- notes --}}
                                 <td>
                                     <input type="text"
-                                        name="notes[{{ $member->id }}]"
+                                        name="notes"
                                         data-player="{{ $member->id }}"
                                         class="form-control form-control-sm"
                                         placeholder="ملاحظات"
-                                        value="{{ old('notes.'.$member->id, $member->notes ?? '') }}">
+                                        value="{{ old('notes.'.$member->id, $member->notes ?? '') }}"
+                                        @if($confirmed) readonly @endif>
                                 </td>
+
 
 
                                 @if(!$confirmed)
@@ -330,11 +335,11 @@
     //load total from model
 
     document.addEventListener('DOMContentLoaded', function() {
+    if (!@json($confirmed)) { 
         document.querySelectorAll('.score-input').forEach(input => {
             input.addEventListener('input', function() {
                 let row = this.closest('tr');
 
-                // Collect all scores into an array
                 let scores = [];
                 row.querySelectorAll('.score-input').forEach(scoreInput => {
                     scores.push(parseInt(scoreInput.value) || 0);
@@ -350,7 +355,6 @@
                             scores: scores,
                             player_id: row.querySelector('.score-input').dataset.player
                         })
-
                     })
                     .then(res => res.json())
                     .then(data => {
@@ -358,7 +362,9 @@
                     });
             });
         });
-    });
+    }
+});
+
 </script>
 
 <script>
