@@ -23,7 +23,7 @@ class ResultsService
         return DB::transaction(function () use ($data) {
 
             $report = SV_initial_results::create($data);
-
+            
 
             foreach ($data['checkedMembers'] as $mid) {
                 $report->players_results()->create([
@@ -42,6 +42,18 @@ class ResultsService
         return $members;
     }
     public function getReport($rid){
-        return SV_initial_results::where('Rid',$rid)->first();
+        return SV_initial_results::findOrfail($rid);
+    }
+    public function confirmReport($rid){
+        $report=$this->getReport($rid);
+        $report->confirmed = !$report->confirmed;
+        return $report->save();
+    }
+    public function deletePlayerFromReport($player_id){
+        $player= sv_initial_results_players::findOrfail($player_id);
+        return $player->delete();
+    }
+    public function saveReport(){
+
     }
 }

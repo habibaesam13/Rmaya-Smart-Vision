@@ -3,6 +3,22 @@
 
 @section('content')
 <div class="page-container my-4">
+    {{-- Success Message --}}
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     {{-- Header Card --}}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
@@ -37,7 +53,7 @@
 
             {{-- Action Buttons --}}
             <div class="d-flex flex-wrap gap-2">
-                <form action="" method="POST">
+                <form action="#" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-user-plus"></i>
@@ -45,32 +61,36 @@
                     </button>
                 </form>
 
-                <form action="" method="POST">
+                <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-check-circle"></i>
                         <span>اعتماد وإرسال النتائج الأولية</span>
                     </button>
                 </form>
-
-                <form action="" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
+                {{-- report save --}}
+                <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
+                    method="POST"
+                    id="saveReportForm"
+                    enctype="multipart/form-data"
+                    class="d-flex align-items-center gap-2">
                     @csrf
+                    <input type="hidden" name="players_data" id="playersData">
+
+                    {{-- الملف --}}
                     <div class="file-upload-wrapper">
-                        <input type="file" name="attached_file" id="attached_file" class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
+                        <input type="file" name="attached_file" id="attached_file"
+                            class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
                     </div>
-                    <button type="submit" name="submit" class="btn btn-info btn-lg d-flex align-items-center gap-2">
-                        <i class="fas fa-upload"></i>
-                        <span>رفع ملف</span>
-                    </button>
-                </form>
 
-                <form action="" method="POST">
-                    @csrf
+                    {{-- زر الحفظ --}}
                     <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-save"></i>
                         <span>حفظ التقرير</span>
                     </button>
                 </form>
+
+
 
                 <form action="" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
@@ -85,126 +105,128 @@
     {{-- Results Table Card --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <form action="" method="POST" id="resultsForm">
-                @csrf
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead class="table-light">
-                            <tr class="text-center">
-                                <th style="width: 50px;">#</th>
-                                <th style="width: 120px;">الهاتف</th>
-                                <th style="width: 120px;">رقم الهوية</th>
-                                <th style="width: 200px;">الأسم</th>
-                                <th style="width: 100px;">رقم الهدف</th>
-                                <th style="width: 60px;">1</th>
-                                <th style="width: 60px;">2</th>
-                                <th style="width: 60px;">3</th>
-                                <th style="width: 60px;">4</th>
-                                <th style="width: 60px;">5</th>
-                                <th style="width: 60px;">6</th>
-                                <th style="width: 60px;">7</th>
-                                <th style="width: 60px;">8</th>
-                                <th style="width: 60px;">9</th>
-                                <th style="width: 60px;">10</th>
-                                <th style="width: 80px;">المجموع</th>
-                                <th style="width: 150px;">ملاحظات</th>
-                                <th style="width: 80px;">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($members as $index => $member)
-                            <tr>
-                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td>{{ $member?->player?->phone1 ?? '---' }}</td>
-                                <td>{{ $member?->player?->ID ?? '---' }}</td>
-                                <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
+
+            @csrf
+            <div class="table-responsive">
+                <table class="table table-bordered ">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>الهاتف</th>
+                            <th>رقم الهوية</th>
+                            <th>الأسم</th>
+                            <th>رقم الهدف</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                            <th>المجموع</th>
+                            <th>ملاحظات</th>
+                            @if(!$confirmed)
+                            <th>إجراءات</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($members as $index => $member)
+                        <tr>
+                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                            <td>{{ $member?->player?->phone1 ?? '---' }}</td>
+                            <td>{{ $member?->player?->ID ?? '---' }}</td>
+                            <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
+                            {{-- goal --}}
+                            <td>
+                                <input type="number"
+                                    name="goal"
+                                    data-player="{{ $member->id }}"
+                                    class="form-control form-control-sm"
+                                    placeholder="رقم الهدف"
+                                    min="1"
+                                    required
+                                    value="{{ old('goal.' . $member->id, $member->goal ?? '') }}">
+                            </td>
+
+                            {{-- R1 → R10 --}}
+                            @for($i=1; $i<=10; $i++)
                                 <td>
-                                    <input type="number" name="target_number[]" class="form-control form-control-sm" 
-                                           placeholder="رقم الهدف" min="1">
+                                <input type="number"
+                                    name="R{{ $i }}[{{ $member->id }}]"
+                                    data-player="{{ $member->id }}"
+                                    class="form-control form-control-sm score-input"
+                                    placeholder="0"
+                                    min="0"
+                                    data-row="{{ $index }}"
+                                    value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}">
                                 </td>
+                                @endfor
+
+                                {{-- total --}}
                                 <td>
-                                    <input type="number" name="R1[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
+                                    <input type="number"
+                                        name="total[{{ $member->id }}]"
+                                        data-player="{{ $member->id }}"
+                                        class="form-control form-control-sm bg-light total-input"
+                                        placeholder="0"
+                                        id="total-{{ $index }}"
+                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}">
                                 </td>
+
+                                {{-- notes --}}
                                 <td>
-                                    <input type="number" name="R2[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
+                                    <input type="text"
+                                        name="notes[{{ $member->id }}]"
+                                        data-player="{{ $member->id }}"
+                                        class="form-control form-control-sm"
+                                        placeholder="ملاحظات"
+                                        value="{{ old('notes.'.$member->id, $member->notes ?? '') }}">
                                 </td>
-                                <td>
-                                    <input type="number" name="R3[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R4[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R5[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R6[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R7[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R8[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R9[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="R10[]" class="form-control form-control-sm score-input" 
-                                           placeholder="0" min="0" max="10" data-row="{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="total[]" class="form-control form-control-sm bg-light total-input" 
-                                           placeholder="0"  id="total-{{ $index }}">
-                                </td>
-                                <td>
-                                    <input type="text" name="notes[]" class="form-control form-control-sm" 
-                                           placeholder="ملاحظات">
-                                </td>
+
+
+                                @if(!$confirmed)
                                 <td class="text-center">
-                                    <form action="" method="POST" class="d-inline" 
-                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا اللاعب؟');">
+                                    <form action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
+                                        method="POST" class="d-inline"
+                                        onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="حذف">
+                                        <button type="submit" class="icon-btn text-danger" title="حذف">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
                                 </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="18" class="text-center text-muted py-4">
-                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                                    لا توجد بيانات لعرضها
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </form>
+                                @endif
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="18" class="text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                لا توجد بيانات لعرضها
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+
+                </table>
+            </div>
+
         </div>
     </div>
 </div>
 
 <style>
     .info-box {
-        border-left: 4px solid #0d6efd;
+        border-left: 4px solid #97ca52;
         transition: all 0.3s ease;
     }
 
     .info-box:hover {
-        background-color: #e9ecef !important;
+
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -230,9 +252,8 @@
     }
 
     .table th {
-        background-color: #f8f9fa;
+
         font-weight: 600;
-        border-color: #dee2e6;
     }
 
     .table td {
@@ -257,6 +278,18 @@
         box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
+
     @media (max-width: 768px) {
         .d-flex.flex-wrap.gap-2 {
             flex-direction: column;
@@ -274,11 +307,78 @@
     }
 
     .table-responsive {
-        border-radius: 8px;
+        border-radius: 2px;
     }
 
     tbody tr:hover {
         background-color: #f8f9fa;
     }
 </style>
+<script>
+    //clear input from old values when user start write in it
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputs = document.querySelectorAll(".score-input, .total-input, [name^='goal'], [name^='notes']");
+
+        inputs.forEach(input => {
+            input.addEventListener("focus", function() {
+                if (this.value == this.defaultValue || this.value == "0") {
+                    this.value = "";
+                }
+            });
+        });
+    });
+    //load total from model
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.score-input').forEach(input => {
+            input.addEventListener('input', function() {
+                let row = this.closest('tr');
+
+                // Collect all scores into an array
+                let scores = [];
+                row.querySelectorAll('.score-input').forEach(scoreInput => {
+                    scores.push(parseInt(scoreInput.value) || 0);
+                });
+
+                fetch("{{ route('calculate-total') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            scores: scores,
+                            player_id: row.querySelector('.score-input').dataset.player
+                        })
+
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        row.querySelector('.total-input').value = data.total;
+                    });
+            });
+        });
+    });
+</script>
+
+<script>
+    //get data from table when submit save report
+    document.getElementById('saveReportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let players = {};
+        document.querySelectorAll('input[data-player]').forEach(input => {
+            let playerId = input.getAttribute('data-player');
+            let field = input.getAttribute('name');
+            let value = input.value;
+
+            if (!players[playerId]) {
+                players[playerId] = {};
+            }
+            players[playerId][field] = value;
+        });
+        document.getElementById('playersData').value = JSON.stringify(players);
+        this.submit();
+    });
+</script>
+
 @endsection

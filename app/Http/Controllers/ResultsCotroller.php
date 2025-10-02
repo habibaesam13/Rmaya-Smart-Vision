@@ -51,21 +51,61 @@ class ResultsCotroller extends Controller
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
-        $members=$this->resultService->getReportDetails($report->Rid);
+        $members = $this->resultService->getReportDetails($report->Rid);
+
         if ($report) {
-            return view('personalReports.personal_report_members',['members'=>$members]);
+            return view('personalReports.personal_report_members', ['members' => $members,'report'=>$report,'confirmed'=>false]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
     }
 
     //functions for members for specific report
-    public function show($Rid)
+    public function show($rid)
     {
-        $report=$this->resultService->getReport($Rid);
-        $members=$this->resultService->getReportDetails($Rid);
-        return view('personalReports.personal_report_members',['report'=>$report,'members'=>$members]);
+        $report = $this->resultService->getReport($rid);
+        if(!$report){
+            return redirect()->route('results-registered-members');
+        }
+        $members = $this->resultService->getReportDetails($rid);
+        $confirmed = $report->confirmed;
+        return view('personalReports.personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
+    }
+    public function confirmReport($rid)
+    {
+        $report = $this->resultService->confirmReport($rid);
+        if ($report) {
+            return redirect()->back()->with(['success' => 'تم تأكيد التقرير']);
+        }
+        return redirect()->back()->with('error', 'حدث خطأ أثناء التأكيد');
+    }
+    public function deletePlayerFromReport($rid, $player_id)
+    {
+        $player = $this->resultService->deleteplayerFromReport($player_id);
+
+        if ($player) {
+            return redirect()->route('report-members', $rid)->with(['success' => 'تم حذف الرامي بنجاح']);
+        }
+        return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الرامي');
     }
 
 
+    public function saveReport(Request $request)
+    {
+        dd($request);
+    }
+    public function calculateTotal(Request $request)
+    {
+        try {
+            $scores = $request->input('scores', []);
+            $total = array_sum($scores);
+
+            return response()->json(['total' => $total]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
 }

@@ -246,12 +246,12 @@ Route::group(
                     Route::post('/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
                     // Personal PDF
                     Route::get('members/view-pdf', function (Request $request, PersonalMembersProvider $provider) {
-                        $controller = new PDFController($provider, 'pdf.members','Registered_Members.pdf');
+                        $controller = new PDFController($provider, 'pdf.members', 'Registered_Members.pdf');
                         return $controller->viewPDF($request);
                     })->name('members-view-pdf');
 
                     Route::get('members/download-pdf', function (Request $request, PersonalMembersProvider $provider) {
-                        $controller = new PDFController($provider, 'pdf.members','Registered_Members.pdf');
+                        $controller = new PDFController($provider, 'pdf.members', 'Registered_Members.pdf');
                         return $controller->downloadPDF($request);
                     })->name('members-download-pdf');
                 }
@@ -286,35 +286,42 @@ Route::group(
                     Route::post('/members/export-excel', [GroupExportController::class, 'exportGroupsMembers'])->name('groups.members.export.excel'); //extra
                     // Groups PDF
                     Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
-                        $controller = new PDFController($provider, 'pdf.groups_members','Registered_Groups_Members.pdf');
+                        $controller = new PDFController($provider, 'pdf.groups_members', 'Registered_Groups_Members.pdf');
                         return $controller->viewPDF($request);
                     })->name('groups-view-pdf');
 
                     Route::get('members/download-pdf', function (Request $request, GroupsMembersProvider $provider) {
-                        $controller = new PDFController($provider, 'pdf.groups_members','Registered_Groups_Members.pdf');
+                        $controller = new PDFController($provider, 'pdf.groups_members', 'Registered_Groups_Members.pdf');
                         return $controller->downloadPDF($request);
                     })->name('groups-download-pdf');
                     //groups details pdf
                     Route::get('groups-details/view-pdf', function (Request $request, GroupsDetailsProvider $provider) {
-                        $controller = new PDFController($provider, 'pdf.groups','Registered_Groups_Details.pdf');
+                        $controller = new PDFController($provider, 'pdf.groups', 'Registered_Groups_Details.pdf');
                         return $controller->viewPDF($request);
                     })->name('view-groups-details-pdf');
 
                     Route::get('groups-details/download-pdf', function (Request $request, GroupsDetailsProvider $provider) {
 
-                        $controller = new PDFController($provider, 'pdf.groups','Registered_Groups_Details.pdf');
+                        $controller = new PDFController($provider, 'pdf.groups', 'Registered_Groups_Details.pdf');
                         return $controller->downloadPDF($request);
                     })->name('download-groups-details-pdf');
-                    
                 }
 
-                
+
             );
             Route::prefix('results')->group(
-                function(){
-                    Route::get('registered-members',[ResultsCotroller::class,'index'])->name('results-registered-members');
-                    Route::post('generate-report',[ResultsCotroller::class,'store'])->name('generate-report-registered-members');
-                    Route::get('report-members/{Rid}',[ResultsCotroller::class,'show'])->name('report-members');
+                function () {
+                    Route::delete('report-members/{rid}/player/{player_id}', [ResultsCotroller::class, 'deletePlayerFromReport'])
+                        ->name('report-player-delete');
+                    Route::get('registered-members', [ResultsCotroller::class, 'index'])->name('results-registered-members');
+                    Route::post('generate-report', [ResultsCotroller::class, 'store'])->name('generate-report-registered-members');
+                    Route::get('report-members/{rid}', [ResultsCotroller::class, 'show'])->name('report-members');
+                    Route::post('confirm-report/{rid}', [ResultsCotroller::class, 'confirmReport'])->name('report-confirmation');
+                    Route::post('members/detailed-repoert/{rid}',[ResultsCotroller::class, 'saveReport'])->name('detailed-members-report-save');
+                    //get total for R1->10 in report
+                    Route::post('calculate-total', [ResultsCotroller::class, 'calculateTotal'])->name('calculate-total');
+
+                    
                 }
             );
         });
