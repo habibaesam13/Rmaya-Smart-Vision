@@ -145,9 +145,9 @@
                             <td>
                                 <input type="number"
                                     name="goal"
+                                    required
                                     data-player="{{ $member->id }}"
                                     class="form-control form-control-sm"
-                                    placeholder="رقم الهدف"
                                     min="1"
                                     value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"
                                     @if($confirmed) readonly @endif>

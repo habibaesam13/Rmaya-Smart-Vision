@@ -92,7 +92,7 @@ class ResultsCotroller extends Controller
         return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الرامي');
     }
 
-    public function saveReport(Request $request)
+    public function saveReport(Request $request,$rid)
     {
 
         $playersData = json_decode($request->input('players_data'), true);
@@ -100,7 +100,12 @@ class ResultsCotroller extends Controller
         if (!$playersData) {
             return back()->withErrors(['players_data' => 'Invalid players data format']);
         }
-        $keys = array_keys($playersData);
+        
+        $report=$this->resultService->saveReport($request,$playersData,$rid);
+        if($report){
+            return redirect()->back()->with('success','تم حفظ التقرير بنجاح');
+        }
+       return redirect()->back()->with('error','حدث خطأ أثناء الحفظ');
         
     }
 
