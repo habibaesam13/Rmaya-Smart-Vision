@@ -12,7 +12,7 @@ use App\Services\PersonalService;
 use App\Services\CountriesService;
 use App\Http\Requests\StoreReportForMembers;
 
-class ResultsCotroller extends Controller
+class ResultsController extends Controller
 {
     protected PersonalService $personalService;
     protected CountriesService $countryService;
@@ -31,8 +31,15 @@ class ResultsCotroller extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
-        $addMembertoReportRid = $request->addMembertoReportRid;
-        $players=$this->resultService->getAvailablePlayers();
+        $Edit_report=null;
+        if(isset($request->addMembertoReportRid)){
+            $addMembertoReportRid = $request->addMembertoReportRid;
+            $Edit_report = $this->resultService->getReport($addMembertoReportRid);
+            $available_players = $this->resultService->getAvailablePlayers($Edit_report);
+        }
+        else{
+            $available_players=$this->resultService->GetAllAvailablePlayers();
+        }
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
@@ -45,7 +52,8 @@ class ResultsCotroller extends Controller
             )
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection','addMembertoReportRid','players'));
+        
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players'));
     }
     public function store(StoreReportForMembers $request)
     {
@@ -93,22 +101,27 @@ class ResultsCotroller extends Controller
         return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الرامي');
     }
 
-    public function saveReport(Request $request,$rid)
+    public function saveReport(Request $request, $rid)
     {
+        if ($request->has('players_data')) {
+            $playersData = json_decode($request->input('players_data'), true);
 
-        $playersData = json_decode($request->input('players_data'), true);
+            if (!$playersData) {
+                return back()->withErrors(['players_data' => 'Invalid players data format']);
+            }
 
-        if (!$playersData) {
-            return back()->withErrors(['players_data' => 'Invalid players data format']);
+            $report = $this->resultService->saveReport($request, $playersData, $rid);
+
+            if ($report) {
+                return redirect()->back()->with('success', 'تم حفظ التقرير بنجاح');
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء الحفظ');
         }
-        
-        $report=$this->resultService->saveReport($request,$playersData,$rid);
-        if($report){
-            return redirect()->back()->with('success','تم حفظ التقرير بنجاح');
-        }
-       return redirect()->back()->with('error','حدث خطأ أثناء الحفظ');
-        
+        return redirect()->route('report-members', $rid)
+            ->with('info', 'تم الرجوع إلى التقرير.');
     }
+
 
     public function calculateTotal(Request $request)
     {
@@ -125,8 +138,29 @@ class ResultsCotroller extends Controller
         }
     }
 
-    public function addPlayer($rid){
+    public function addPlayer($rid)
+    {
 
-        return redirect()->route('results-registered-members',['addMembertoReportRid'=>$rid]);
+        return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
+    }
+    public function updateReport(StoreReportForMembers $request, $rid)
+    {
+        $report = $this->resultService->getReport($rid);
+
+        if (!$report) {
+            return redirect()->back()->with('error', 'لم يتم العثور على التقرير');
+        }
+        $validated = $request->validated();
+       foreach ($validated['checkedMembers'] as $mid) {
+                $report->players_results()->create([
+                    'player_id' => $mid,
+                    'goal'      => 0,
+                    'total'     => 0,
+                    'notes'     => null,
+                ]);
+            }
+        return redirect()
+            ->route('report-members', $report->Rid)
+            ->with('success', 'تم تحديث بيانات التقرير بنجاح');
     }
 }

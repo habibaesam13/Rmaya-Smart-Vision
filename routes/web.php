@@ -21,8 +21,9 @@ use App\Http\Controllers\GroupExportController;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\MemberExportController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\ResultsCotroller;
+use App\Http\Controllers\ResultsController;
 use App\Services\GroupsDetailsProvider;
+use App\Services\PersonalWeaponReportProvider;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -311,19 +312,30 @@ Route::group(
             );
             Route::prefix('results')->group(
                 function () {
-                    Route::delete('report-members/{rid}/player/{player_id}', [ResultsCotroller::class, 'deletePlayerFromReport'])
+                    Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
-                    Route::get('registered-members', [ResultsCotroller::class, 'index'])->name('results-registered-members');
-                    Route::post('generate-report', [ResultsCotroller::class, 'store'])->name('generate-report-registered-members');
-                    Route::get('report-members/{rid}', [ResultsCotroller::class, 'show'])->name('report-members');
-                    Route::post('confirm-report/{rid}', [ResultsCotroller::class, 'confirmReport'])->name('report-confirmation');
-                    Route::post('members/detailed-repoert/{rid}',[ResultsCotroller::class, 'saveReport'])->name('detailed-members-report-save');
+                    Route::get('registered-members', [ResultsController::class,'index'])->name('results-registered-members');
+                    //Route::get('registered-members', [ResultsController::class, 'index'])->name('results-registered-members');
+                    Route::post('generate-report', [ResultsController::class, 'store'])->name('generate-report-registered-members');
+                    Route::get('report-members/{rid}', [ResultsController::class, 'show'])->name('report-members');
+                    Route::post('confirm-report/{rid}', [ResultsController::class, 'confirmReport'])->name('report-confirmation');
+                    Route::post('members/detailed-repoert/{rid}',[ResultsController::class, 'saveReport'])->name('detailed-members-report-save');
                     //get total for R1->10 in report
-                    Route::post('calculate-total', [ResultsCotroller::class, 'calculateTotal'])->name('calculate-total');
+                    Route::post('calculate-total', [ResultsController::class, 'calculateTotal'])->name('calculate-total');
                     //add new player to report
-                    Route::get('add-player-to-report/{rid}',[ResultsCotroller::class, 'addPlayer'])->name('add-player-to-report');
-                    Route::post('add-player-to-report/{rid}',[ResultsCotroller::class, 'storePlayer'])->name('store-player-to-report');
+                    Route::get('add-player-to-report/{rid}',[ResultsController::class, 'addPlayer'])->name('add-player-to-report');
+                    Route::post('update-report-registered-members/{rid}', [ResultsController::class, 'updateReport'])->name('update-report-registered-members');
+                    //report for members with same weapon
+                    Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
+                        return $controller->viewPDF($request);
+                    })->name('personal-results-report-view-pdf');
 
+                    Route::get('report-{rid}-members/download-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
+                        return $controller->downloadPDF($request);
+                    })->name('personal-results-report-download-pdf');
+                    
                     
                 }
             );

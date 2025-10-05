@@ -34,6 +34,7 @@ class PDFController extends Controller
     }
     public function viewPDF(Request $request){
         $data=$this->provider->getData($request);
+       
         return $this->generatePDF($data,'I');
     }
     public function downloadPDF(Request $request){

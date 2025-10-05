@@ -22,14 +22,15 @@ class ResultsService
     {
         //
     }
-    public function createReport($data, $reports = [])
+    public function createReport($data)
     {
+        
         return DB::transaction(function () use ($data) {
 
             $report = SV_initial_results::create($data);
 
 
-            foreach ($data['checkedreports'] as $mid) {
+            foreach ($data['checkedMembers'] as $mid) {
                 $report->players_results()->create([
                     'player_id' => $mid,
                     'goal'      => 0,
@@ -41,10 +42,11 @@ class ResultsService
             return $report;
         });
     }
+    
     public function getReportDetails($reportId)
     {
-        $reports = sv_initial_results_players::where('Rid', $reportId)->get();
-        return $reports;
+        $Players = sv_initial_results_players::where('Rid', $reportId)->get();
+        return $Players;
     }
     public function getReport($rid)
     {
@@ -66,6 +68,7 @@ class ResultsService
         $report = $this->getReport($rid);
         if ($request->hasFile('attached_file')) {
             if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
+                
                 Storage::disk('public')->delete($report->attached_file);
             }
 
@@ -104,13 +107,19 @@ class ResultsService
     }
 
 
-    public function getAvailablePlayers()
+    public function getAvailablePlayers($report)
     {
         
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-        return Sv_member::where('reg_type','personal')->whereNotIn('mid', $addedPlayers)
-            ->orderBy('name')
+        return Sv_member::where('reg_type','personal')->where('weapon_id',$report->weapon_id)->whereNotIn('mid', $addedPlayers)
+            ->orderBy('mid')
             ->get();
 
+    }
+    public function GetAllAvailablePlayers(){
+        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
+        return Sv_member::where('reg_type','personal')->whereNotIn('mid', $addedPlayers)
+            ->orderBy('mid')
+            ->get();
     }
 }

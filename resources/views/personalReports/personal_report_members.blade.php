@@ -92,7 +92,7 @@
 
 
 
-                <form action="" method="GET">
+                <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
                         <span>طباعة</span>
@@ -105,7 +105,6 @@
     {{-- Results Table Card --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
-
             @csrf
             <div class="table-responsive">
                 <table class="table table-bordered ">
@@ -152,8 +151,8 @@
                                     @if($confirmed) readonly @endif>
                             </td>
 
-                            {{-- R1 → R10 --}}
-                            @for($i=1; $i<=10; $i++)
+                                {{-- R1 → R10 --}}
+                                @for($i=1; $i<=10; $i++)
                                 <td>
                                 <input type="number"
                                     name="R{{ $i }}"

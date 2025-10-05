@@ -229,31 +229,37 @@
                         </ul>
                     </div>
                     @endif
-                    <form action="{{ route('generate-report-registered-members') }}" method="POST" id="reportForm">
+                    <form action="{{ isset($Edit_report) 
+                        ? route('update-report-registered-members', $Edit_report->Rid)
+                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
                         @csrf
+
                         <div class="row g-3 align-items-end mb-3">
                             <div class="col-md-4">
                                 <label for="date" class="form-label">التاريخ</label>
-                                <input type="date" name="date" id="report_date" class="form-control form-control-lg" required>
+                                <input type="date" name="date" id="report_date" class="form-control form-control-lg"
+                                    required>
                             </div>
                             <div class="col-md-4">
                                 <label for="detail_number" class="form-label">رقم الديتيل</label>
                                 <input type="text" name="details" id="detail_number"
-                                    class="form-control form-control-lg"
-                                    placeholder="أدخل رقم الديتيل" required>
+                                    class="form-control form-control-lg" placeholder="أدخل رقم الديتيل" required
+                                    value="{{isset($Edit_report)?$Edit_report->details:''}}">
                             </div>
+
                             <div id="checkedMembersContainer" style="display:none;"></div>
+
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-success btn-lg w-100">
                                     <i class="fas fa-save me-2"></i>
-                                    حفظ التقرير
+                                    {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
                                 </button>
                             </div>
                         </div>
                     </form>
+
                     <hr>
-                    @isset($players)
-                    
+                    @isset($available_players)
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -272,10 +278,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($players as $player)
+                            @forelse($available_players as $player)
                             <tr>
                                 <td>
-                                    <input type="checkbox" class="member-checkbox" name="checkedMembers[]" value="{{ $player->mid }}">
+                                    <input type="checkbox" class="member-checkbox" name="checkedMembers[]"
+                                        value="{{ $player->mid }}">
                                 </td>
                                 <td>{{ $player->name }}</td>
                                 <td>{{ $player->ID }}</td>
@@ -305,7 +312,8 @@
                                             </button>
                                         </form>
                                         {{-- Delete Button --}}
-                                        <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
+                                        <form action="{{route('personal-registration-delete')}}" method="POST"
+                                            class="d-inline"
                                             onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
 
                                             @csrf
@@ -317,7 +325,8 @@
                                         </form>
 
                                         {{-- Toggle Status Button --}}
-                                        <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
+                                        <form action="{{route('personal-registration-toggle')}}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             <input type="hidden" name="mid" value="{{ $player->mid }}">
                                             <button type="submit" class="icon-btn text-success"
@@ -328,13 +337,26 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="12" class="text-center text-muted mt-3">
+                                    <p class="mt-3 w-100"> لا يوجد رماه لهم نفس السلاح - {{$Edit_report?->weapon?->name}}</p>
+                                    <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}"
+                                        method="POST" class="mt-3">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-lg px-5">
+                                            الرجوع للتقرير
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                     @endisset
 
 
-                    
+
 
                 </div>
             </div>
@@ -434,124 +456,124 @@
     </div>
 </div>
 <style>
+.documents {
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.documents .btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.documents .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.documents .btn i {
+    font-size: 1rem;
+}
+
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
     .documents {
-        flex-shrink: 0;
-        /* Prevent shrinking */
+        width: 100%;
+        justify-content: flex-end;
     }
 
     .documents .btn {
-        font-size: 0.875rem;
-        font-weight: 500;
-        border-radius: 6px;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
+        flex: 1;
+        justify-content: center;
     }
+}
 
-    .documents .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
 
-    .documents .btn i {
-        font-size: 1rem;
-    }
-
-
-    @media (max-width: 768px) {
-        .d-flex.justify-content-between.align-items-center {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 1rem;
-        }
-
-        .documents {
-            width: 100%;
-            justify-content: flex-end;
-        }
-
-        .documents .btn {
-            flex: 1;
-            justify-content: center;
-        }
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 1.2rem;
-        cursor: pointer;
-    }
-
-    .icon-btn:hover {
-        opacity: 0.8;
-    }
+.icon-btn:hover {
+    opacity: 0.8;
+}
 </style>
 <script>
-    document.getElementById("reportForm").addEventListener("submit", function(e) {
-        const container = document.getElementById("checkedMembersContainer");
-        container.innerHTML = "";
+document.getElementById("reportForm").addEventListener("submit", function(e) {
+    const container = document.getElementById("checkedMembersContainer");
+    container.innerHTML = "";
 
-        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
-            let hidden = document.createElement("input");
-            hidden.type = "hidden";
-            hidden.name = "checkedMembers[]";
-            hidden.value = cb.value;
-            container.appendChild(hidden);
-        });
+    document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
+        let hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "checkedMembers[]";
+        hidden.value = cb.value;
+        container.appendChild(hidden);
     });
+});
 </script>
 <script>
-    //date
-    // Get the current date
-    const today = new Date();
+//date
+// Get the current date
+const today = new Date();
 
-    // Format the date to 'YYYY-MM-DD' for the input type="date"
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-    const day = today.getDate().toString().padStart(2, '0');
+// Format the date to 'YYYY-MM-DD' for the input type="date"
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+const day = today.getDate().toString().padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
+const formattedDate = `${year}-${month}-${day}`;
 
-    // Set the value of the input field
-    document.getElementById('report_date').value = formattedDate;
+// Set the value of the input field
+document.getElementById('report_date').value = formattedDate;
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const clubSelect = document.getElementById('club_id');
-        const weaponSelect = document.getElementById('weapon_id');
+document.addEventListener('DOMContentLoaded', function() {
+    const clubSelect = document.getElementById('club_id');
+    const weaponSelect = document.getElementById('weapon_id');
 
-        clubSelect.addEventListener('change', function() {
-            const clubId = this.value;
+    clubSelect.addEventListener('change', function() {
+        const clubId = this.value;
 
-            // Clear weapons dropdown
-            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
+        // Clear weapons dropdown
+        weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-            if (clubId) {
-                // Fetch weapons for selected club
-                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                    .then(response => response.json())
-                    .then(data => {
-                        weaponSelect.innerHTML =
-                            '<option value="" disabled selected>اختر السلاح</option>';
+        if (clubId) {
+            // Fetch weapons for selected club
+            fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
+                .then(response => response.json())
+                .then(data => {
+                    weaponSelect.innerHTML =
+                        '<option value="" disabled selected>اختر السلاح</option>';
 
-                        data.weapons.forEach(weapon => {
-                            const option = document.createElement('option');
-                            option.value = weapon.wid;
-                            option.textContent = weapon.name;
-                            weaponSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        weaponSelect.innerHTML =
-                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
+                    data.weapons.forEach(weapon => {
+                        const option = document.createElement('option');
+                        option.value = weapon.wid;
+                        option.textContent = weapon.name;
+                        weaponSelect.appendChild(option);
                     });
-            } else {
-                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-            }
-        });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    weaponSelect.innerHTML =
+                        '<option value="" disabled selected>حدث خطأ في التحميل</option>';
+                });
+        } else {
+            weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
+        }
     });
+});
 </script>
 
 @endsection
