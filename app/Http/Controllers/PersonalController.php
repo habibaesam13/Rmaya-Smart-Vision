@@ -31,7 +31,6 @@ class PersonalController extends Controller
     }
     public function index(Request $request)
     {
-
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];

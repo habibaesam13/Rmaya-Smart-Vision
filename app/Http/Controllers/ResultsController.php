@@ -31,28 +31,29 @@ class ResultsController extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
-        $Edit_report=null;
-        if(isset($request->addMembertoReportRid)){
-            $addMembertoReportRid = $request->addMembertoReportRid;
-            $Edit_report = $this->resultService->getReport($addMembertoReportRid);
+        $Edit_report = null;
+        if ($request->filled('addMembertoReportRid')) {
+            $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
             $available_players = $this->resultService->getAvailablePlayers($Edit_report);
+            $reportSection = true;
+        } else {
+            $available_players = $this->resultService->GetAllAvailablePlayers($request);
+            $reportSection = false;
         }
-        else{
-            $available_players=$this->resultService->GetAllAvailablePlayers();
-        }
+
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
         $membersCount = Sv_member::where('reg_type', 'personal')->count();
-        $members =  $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
-        
+
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players'));
     }
     public function store(StoreReportForMembers $request)
@@ -151,14 +152,14 @@ class ResultsController extends Controller
             return redirect()->back()->with('error', 'لم يتم العثور على التقرير');
         }
         $validated = $request->validated();
-       foreach ($validated['checkedMembers'] as $mid) {
-                $report->players_results()->create([
-                    'player_id' => $mid,
-                    'goal'      => 0,
-                    'total'     => 0,
-                    'notes'     => null,
-                ]);
-            }
+        foreach ($validated['checkedMembers'] as $mid) {
+            $report->players_results()->create([
+                'player_id' => $mid,
+                'goal'      => 0,
+                'total'     => 0,
+                'notes'     => null,
+            ]);
+        }
         return redirect()
             ->route('report-members', $report->Rid)
             ->with('success', 'تم تحديث بيانات التقرير بنجاح');

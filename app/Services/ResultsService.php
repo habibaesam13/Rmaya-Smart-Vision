@@ -24,7 +24,7 @@ class ResultsService
     }
     public function createReport($data)
     {
-        
+
         return DB::transaction(function () use ($data) {
 
             $report = SV_initial_results::create($data);
@@ -42,7 +42,7 @@ class ResultsService
             return $report;
         });
     }
-    
+
     public function getReportDetails($reportId)
     {
         $Players = sv_initial_results_players::where('Rid', $reportId)->get();
@@ -68,7 +68,7 @@ class ResultsService
         $report = $this->getReport($rid);
         if ($request->hasFile('attached_file')) {
             if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
-                
+
                 Storage::disk('public')->delete($report->attached_file);
             }
 
@@ -109,17 +109,36 @@ class ResultsService
 
     public function getAvailablePlayers($report)
     {
-        
-        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-        return Sv_member::where('reg_type','personal')->where('weapon_id',$report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderBy('mid')
-            ->get();
 
-    }
-    public function GetAllAvailablePlayers(){
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-        return Sv_member::where('reg_type','personal')->whereNotIn('mid', $addedPlayers)
+        return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
             ->orderBy('mid')
             ->get();
+    }
+    public function GetAllAvailablePlayers(Request $request)
+    {
+        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
+
+        return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+            ->where('reg_type', 'personal')
+            ->whereNotIn('mid', $addedPlayers)
+            ->when(
+                $request->hasAny([
+                    'mgid',
+                    'reg',
+                    'nat',
+                    'club_id',
+                    'weapon_id',
+                    'q',
+                    'gender',
+                    'active',
+                    'date_from',
+                    'date_to',
+                    'reg_club'
+                ]),
+                fn($q) => $q->filter($request)
+            )
+            ->orderBy('mid')
+            ->cursorPaginate(config('app.admin_pagination_number'));
     }
 }

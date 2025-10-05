@@ -44,7 +44,9 @@
             </div>
 
 
-            <form action="{{route('personal-registration')}}" method="get">
+            <form action="{{ isset($reportSection) 
+                        ? route('search-results-registered-members')
+                        : route('personal-registration') }}" method="get">
                 <div class="row g-3">
                     {{-- Member Groups --}}
                     <div class="col-md-6">
@@ -340,24 +342,27 @@
                             @empty
                             <tr>
                                 <td colspan="12" class="text-center text-muted mt-3">
-                                    <p class="mt-3 w-100"> لا يوجد رماه لهم نفس السلاح - {{$Edit_report?->weapon?->name}}</p>
-                                    <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}"
-                                        method="POST" class="mt-3">
+                                    @if(request()->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']))
+                                    <p class="mt-3 w-100">لا توجد نتائج مطابقة لبحثك.</p>
+                                    @else
+                                    <p class="mt-3 w-100">لا يوجد رماه لهم نفس السلاح - {{ $Edit_report?->weapon?->name ?? '---' }}</p>
+                                    @endif
+
+                                    @if(isset($Edit_report))
+                                    <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}" method="POST" class="mt-3">
                                         @csrf
                                         <button type="submit" class="btn btn-danger btn-lg px-5">
                                             الرجوع للتقرير
                                         </button>
                                     </form>
+                                    @endif
                                 </td>
                             </tr>
-                            @endforelse
+                            @endempty
+
                         </tbody>
                     </table>
                     @endisset
-
-
-
-
                 </div>
             </div>
             @else
@@ -456,124 +461,124 @@
     </div>
 </div>
 <style>
-.documents {
-    flex-shrink: 0;
-    /* Prevent shrinking */
-}
-
-.documents .btn {
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
-    white-space: nowrap;
-}
-
-.documents .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.documents .btn i {
-    font-size: 1rem;
-}
-
-
-@media (max-width: 768px) {
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 1rem;
-    }
-
     .documents {
-        width: 100%;
-        justify-content: flex-end;
+        flex-shrink: 0;
+        /* Prevent shrinking */
     }
 
     .documents .btn {
-        flex: 1;
-        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
     }
-}
 
-.icon-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
+    .documents .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
 
-.icon-btn:hover {
-    opacity: 0.8;
-}
+    .documents .btn i {
+        font-size: 1rem;
+    }
+
+
+    @media (max-width: 768px) {
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .documents {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .documents .btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
 </style>
 <script>
-document.getElementById("reportForm").addEventListener("submit", function(e) {
-    const container = document.getElementById("checkedMembersContainer");
-    container.innerHTML = "";
+    document.getElementById("reportForm").addEventListener("submit", function(e) {
+        const container = document.getElementById("checkedMembersContainer");
+        container.innerHTML = "";
 
-    document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
-        let hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "checkedMembers[]";
-        hidden.value = cb.value;
-        container.appendChild(hidden);
+        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
+            let hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "checkedMembers[]";
+            hidden.value = cb.value;
+            container.appendChild(hidden);
+        });
     });
-});
 </script>
 <script>
-//date
-// Get the current date
-const today = new Date();
+    //date
+    // Get the current date
+    const today = new Date();
 
-// Format the date to 'YYYY-MM-DD' for the input type="date"
-const year = today.getFullYear();
-const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-const day = today.getDate().toString().padStart(2, '0');
+    // Format the date to 'YYYY-MM-DD' for the input type="date"
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = today.getDate().toString().padStart(2, '0');
 
-const formattedDate = `${year}-${month}-${day}`;
+    const formattedDate = `${year}-${month}-${day}`;
 
-// Set the value of the input field
-document.getElementById('report_date').value = formattedDate;
+    // Set the value of the input field
+    document.getElementById('report_date').value = formattedDate;
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const clubSelect = document.getElementById('club_id');
-    const weaponSelect = document.getElementById('weapon_id');
+    document.addEventListener('DOMContentLoaded', function() {
+        const clubSelect = document.getElementById('club_id');
+        const weaponSelect = document.getElementById('weapon_id');
 
-    clubSelect.addEventListener('change', function() {
-        const clubId = this.value;
+        clubSelect.addEventListener('change', function() {
+            const clubId = this.value;
 
-        // Clear weapons dropdown
-        weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
+            // Clear weapons dropdown
+            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-        if (clubId) {
-            // Fetch weapons for selected club
-            fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                .then(response => response.json())
-                .then(data => {
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>اختر السلاح</option>';
+            if (clubId) {
+                // Fetch weapons for selected club
+                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
+                    .then(response => response.json())
+                    .then(data => {
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>اختر السلاح</option>';
 
-                    data.weapons.forEach(weapon => {
-                        const option = document.createElement('option');
-                        option.value = weapon.wid;
-                        option.textContent = weapon.name;
-                        weaponSelect.appendChild(option);
+                        data.weapons.forEach(weapon => {
+                            const option = document.createElement('option');
+                            option.value = weapon.wid;
+                            option.textContent = weapon.name;
+                            weaponSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        weaponSelect.innerHTML =
+                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
                     });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    weaponSelect.innerHTML =
-                        '<option value="" disabled selected>حدث خطأ في التحميل</option>';
-                });
-        } else {
-            weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-        }
+            } else {
+                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
+            }
+        });
     });
-});
 </script>
 
 @endsection

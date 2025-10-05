@@ -315,7 +315,7 @@ Route::group(
                     Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
                     Route::get('registered-members', [ResultsController::class,'index'])->name('results-registered-members');
-                    //Route::get('registered-members', [ResultsController::class, 'index'])->name('results-registered-members');
+                    Route::get('search-members', [ResultsController::class, 'index'])->name('search-results-registered-members');
                     Route::post('generate-report', [ResultsController::class, 'store'])->name('generate-report-registered-members');
                     Route::get('report-members/{rid}', [ResultsController::class, 'show'])->name('report-members');
                     Route::post('confirm-report/{rid}', [ResultsController::class, 'confirmReport'])->name('report-confirmation');
