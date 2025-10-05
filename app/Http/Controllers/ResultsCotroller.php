@@ -31,7 +31,8 @@ class ResultsCotroller extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
-
+        $addMembertoReportRid = $request->addMembertoReportRid;
+        $players=$this->resultService->getAvailablePlayers();
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
@@ -44,7 +45,7 @@ class ResultsCotroller extends Controller
             )
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection'));
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection','addMembertoReportRid','players'));
     }
     public function store(StoreReportForMembers $request)
     {
@@ -122,5 +123,10 @@ class ResultsCotroller extends Controller
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
+    }
+
+    public function addPlayer($rid){
+
+        return redirect()->route('results-registered-members',['addMembertoReportRid'=>$rid]);
     }
 }

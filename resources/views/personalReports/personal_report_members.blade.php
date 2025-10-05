@@ -53,8 +53,7 @@
 
             {{-- Action Buttons --}}
             <div class="d-flex flex-wrap gap-2">
-                <form action="#" method="POST">
-                    @csrf
+                <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
                     <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-user-plus"></i>
                         <span>إضافة رماة</span>
@@ -176,8 +175,7 @@
                                         class="form-control form-control-sm bg-light total-input"
                                         placeholder="0"
                                         id="total-{{ $index }}"
-                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}"
-                                        readonly>
+                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}">
                                 </td>
 
                                 {{-- notes --}}
@@ -335,53 +333,66 @@
     //load total from model
 
     document.addEventListener('DOMContentLoaded', function() {
-    if (!@json($confirmed)) { 
-        document.querySelectorAll('.score-input').forEach(input => {
-            input.addEventListener('input', function() {
-                let row = this.closest('tr');
+        if (!@json($confirmed)) {
+            document.querySelectorAll('.score-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    let row = this.closest('tr');
 
-                let scores = [];
-                row.querySelectorAll('.score-input').forEach(scoreInput => {
-                    scores.push(parseInt(scoreInput.value) || 0);
-                });
-
-                fetch("{{ route('calculate-total') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            scores: scores,
-                            player_id: row.querySelector('.score-input').dataset.player
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        row.querySelector('.total-input').value = data.total;
+                    let scores = [];
+                    row.querySelectorAll('.score-input').forEach(scoreInput => {
+                        scores.push(parseInt(scoreInput.value) || 0);
                     });
-            });
-        });
-    }
-});
 
+                    fetch("{{ route('calculate-total') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                scores: scores,
+                                player_id: row.querySelector('.score-input').dataset.player
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            row.querySelector('.total-input').value = data.total;
+                        });
+                });
+            });
+        }
+    });
 </script>
 
 <script>
     //get data from table when submit save report
     document.getElementById('saveReportForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        let valid = true;
         let players = {};
+
         document.querySelectorAll('input[data-player]').forEach(input => {
             let playerId = input.getAttribute('data-player');
             let field = input.getAttribute('name');
-            let value = input.value;
+            let value = input.value.trim();
 
-            if (!players[playerId]) {
-                players[playerId] = {};
+            // check required for "goal"
+            if (field === 'goal' && value === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
             }
+
+            if (!players[playerId]) players[playerId] = {};
             players[playerId][field] = value;
         });
+
+        if (!valid) {
+            alert('الرجاء إدخال رقم الهدف لكل الرماة');
+            return;
+        }
+
         document.getElementById('playersData').value = JSON.stringify(players);
         this.submit();
     });

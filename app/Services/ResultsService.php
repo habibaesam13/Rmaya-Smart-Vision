@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\sv_initial_results_players;
+use App\Models\Sv_member;
 
 class ResultsService
 {
@@ -72,24 +73,44 @@ class ResultsService
             $report->update(['attached_file' => $path]);
         }
         foreach ($playersData as $playerId => $values) {
+            $cleanedValues = collect($values)->map(function ($v, $k) {
+                if ($k === 'notes') {
+                    return $v === '' ? null : $v;
+                }
+                return ($v === '' || is_null($v)) ? 0 : $v;
+            })->toArray();
+
             $report->players_results()
                 ->where('id', $playerId)
                 ->update([
-                    'goal'   => $values['goal'] ?? 0,
-                    'R1'     => $values['R1'] ?? 0,
-                    'R2'     => $values['R2'] ?? 0,
-                    'R3'     => $values['R3'] ?? 0,
-                    'R4'     => $values['R4'] ?? 0,
-                    'R5'     => $values['R5'] ?? 0,
-                    'R6'     => $values['R6'] ?? 0,
-                    'R7'     => $values['R7'] ?? 0,
-                    'R8'     => $values['R8'] ?? 0,
-                    'R9'     => $values['R9'] ?? 0,
-                    'R10'    => $values['R10'] ?? 0,
-                    'total'  => $values['total'] ?? 0,
-                    'notes'  => $values['notes'] ?? null,
+                    'goal'   => $cleanedValues['goal'] ?? 0,
+                    'R1'     => $cleanedValues['R1'] ?? 0,
+                    'R2'     => $cleanedValues['R2'] ?? 0,
+                    'R3'     => $cleanedValues['R3'] ?? 0,
+                    'R4'     => $cleanedValues['R4'] ?? 0,
+                    'R5'     => $cleanedValues['R5'] ?? 0,
+                    'R6'     => $cleanedValues['R6'] ?? 0,
+                    'R7'     => $cleanedValues['R7'] ?? 0,
+                    'R8'     => $cleanedValues['R8'] ?? 0,
+                    'R9'     => $cleanedValues['R9'] ?? 0,
+                    'R10'    => $cleanedValues['R10'] ?? 0,
+                    'total'  => $cleanedValues['total'] ?? 0,
+                    'notes'  => $cleanedValues['notes'] ?? null,
                 ]);
         }
+
+
         return $report;
+    }
+
+
+    public function getAvailablePlayers()
+    {
+        
+        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
+        return Sv_member::where('reg_type','personal')->whereNotIn('mid', $addedPlayers)
+            ->orderBy('name')
+            ->get();
+
     }
 }

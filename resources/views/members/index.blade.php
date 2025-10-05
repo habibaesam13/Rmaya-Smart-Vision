@@ -4,8 +4,6 @@
 @section('content')
 
 <div class="page-container my-4">
-
-
     {{-- Filter Form Section --}}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
@@ -203,6 +201,9 @@
     {{-- Filtered Data --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
+            <!-- @isset($addMembertoReportRid)
+            <p>{{ $addMembertoReportRid}}</p>
+            @endisset -->
             @if($reportSection)
             <div class="card border-success mb-3 rounded-3 overflow-hidden">
                 <div class="card-header bg-success text-white">
@@ -251,6 +252,8 @@
                         </div>
                     </form>
                     <hr>
+                    @isset($players)
+                    
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -269,34 +272,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($members as $member)
+                            @foreach($players as $player)
                             <tr>
                                 <td>
-                                    <input type="checkbox" class="member-checkbox" name="checkedMembers[]" value="{{ $member->mid }}">
+                                    <input type="checkbox" class="member-checkbox" name="checkedMembers[]" value="{{ $player->mid }}">
                                 </td>
-                                <td>{{ $member->name }}</td>
-                                <td>{{ $member->ID }}</td>
-                                <td>{{ $member->phone1 ?? $member->phone2 }}</td>
-                                <td>{{ $member->age_calculation() }}</td>
-                                <td>{{ $member->weapon->name }}</td>
-                                <td>{{ $member->club?->name ?? '---' }}</td>
-                                <td>{{ $member->registrationClub?->name ?? '---' }}</td>
+                                <td>{{ $player->name }}</td>
+                                <td>{{ $player->ID }}</td>
+                                <td>{{ $player->phone1 ?? $player->phone2 }}</td>
+                                <td>{{ $player->age_calculation() }}</td>
+                                <td>{{ $player->weapon->name }}</td>
+                                <td>{{ $player->club?->name ?? '---' }}</td>
+                                <td>{{ $player->registrationClub?->name ?? '---' }}</td>
                                 <td>
-                                    {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
-                                ? $member->nationality->country_name_ar 
-                                : (trim($member->nationality->country_name ?? '') !== '' 
-                                    ? $member->nationality->country_name 
+                                    {{ $player->nationality && trim($player->nationality->country_name_ar ?? '') !== '' 
+                                ? $player->nationality->country_name_ar 
+                                : (trim($player->nationality->country_name ?? '') !== '' 
+                                    ? $player->nationality->country_name 
                                     : '---') 
                             }}
                                 </td>
-                                <td>{{ $member->member_group?->name ?? '---' }}</td>
-                                <td>{{ $member->registration_date }}</td>
+                                <td>{{ $player->member_group?->name ?? '---' }}</td>
+                                <td>{{ $player->registration_date }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-3">
                                         {{-- Edit Button --}}
                                         <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                             @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                            <input type="hidden" name="mid" value="{{ $player->mid }}">
                                             <button type="submit" class="icon-btn text-warning" title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </button>
@@ -306,7 +309,7 @@
                                             onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
 
                                             @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                            <input type="hidden" name="mid" value="{{ $player->mid }}">
                                             @method('DELETE')
                                             <button type="submit" class="icon-btn text-danger" title="حذف">
                                                 <i class="fas fa-trash-alt"></i>
@@ -316,10 +319,10 @@
                                         {{-- Toggle Status Button --}}
                                         <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
                                             @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
+                                            <input type="hidden" name="mid" value="{{ $player->mid }}">
                                             <button type="submit" class="icon-btn text-success"
-                                                title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
-                                                <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>
+                                                title="{{ $player->active ? 'تعطيل' : 'تفعيل' }}">
+                                                <i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -328,6 +331,10 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @endisset
+
+
+                    
 
                 </div>
             </div>

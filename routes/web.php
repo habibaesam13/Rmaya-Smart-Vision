@@ -320,6 +320,9 @@ Route::group(
                     Route::post('members/detailed-repoert/{rid}',[ResultsCotroller::class, 'saveReport'])->name('detailed-members-report-save');
                     //get total for R1->10 in report
                     Route::post('calculate-total', [ResultsCotroller::class, 'calculateTotal'])->name('calculate-total');
+                    //add new player to report
+                    Route::get('add-player-to-report/{rid}',[ResultsCotroller::class, 'addPlayer'])->name('add-player-to-report');
+                    Route::post('add-player-to-report/{rid}',[ResultsCotroller::class, 'storePlayer'])->name('store-player-to-report');
 
                     
                 }
