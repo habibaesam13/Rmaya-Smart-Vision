@@ -164,4 +164,17 @@ class ResultsController extends Controller
             ->route('report-members', $report->Rid)
             ->with('success', 'تم تحديث بيانات التقرير بنجاح');
     }
+
+
+
+
+
+
+
+    /**Preliminary results reports - clubs - details */
+    public function getResportsDetails(Request $request){
+        $weapons=$this->weaponService->getAllWeapons();
+        $ReportsDetails=$this->resultService->getReportsDetails($request);
+        return view('personalReports.preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+    }
 }

@@ -140,4 +140,19 @@ class ResultsService
             ->orderBy('mid')
             ->cursorPaginate(config('app.admin_pagination_number'));
     }
+
+
+    /**Preliminary results reports - clubs - details */
+
+
+    public function getReportsDetails(Request $request)
+    {
+        return SV_initial_results::query()->where('confirmed',true)
+            ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
+            ->when($request->details, fn($q, $details) => $q->where('details', $details))
+            ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
+            ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
+            ->orderBy('Rid')
+            ->cursorPaginate(config('app.admin_pagination_number'));
+    }
 }

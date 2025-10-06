@@ -369,6 +369,10 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.members', 'Personal_Results.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-download-pdf');
+
+
+                    /**Preliminary results reports - clubs - details */
+                    Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
                 }
             );
         });
