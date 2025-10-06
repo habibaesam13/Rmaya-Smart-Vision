@@ -2,28 +2,33 @@
 
 use App\Models\Logs;
 use Illuminate\Http\Request;
+use App\Services\GroupService;
+use App\Services\ResultsService;
 use Illuminate\Support\Facades\App;
+use App\Exports\GroupsExportProvider;
 use Illuminate\Support\Facades\Route;
+use App\Exports\MembersExportProvider;
+use App\Exports\PersonalResultsExport;
 use App\Http\Controllers\PDFController;
+use App\Services\GroupsDetailsProvider;
 use App\Services\GroupsMembersProvider;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ClubsController;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\GroupController;
 use App\Services\PersonalMembersProvider;
+use App\Services\PersonalResultsProvider;
 use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResultsController;
+use App\Exports\GroupsMembersExportProvider;
 use App\Http\Controllers\PersonalController;
-use App\Http\Controllers\GroupsPDFController;
 use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\GroupExportController;
-use App\Http\Controllers\ClubsWeaponsController;
-use App\Http\Controllers\MemberExportController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\ResultsController;
-use App\Services\GroupsDetailsProvider;
 use App\Services\PersonalWeaponReportProvider;
+use App\Http\Controllers\ClubsWeaponsController;
+use App\Http\Controllers\Admin\SettingController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -244,7 +249,11 @@ Route::group(
                     Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     //excel
-                    Route::post('/members/export-excel', [MemberExportController::class, 'export'])->name('members.export.excel');
+                    Route::post('/members/export-excel', function(Request $request){
+                        $provider = new MembersExportProvider($request);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'Personal_registered.xlsx');
+                    })->name('members.export.excel');
                     // Personal PDF
                     Route::get('members/view-pdf', function (Request $request, PersonalMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.members', 'Registered_Members.pdf');
@@ -283,8 +292,15 @@ Route::group(
                     Route::get('members', [GroupController::class, 'getMembersWithGroups'])->name('groups-members');
                     Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
-                    Route::post('export-excel', [GroupExportController::class, 'export'])->name('groups.export.excel');
-                    Route::post('/members/export-excel', [GroupExportController::class, 'exportGroupsMembers'])->name('groups.members.export.excel'); //extra
+                    Route::post('export-excel', function(Request $request, GroupService $groupService){
+                        $provider = new GroupsExportProvider($request,$groupService);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'Groups_registered.xlsx');})->name('groups.export.excel');
+
+                    Route::post('/members/export-excel',function(Request $request){
+                        $provider = new GroupsMembersExportProvider($request);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'Groups_Members_registered.xlsx');})->name('groups.members.export.excel'); //extra
                     // Groups PDF
                     Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members', 'Registered_Groups_Members.pdf');
@@ -316,8 +332,9 @@ Route::group(
                         ->name('report-player-delete');
                     Route::get('registered-members', [ResultsController::class,'index'])->name('results-registered-members');
                     Route::get('search-members', [ResultsController::class, 'index'])->name('search-results-registered-members');
+
                     Route::post('generate-report', [ResultsController::class, 'store'])->name('generate-report-registered-members');
-                    Route::get('report-members/{rid?}', [ResultsController::class, 'show'])->name('report-members');
+                    Route::get('report-members/{rid}', [ResultsController::class, 'show'])->name('report-members');
                     Route::post('confirm-report/{rid}', [ResultsController::class, 'confirmReport'])->name('report-confirmation');
                     Route::post('members/detailed-repoert/{rid}',[ResultsController::class, 'saveReport'])->name('detailed-members-report-save');
                     //get total for R1->10 in report
@@ -330,13 +347,28 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->viewPDF($request);
                     })->name('personal-results-report-view-pdf');
-
+                    /*for report page */
+                    //pdf
                     Route::get('report-{rid}-members/download-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf');
-                    
-                    
+                    //for index page
+                    //excel
+                    Route::post('personal/results/export-excel',function(Request $request,ResultsService $results_service){
+                        $provider = new PersonalResultsExport($request,$results_service);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'Personal_results_report.xlsx');})->name('personal.results.export.excel');
+
+                    //pdf
+                    Route::get('personal/results/view-pdf', function (Request $request, PersonalResultsProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.members', 'Personal_Results.pdf');
+                        return $controller->viewPDF($request);
+                    })->name('personal-results-view-pdf');
+                    Route::get('personal/results/download-pdf', function (Request $request, PersonalResultsProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.members', 'Personal_Results.pdf');
+                        return $controller->downloadPDF($request);
+                    })->name('personal-results-download-pdf');
                 }
             );
         });

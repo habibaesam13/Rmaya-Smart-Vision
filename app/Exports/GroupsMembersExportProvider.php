@@ -2,28 +2,31 @@
 
 namespace App\Exports;
 
-
 use App\Models\Sv_member;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
+use App\Contracts\ExcelProviderInterface;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class GroupsMembers implements FromCollection,WithHeadings
+class GroupsMembersExportProvider implements FromCollection, ExcelProviderInterface
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
-    protected Request $request;
-    protected GroupService $groupService;
+     * Create a new class instance.
+     */
+    protected $request;
 
-    public function __construct(Request $request, GroupService $groupService)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->groupService = $groupService;
+        
     }
 
     public function collection()
+    {
+        return $this->getData($this->request);
+    }
+
+    public function getData(Request $request)
     {
         return Sv_member::with(['team', 'club', 'weapon'])
         ->where('reg_type', 'group')
@@ -48,7 +51,6 @@ class GroupsMembers implements FromCollection,WithHeadings
                 ];
             });
     }
-
     public function headings(): array
     {
         return [

@@ -223,13 +223,7 @@
                                     {{ __('lang.Personal').' - أندية' }}
                                 </a>
                             </li>
-                            {{-- أضافة تقرير النتائج اليومية للاسلحة --}}
-                                <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('report-members') }}" class="side-nav-link">
-                                    <i class="fa-solid fa-users-line me-2"></i>
-                                    {{ __('lang.Add Daily Weapons Results Report') }}
-                                </a>
-                            </li>
+                            
                         </ul>
                     </div>
                 </li>

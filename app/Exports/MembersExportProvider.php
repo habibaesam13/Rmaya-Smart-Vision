@@ -2,24 +2,27 @@
 
 namespace App\Exports;
 
-use App\Models\Country;
-use App\Models\Member_group;
-use App\Models\Sv_clubs;
-use App\Models\Sv_member;
+use Illuminate\Http\Request;
+use App\Contracts\ExcelProviderInterface;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-
-class MembersExport implements FromCollection, WithHeadings
+use App\Models\Sv_member;
+class MembersExportProvider implements FromCollection, ExcelProviderInterface
 {
+    /**
+     * Create a new class instance.
+     */
     protected $request;
 
-    public function __construct($request)
+    public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
     public function collection()
     {
+        return $this->getData($this->request);
+    }
+    public function getData(Request $request){
         return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality', 'member_group'])
             ->filter($this->request)
             ->get()
@@ -42,9 +45,7 @@ class MembersExport implements FromCollection, WithHeadings
                 ];
             });
     }
-
-
-    public function headings(): array
+     public function headings(): array
     {
         return [
             'الاسم',
@@ -59,4 +60,6 @@ class MembersExport implements FromCollection, WithHeadings
             'تاريخ التسجيل',
         ];
     }
+
+    
 }

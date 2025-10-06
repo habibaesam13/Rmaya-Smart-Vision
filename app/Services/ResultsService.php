@@ -118,7 +118,6 @@ class ResultsService
     public function GetAllAvailablePlayers(Request $request)
     {
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-
         return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
             ->where('reg_type', 'personal')
             ->whereNotIn('mid', $addedPlayers)

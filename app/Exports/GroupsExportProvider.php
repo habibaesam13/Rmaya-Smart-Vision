@@ -4,13 +4,16 @@ namespace App\Exports;
 
 use Illuminate\Http\Request;
 use App\Services\GroupService;
+use App\Contracts\ExcelProviderInterface;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class GroupsExport implements FromCollection, WithHeadings
+class GroupsExportProvider implements FromCollection, ExcelProviderInterface
 {
-    protected Request $request;
-    protected GroupService $groupService;
+    /**
+     * Create a new class instance.
+     */
+    protected $request;
+    protected $groupService;
 
     public function __construct(Request $request, GroupService $groupService)
     {
@@ -19,6 +22,11 @@ class GroupsExport implements FromCollection, WithHeadings
     }
 
     public function collection()
+    {
+        return $this->getData($this->request);
+    }
+
+    public function getData(Request $request)
     {
         return $this->groupService->searchQuery($this->request)
             ->get()

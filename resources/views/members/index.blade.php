@@ -20,7 +20,9 @@
                         style="height: 48px; font-size: 1rem;">
                         عدد الأفراد المسجلين : {{$membersCount}}
                     </span>
-                    <form action="{{ route('members.export.excel') }}" method="post" class="mb-0">
+                    <form action="{{ isset($reportSection) && $reportSection
+                        ? route('personal.results.export.excel')
+                        : route('members.export.excel') }}" method="post" class="mb-0">
                         @csrf
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -31,7 +33,9 @@
                         </button>
                     </form>
 
-                    <form action="{{ route('members-download-pdf') }}" method="get" class="mb-0">
+                    <form action="{{ isset($reportSection) && $reportSection
+                        ? route('personal-results-download-pdf')
+                        : route('members-download-pdf') }}" method="get" class="mb-0">
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
@@ -44,7 +48,7 @@
             </div>
 
 
-            <form action="{{ isset($reportSection) 
+            <form action="{{ isset($reportSection) && $reportSection
                         ? route('search-results-registered-members')
                         : route('personal-registration') }}" method="get">
                 <div class="row g-3">
@@ -344,8 +348,10 @@
                                 <td colspan="12" class="text-center text-muted mt-3">
                                     @if(request()->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']))
                                     <p class="mt-3 w-100">لا توجد نتائج مطابقة لبحثك.</p>
-                                    @else
+                                    @elseif(isset($Edit_report))
                                     <p class="mt-3 w-100">لا يوجد رماه لهم نفس السلاح - {{ $Edit_report?->weapon?->name ?? '---' }}</p>
+                                    @else
+                                    <p class="mt-3 w-100">لا يوجد رماة غير مضافين في تقارير.</p>
                                     @endif
 
                                     @if(isset($Edit_report))
