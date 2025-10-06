@@ -280,7 +280,7 @@ return [
     'Weapons'=>'الأسلحة',
     'RegisteredGroups'=>'المسجلين - فرق',
     'GroupsMembers'=>'تقرير الفرق',
-    'Add Daily Weapons Results Report'=>'اضافة تقرير النتائج اليومية للاسلحة',
+    'reportsDetails'=>'تقارير النتائج الأولية-الاندية-الديتيل',
 //    'This is an electronically generated invoice, hence does not require a signature or stamp'
 
     'logs_' . 'update' => 'تعديل عنصر في ',

@@ -223,7 +223,14 @@
                                     {{ __('lang.Personal').' - أندية' }}
                                 </a>
                             </li>
-                            
+
+                            {{-- تقارير النتائج اليومية --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('reports-details') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-list"></i>
+                                    {{ __('lang.reportsDetails') }}
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

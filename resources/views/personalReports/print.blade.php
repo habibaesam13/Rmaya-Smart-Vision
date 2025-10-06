@@ -6,6 +6,12 @@
     <title>طباعة التقرير</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
     <style>
+        *,
+        *::after,
+        *::before {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #fff;
@@ -32,8 +38,8 @@
         }
 
         .print-btn {
-            position: fixed;
-            top: 150px;
+            position: relative;
+            /* top: 185px; */
             left: 20px;
             background-color: #007bff;
             color: white;
@@ -51,7 +57,9 @@
         .print-btn:hover {
             background-color: #0056b3;
         }
-
+         .m-left{
+            margin-left: -24px;
+         }
         @media print {
             @page {
                 size: landscape;
@@ -66,33 +74,30 @@
 </head>
 
 <body>
-    <header>
+    <header class="mb-3">
         <div class="d-flex justify-content-between align-items-center ">
             <div>
-                <p><strong>{{ $siteSettings->company_name_ar }}</strong></p>
-                <p>{{ $siteSettings->address_ar }}</p>
-                <p>{{ $siteSettings->phone }}</p>
+                <p class="fw-bold m-0">{{ $siteSettings->company_name_ar }}</p>
+                <p class="m-0">{{ $siteSettings->address_ar }}</p>
+                <p class="m-0">{{ $siteSettings->phone }}</p>
             </div>
             <div class="w-25 text-center">
                 <img src="{{ asset($siteSettings->logo) }}" class="w-logo" alt="Logo">
-            </div>
+                <h3>تقرير النتائج</h3>
+                <p class="text-muted m-0">نوع السلاح: {{ $report->weapon?->name ?? '-' }}</p>
+                <p class="text-muted m-0"> رقم الديتيل: {{ $report->details}}</p>
+                <p class="text-muted m-0">التاريخ: {{ $report->date?->format('d/m/Y') }}</p>
 
-            <div>
-                <p><strong>{{ $siteSettings->company_name }}</strong></p>
-                <p>{{ $siteSettings->address }}</p>
-                <p>{{ $siteSettings->phone }}</p>
+            </div>
+            <div class="text-end">
+                <p class="fw-bold m-0">{{ $siteSettings->company_name }}</p>
+                <p class="m-0">{{ $siteSettings->address }}</p>
+                <p class="m-0">{{ $siteSettings->phone }}</p>
             </div>
         </div>
     </header>
-    <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
 
-    <div class="title-header">
-        <h3>تقرير النتائج</h3>
-        <p class="text-muted">نوع السلاح: {{ $report->weapon?->name ?? '-' }}</p>
-        <p class="text-muted"> رقم الديتيل: {{ $report->details}}</p>
-        <p class="text-muted">التاريخ: {{ $report->date?->format('d/m/Y') }}</p>
 
-    </div>
 
     <div class="table-responsive">
         <table class="table table-bordered">
@@ -136,7 +141,10 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex justify-content-end m-left">
+        <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
 
+    </div>
 </body>
 
 </html>

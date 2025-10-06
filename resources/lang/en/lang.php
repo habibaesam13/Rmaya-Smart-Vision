@@ -268,7 +268,7 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'give_permissions_to_role' => 'Assign permissions to this role',
-    'Add Daily Weapons Results Report'=>'Add Daily Weapons Results Report',
+    'reportsDetails'=>'Preliminary results reports - clubs - details',
 
     'Event prices_Report' =>  'Event prices\' Report',
     'event_application_time_report' => "Event Application times' Report",
