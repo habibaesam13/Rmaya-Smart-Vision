@@ -82,7 +82,13 @@
                         <input type="file" name="attached_file" id="attached_file"
                             class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
                     </div>
-
+                         {{-- Print Button --}}
+                <a href="{{ route('report.print', $report->Rid) }}"
+                    target="_blank"
+                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
+                    <i class="fas fa-print"></i>
+                    <span>طباعة</span>
+                </a>
                     {{-- زر الحفظ --}}
                     <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-save"></i>
@@ -96,13 +102,7 @@
                     </button>
                 </form>
 
-                {{-- Print Button --}}
-                <a href="{{ route('report.print', $report->Rid) }}"
-                    target="_blank"
-                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
-                    <i class="fas fa-print"></i>
-                    <span>طباعة</span>
-                </a>
+               
 
             </div>
         </div>
