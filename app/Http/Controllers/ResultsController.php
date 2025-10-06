@@ -71,16 +71,31 @@ class ResultsController extends Controller
     }
 
     //functions for members for specific report
-    public function show($rid)
+    public function show(Request $request, $rid = null)
     {
-        $report = $this->resultService->getReport($rid);
-        if (!$report) {
-            return redirect()->route('results-registered-members');
+        $rid = $rid ?? $request->get('rid');
+
+        if ($rid) {
+            $report = $this->resultService->getReport($rid);
+            if (!$report) {
+                return redirect()->route('results-registered-members')->with('error', 'لم يتم العثور على التقرير');
+            }
+
+            $members = $this->resultService->getReportDetails($rid);
+            $confirmed = $report->confirmed;
+
+            return view('personalReports.personal_report_members', [
+                'report' => $report,
+                'members' => $members,
+                'confirmed' => $confirmed,
+            ]);
         }
-        $members = $this->resultService->getReportDetails($rid);
-        $confirmed = $report->confirmed;
-        return view('personalReports.personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
+
+        // If no rid
+        return view('personalReports.personal_report_members')
+            ->with('error', 'يرجى اختيار تقرير أو إنشاء تقرير جديد لإضافة الرماة.');
     }
+
     public function confirmReport($rid)
     {
         $confirmed = $this->resultService->confirmReport($rid);

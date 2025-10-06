@@ -317,7 +317,7 @@ Route::group(
                     Route::get('registered-members', [ResultsController::class,'index'])->name('results-registered-members');
                     Route::get('search-members', [ResultsController::class, 'index'])->name('search-results-registered-members');
                     Route::post('generate-report', [ResultsController::class, 'store'])->name('generate-report-registered-members');
-                    Route::get('report-members/{rid}', [ResultsController::class, 'show'])->name('report-members');
+                    Route::get('report-members/{rid?}', [ResultsController::class, 'show'])->name('report-members');
                     Route::post('confirm-report/{rid}', [ResultsController::class, 'confirmReport'])->name('report-confirmation');
                     Route::post('members/detailed-repoert/{rid}',[ResultsController::class, 'saveReport'])->name('detailed-members-report-save');
                     //get total for R1->10 in report

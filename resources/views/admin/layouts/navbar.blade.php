@@ -82,13 +82,13 @@
                 </a>
                 <div class="collapse" id="sidebarLayouts_settings">
                     <ul class="sub-menu">
-                        {{--                            @if(checkModulePermission('roles', 'add'))--}}
-                        {{--                                <li class="side-nav-item">--}}
-                        {{--                                    <a href="{{url(route('admin.roles.create'))}}"--}}
-                        {{--                                       class="side-nav-link"> {{__('lang.Add Role')}}
+                        {{-- @if(checkModulePermission('roles', 'add'))--}}
+                        {{-- <li class="side-nav-item">--}}
+                        {{-- <a href="{{url(route('admin.roles.create'))}}"--}}
+                        {{-- class="side-nav-link"> {{__('lang.Add Role')}}
                         </a>--}}
-                        {{--                                </li>--}}
-                        {{--                            @endif--}}
+                        {{-- </li>--}}
+                        {{-- @endif--}}
 
                         <li class="side-nav-item">
                             <a href="{{url(route('admin.settings.edit'))}}" class="side-nav-link">
@@ -192,6 +192,49 @@
                         <span class="menu-text">{{ __('lang.GroupsMembers') }}</span>
                     </a>
                 </li>
+
+                {{-- لوحة تحكم الأندية --}}
+                <li
+                    class="side-nav-item 
+                    @if (request()->routeIs('personal.*') || request()->routeIs('results.*') || request()->routeIs('groups.*')) active @endif">
+
+                    <a data-bs-toggle="collapse" href="#sidebarLayouts_clubs" aria-expanded="false"
+                        aria-controls="sidebarLayouts_clubs" class="side-nav-link">
+                        <span class="menu-icon"><i class="fa-solid fa-layer-group"></i></span>
+                        <span class="menu-text">لوحة تحكم الأندية</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+
+                    <div class="collapse @if (request()->routeIs('personal.*') || request()->routeIs('clubs.*') || request()->routeIs('groups.*')) show @endif"
+                        id="sidebarLayouts_clubs">
+                        <ul class="sub-menu">
+                            {{-- تسجيل فردي أندية --}}
+                            <li class="side-nav-item @if (request()->routeIs('personal-create')) active @endif">
+                                <a href="{{ route('personal-create') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-person me-2"></i>
+                                    {{ __('lang.PersonalCreate') }}
+                                </a>
+                            </li>
+
+                            {{--  المسجلين أفراد أندية --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('results-registered-members') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-users-line me-2"></i>
+                                    {{ __('lang.Personal').' - أندية' }}
+                                </a>
+                            </li>
+                            {{-- أضافة تقرير النتائج اليومية للاسلحة --}}
+                                <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('report-members') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-users-line me-2"></i>
+                                    {{ __('lang.Add Daily Weapons Results Report') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
             </ul>
             @if(checkModulePermission('logs', 'view'))
             <li class="side-nav-item">
@@ -220,9 +263,9 @@
 
         <!-- Help Box -->
         <div class="help-box text-center">
-            {{--            <h5 class="fw-semibold fs-16">Unlimited Access</h5>--}}
-            {{--            <p class="mb-3 opacity-75">Upgrade to plan to get access to unlimited reports</p>--}}
-            {{--            <a href="javascript: void(0);" class="btn btn-danger btn-sm">Upgrade</a>--}}
+            {{-- <h5 class="fw-semibold fs-16">Unlimited Access</h5>--}}
+            {{-- <p class="mb-3 opacity-75">Upgrade to plan to get access to unlimited reports</p>--}}
+            {{-- <a href="javascript: void(0);" class="btn btn-danger btn-sm">Upgrade</a>--}}
         </div>
 
         <div class="clearfix"></div>
@@ -272,7 +315,8 @@
                 <div>
                     <h4 class="page-title fs-18 fw-bold mb-0">{{all_settings()->getItem('company_name')}}</h4>
                     <h5 class="page-title mt-1 text-primary  fw-bold mb-0">
-                        {{all_settings()->getItem('company_department_name')}}</h5>
+                        {{all_settings()->getItem('company_department_name')}}
+                    </h5>
 
                 </div>
 

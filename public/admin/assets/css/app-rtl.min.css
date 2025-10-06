@@ -17834,7 +17834,7 @@ html[data-topbar-color=dark][data-bs-theme=light] .page-content {
 	color: var(--highdmin-emphasis-color);
 	-webkit-transition: all .25s ease-in-out;
 	transition: all .25s ease-in-out;
-	border-top: 1px solid var(--highdmin-border-color);
+	border-top: 1px solid var(--highdmin-border-color); 
 	margin: auto -.75rem 0
 }
 

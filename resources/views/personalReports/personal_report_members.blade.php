@@ -27,8 +27,10 @@
                     <i class="ri-file-list-3-line text-primary me-2" style="font-size:2rem !important"></i>
                     تقرير النتائج اليومية للأسلحة
                 </h2>
+                
             </div>
-
+            <hr>
+            @if(isset($report)&&isset($members)&&isset($confirmed))
             {{-- Report Info --}}
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
@@ -69,18 +71,15 @@
                 </form>
                 @endif
                 {{-- report save --}}
-                <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
-                    method="POST"
-                    id="saveReportForm"
-                    enctype="multipart/form-data"
-                    class="d-flex align-items-center gap-2">
+                <form action="{{ route('detailed-members-report-save', $report?->Rid) }}" method="POST"
+                    id="saveReportForm" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                     @csrf
                     <input type="hidden" name="players_data" id="playersData">
 
                     {{-- الملف --}}
                     <div class="file-upload-wrapper">
-                        <input type="file" name="attached_file" id="attached_file"
-                            class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
+                        <input type="file" name="attached_file" id="attached_file" class="form-control"
+                            accept=".pdf,.doc,.docx,.xlsx,.xls">
                     </div>
 
                     {{-- زر الحفظ --}}
@@ -141,58 +140,44 @@
                             <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
                             {{-- goal --}}
                             <td>
-                                <input type="number"
-                                    name="goal"
-                                    required
-                                    data-player="{{ $member->id }}"
-                                    class="form-control form-control-sm"
-                                    min="1"
-                                    value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"
-                                    @if($confirmed) readonly @endif>
+                                <input type="number" name="goal" required data-player="{{ $member->id }}"
+                                    class="form-control form-control-sm" min="1"
+                                    value="{{ old('goal.' . $member->id, $member->goal ?? '') }}" @if($confirmed)
+                                    readonly @endif>
                             </td>
 
-                                {{-- R1 → R10 --}}
-                                @for($i=1; $i<=10; $i++)
-                                <td>
-                                <input type="number"
-                                    name="R{{ $i }}"
-                                    data-player="{{ $member->id }}"
-                                    class="form-control form-control-sm score-input"
-                                    placeholder="0"
-                                    min="0"
+                            {{-- R1 → R10 --}}
+                            @for($i=1; $i<=10; $i++) <td>
+                                <input type="number" name="R{{ $i }}" data-player="{{ $member->id }}"
+                                    class="form-control form-control-sm score-input" placeholder="0" min="0"
                                     data-row="{{ $index }}"
-                                    value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"
-                                    @if($confirmed) readonly @endif>
+                                    value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}" @if($confirmed)
+                                    readonly @endif>
                                 </td>
                                 @endfor
 
                                 {{-- total --}}
                                 <td>
-                                    <input type="number"
-                                        name="total"
-                                        data-player="{{ $member->id }}"
-                                        class="form-control form-control-sm bg-light total-input"
-                                        placeholder="0"
+                                    <input type="number" name="total" data-player="{{ $member->id }}"
+                                        class="form-control form-control-sm bg-light total-input" placeholder="0"
                                         id="total-{{ $index }}"
                                         value="{{ old('total.'.$member->id, $member->total ?? '') }}">
                                 </td>
 
                                 {{-- notes --}}
                                 <td>
-                                    <input type="text"
-                                        name="notes"
-                                        data-player="{{ $member->id }}"
-                                        class="form-control form-control-sm"
-                                        placeholder="ملاحظات"
-                                        value="{{ old('notes.'.$member->id, $member->notes ?? '') }}"
-                                        @if($confirmed) readonly @endif>
+                                    <input type="text" name="notes" data-player="{{ $member->id }}"
+                                        class="form-control form-control-sm" placeholder="ملاحظات"
+                                        value="{{ old('notes.'.$member->id, $member->notes ?? '') }}" @if($confirmed)
+                                        readonly @endif>
                                 </td>
 
 
 
                                 @if(!$confirmed)
                                 <td class="text-center">
-                                    <form action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
+                                    <form
+                                        action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
                                         method="POST" class="d-inline"
                                         onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
                                         @csrf
@@ -219,8 +204,19 @@
 
         </div>
     </div>
+    @else
+    <div class="text-center my-5 py-5">
+        <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+        <h4 class="mb-3 ">لم يتم اختيار أي تقرير بعد</h4>
+        <p class="text-muted mb-4">يرجى اختيار تقرير أو إنشاء تقرير جديد لإضافة الرماة.</p>
+        <a href="{{ route('results-registered-members') }}" class="btn btn-primary btn-lg px-4">
+            <i class="fas fa-arrow-right"></i>
+            العودة إلى صفحة التقارير
+        </a>
+    </div>
+    @endif
 </div>
-
+@endsection
 <style>
     .info-box {
         border-left: 4px solid #97ca52;
@@ -316,6 +312,7 @@
         background-color: #f8f9fa;
     }
 </style>
+@if(isset($report)&&isset($members)&&isset($confirmed))
 <script>
     //clear input from old values when user start write in it
     document.addEventListener("DOMContentLoaded", function() {
@@ -345,12 +342,14 @@
                     fetch("{{ route('calculate-total') }}", {
                             method: 'POST',
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content,
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
                                 scores: scores,
-                                player_id: row.querySelector('.score-input').dataset.player
+                                player_id: row.querySelector('.score-input').dataset
+                                    .player
                             })
                         })
                         .then(res => res.json())
@@ -396,5 +395,4 @@
         this.submit();
     });
 </script>
-
-@endsection
+@endif
