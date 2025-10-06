@@ -92,9 +92,18 @@
                 <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
-                        <span>طباعة</span>
+                        <span>PDF</span>
                     </button>
                 </form>
+
+                {{-- Print Button --}}
+                <a href="{{ route('report.print', $report->Rid) }}"
+                    target="_blank"
+                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
+                    <i class="fas fa-print"></i>
+                    <span>طباعة</span>
+                </a>
+
             </div>
         </div>
     </div>
@@ -312,6 +321,7 @@
     tbody tr:hover {
         background-color: #f8f9fa;
     }
+
 </style>
 <script>
     //clear input from old values when user start write in it

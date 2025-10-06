@@ -86,7 +86,7 @@
                         <td>{{ $report->weapon?->name ?? '-' }}</td>
                         <td>{{ $report->details }}</td>
                         <td class="text-center">
-                            <a href="#"
+                            <a href="{{route('report-members',$report->Rid)}}"
                                 class="icon-btn me-2"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"

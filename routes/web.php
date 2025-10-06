@@ -18,6 +18,7 @@ use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\GroupController;
 use App\Services\PersonalMembersProvider;
 use App\Services\PersonalResultsProvider;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultsController;
@@ -370,6 +371,9 @@ Route::group(
                         return $controller->downloadPDF($request);
                     })->name('personal-results-download-pdf');
 
+                    //print report data
+                    // web.php
+                    Route::get('/reports/{rid}/print', [ReportController::class, 'print'])->name('report.print');
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');

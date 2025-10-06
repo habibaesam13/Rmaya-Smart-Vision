@@ -165,12 +165,6 @@ class ResultsController extends Controller
             ->with('success', 'تم تحديث بيانات التقرير بنجاح');
     }
 
-
-
-
-
-
-
     /**Preliminary results reports - clubs - details */
     public function getResportsDetails(Request $request){
         $weapons=$this->weaponService->getAllWeapons();
