@@ -64,47 +64,59 @@ class ResultsService
         return $player->delete();
     }
     public function saveReport(Request $request, $playersData, $rid)
-    {
-        $report = $this->getReport($rid);
-        if ($request->hasFile('attached_file')) {
-            if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
+{
+    $report = $this->getReport($rid);
 
-                Storage::disk('public')->delete($report->attached_file);
-            }
+    
+    if ($request->hasFile('attached_file')) {
+        $validated = $request->validate([
+            'attached_file' => 'mimes:pdf,doc,docx,xlsx,xls|max:2048',
+        ]);
 
-            $path = $request->file('attached_file')->store('reports_attachments', 'public');
-            $report->update(['attached_file' => $path]);
-        }
-        foreach ($playersData as $playerId => $values) {
-            $cleanedValues = collect($values)->map(function ($v, $k) {
-                if ($k === 'notes') {
-                    return $v === '' ? null : $v;
-                }
-                return ($v === '' || is_null($v)) ? 0 : $v;
-            })->toArray();
+        // Get the validated file
+        $file = $validated['attached_file'];
 
-            $report->players_results()
-                ->where('id', $playerId)
-                ->update([
-                    'goal'   => $cleanedValues['goal'] ?? 0,
-                    'R1'     => $cleanedValues['R1'] ?? 0,
-                    'R2'     => $cleanedValues['R2'] ?? 0,
-                    'R3'     => $cleanedValues['R3'] ?? 0,
-                    'R4'     => $cleanedValues['R4'] ?? 0,
-                    'R5'     => $cleanedValues['R5'] ?? 0,
-                    'R6'     => $cleanedValues['R6'] ?? 0,
-                    'R7'     => $cleanedValues['R7'] ?? 0,
-                    'R8'     => $cleanedValues['R8'] ?? 0,
-                    'R9'     => $cleanedValues['R9'] ?? 0,
-                    'R10'    => $cleanedValues['R10'] ?? 0,
-                    'total'  => $cleanedValues['total'] ?? 0,
-                    'notes'  => $cleanedValues['notes'] ?? null,
-                ]);
+        // Delete the old file if exists
+        if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
+            Storage::disk('public')->delete($report->attached_file);
         }
 
-
-        return $report;
+        // Store new file
+        $path = $file->store('reports_attachments', 'public');
+        $report->update(['attached_file' => $path]);
     }
+
+    // Update player results
+    foreach ($playersData as $playerId => $values) {
+        $cleanedValues = collect($values)->map(function ($v, $k) {
+            if ($k === 'notes') {
+                return $v === '' ? null : $v;
+            }
+            return ($v === '' || is_null($v)) ? 0 : $v;
+        })->toArray();
+
+        $report->players_results()
+            ->where('id', $playerId)
+            ->update([
+                'goal'   => $cleanedValues['goal'] ?? 0,
+                'R1'     => $cleanedValues['R1'] ?? 0,
+                'R2'     => $cleanedValues['R2'] ?? 0,
+                'R3'     => $cleanedValues['R3'] ?? 0,
+                'R4'     => $cleanedValues['R4'] ?? 0,
+                'R5'     => $cleanedValues['R5'] ?? 0,
+                'R6'     => $cleanedValues['R6'] ?? 0,
+                'R7'     => $cleanedValues['R7'] ?? 0,
+                'R8'     => $cleanedValues['R8'] ?? 0,
+                'R9'     => $cleanedValues['R9'] ?? 0,
+                'R10'    => $cleanedValues['R10'] ?? 0,
+                'total'  => $cleanedValues['total'] ?? 0,
+                'notes'  => $cleanedValues['notes'] ?? null,
+            ]);
+    }
+
+    return $report;
+}
+
 
 
     public function getAvailablePlayers($report)

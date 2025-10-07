@@ -53,13 +53,13 @@
 
             {{-- Action Buttons --}}
             <div class="d-flex flex-wrap gap-2">
+                @if(!$confirmed)
                 <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
                     <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-user-plus"></i>
                         <span>إضافة رماة</span>
                     </button>
                 </form>
-                @if(!$confirmed)
                 <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
@@ -89,11 +89,13 @@
                     <i class="fas fa-print"></i>
                     <span>طباعة</span>
                 </a>
+                @if(!$confirmed)
                     {{-- زر الحفظ --}}
                     <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-save"></i>
                         <span>حفظ التقرير</span>
                     </button>
+                @endif
                 </form>
                 <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
@@ -338,36 +340,57 @@
     });
     //load total from model
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!@json($confirmed)) {
-            document.querySelectorAll('.score-input').forEach(input => {
-                input.addEventListener('input', function() {
-                    let row = this.closest('tr');
+    document.addEventListener('DOMContentLoaded', function () {
+    const confirmed = @json($confirmed);
 
-                    let scores = [];
-                    row.querySelectorAll('.score-input').forEach(scoreInput => {
-                        scores.push(parseInt(scoreInput.value) || 0);
-                    });
+    if (confirmed) {
+        // Disable all input elements (including file input)
+        document.querySelectorAll("input, textarea, select, button").forEach(el => {
+            // Skip print & PDF buttons
+            if (el.closest('a') || el.closest('form[action*="print"]') || el.closest('form[action*="pdf"]')) return;
+            
+            el.disabled = true;
+            el.classList.add('bg-light');
+            el.style.cursor = 'not-allowed';
+        });
 
-                    fetch("{{ route('calculate-total') }}", {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                scores: scores,
-                                player_id: row.querySelector('.score-input').dataset.player
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            row.querySelector('.total-input').value = data.total;
-                        });
+        // Extra step: make sure file input wrapper doesn't trigger click
+        document.querySelectorAll('.file-upload-wrapper').forEach(wrapper => {
+            wrapper.style.pointerEvents = 'none';
+            wrapper.style.opacity = '0.6';
+        });
+    }
+
+    // Enable score calculation only if not confirmed
+    if (!confirmed) {
+        document.querySelectorAll('.score-input').forEach(input => {
+            input.addEventListener('input', function () {
+                let row = this.closest('tr');
+                let scores = [];
+
+                row.querySelectorAll('.score-input').forEach(scoreInput => {
+                    scores.push(parseInt(scoreInput.value) || 0);
+                });
+
+                fetch("{{ route('calculate-total') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        scores: scores,
+                        player_id: row.querySelector('.score-input').dataset.player
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    row.querySelector('.total-input').value = data.total;
                 });
             });
-        }
-    });
+        });
+    }
+});
 </script>
 
 <script>

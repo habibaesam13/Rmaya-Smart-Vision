@@ -99,7 +99,20 @@
                             @endforeach
                         </select>
                     </div>
-
+                    @if($reportSection)
+                    {{-- Weapons --}}
+                    <div class="col-md-4">
+                        <label for="weapon_id" class="form-label">السلاح</label>
+                        <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
+                            <option value="" disabled selected>اختر السلاح </option>
+                            @foreach($weapons as $weapon)
+                            <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
+                                {{ $weapon->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @else
                     {{-- Clubs --}}
                     <div class="col-md-4">
                         <label for="club_id" class="form-label">النادي</label>
@@ -120,48 +133,53 @@
                             <option value="" disabled selected>اختر النادي أولاً</option>
                         </select>
                     </div>
+                    @endif
 
-                    {{-- Search Input --}}
-                    <div class="col-md-4">
-                        <input class="form-control form-control-lg" type="text" name="q"
-                            placeholder="الاسم / رقم الهوية / رقم الهاتف">
+                    {{-- Search + Gender + Active on one row --}}
+                    <div class="col-md-12">
+                        <div class="row g-3 align-items-center">
+                            {{-- Search Input --}}
+                            <div class="col-md-4">
+                                <input class="form-control form-control-lg" type="text" name="q"
+                                    placeholder="الاسم / رقم الهوية / رقم الهاتف" value="{{ request('q') }}">
+                            </div>
+
+                            {{-- Gender --}}
+                            <div class="col-md-4 d-flex align-items-center justify-content-center gap-3">
+                                <div>
+                                    <input id="male" type="radio" name="gender" value="male"
+                                        {{ request('gender') == 'male' ? 'checked' : '' }}>
+                                    <label for="male">ذكر</label>
+                                </div>
+                                <div>
+                                    <input id="female" type="radio" name="gender" value="female"
+                                        {{ request('gender') == 'female' ? 'checked' : '' }}>
+                                    <label for="female">أنثى</label>
+                                </div>
+                            </div>
+                            @if(!$reportSection)
+                            {{-- Active --}}
+                            <div class="col-md-4 d-flex align-items-center justify-content-center gap-3">
+                                <div>
+                                    <input id="active" type="radio" name="active" value="true"
+                                        {{ request('active') == 'true' ? 'checked' : '' }}>
+                                    <label for="active">مفعل</label>
+                                </div>
+                                <div>
+                                    <input id="not-active" type="radio" name="active" value="false"
+                                        {{ request('active') == 'false' ? 'checked' : '' }}>
+                                    <label for="not-active">غير مفعل</label>
+                                </div>
+                                <div>
+                                    <input id="all" type="radio" name="active" value="all"
+                                        {{ request('active') == 'all' ? 'checked' : '' }}>
+                                    <label for="all">الكل</label>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- gender --}}
-                    <div class="mb-3 col-md-4 d-flex align-items-center justify-content-center gap-3">
-                        <div>
-                            <input id="male" type="radio" name="gender" value="male"
-                                {{ request('gender') == 'male' ? 'checked' : '' }}>
-                            <label for="male">ذكر</label>
-                        </div>
-                        <div>
-                            <input id="female" type="radio" name="gender" value="female"
-                                {{ request('gender') == 'female' ? 'checked' : '' }}>
-                            <label for="female">أنثى</label>
-                        </div>
-                        @error('gender')
-                        <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- active --}}
-                    <div class="mb-3 col-md-4 d-flex align-items-center justify-content-center gap-3">
-                        <div>
-                            <input id="active" type="radio" name="active" value="true"
-                                {{ request('active') == 'true' ? 'checked' : '' }}>
-                            <label for="active">مفعل</label>
-                        </div>
-                        <div>
-                            <input id="not-active" type="radio" name="active" value="false"
-                                {{ request('active') == 'false' ? 'checked' : '' }}>
-                            <label for="not-active">غير مفعل</label>
-                        </div>
-                        <div>
-                            <input id="all" type="radio" name="active" value="all"
-                                {{ request('active') == 'all' ? 'checked' : '' }}>
-                            <label for="all">الكل </label>
-                        </div>
-                    </div>
 
                     {{-- Dates + Registration Place in same row --}}
                     <div class="col-md-12 d-flex align-items-end gap-3">
@@ -521,35 +539,6 @@
     }
 </style>
 <script>
-    document.getElementById("reportForm").addEventListener("submit", function(e) {
-        const container = document.getElementById("checkedMembersContainer");
-        container.innerHTML = "";
-
-        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
-            let hidden = document.createElement("input");
-            hidden.type = "hidden";
-            hidden.name = "checkedMembers[]";
-            hidden.value = cb.value;
-            container.appendChild(hidden);
-        });
-    });
-</script>
-<script>
-    //date
-    // Get the current date
-    const today = new Date();
-
-    // Format the date to 'YYYY-MM-DD' for the input type="date"
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-    const day = today.getDate().toString().padStart(2, '0');
-
-    const formattedDate = `${year}-${month}-${day}`;
-
-    // Set the value of the input field
-    document.getElementById('report_date').value = formattedDate;
-
-
     document.addEventListener('DOMContentLoaded', function() {
         const clubSelect = document.getElementById('club_id');
         const weaponSelect = document.getElementById('weapon_id');
@@ -585,6 +574,36 @@
             }
         });
     });
+</script>
+<script>
+    document.getElementById("reportForm").addEventListener("submit", function(e) {
+        const container = document.getElementById("checkedMembersContainer");
+        container.innerHTML = "";
+
+        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
+            let hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "checkedMembers[]";
+            hidden.value = cb.value;
+            container.appendChild(hidden);
+        });
+    });
+</script>
+
+<script>
+    //date
+    // Get the current date
+    const today = new Date();
+
+    // Format the date to 'YYYY-MM-DD' for the input type="date"
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = today.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the value of the input field
+    document.getElementById('report_date').value = formattedDate;
 </script>
 
 @endsection

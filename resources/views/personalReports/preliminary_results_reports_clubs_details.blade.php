@@ -73,6 +73,7 @@
             <table class="table table-bordered align-middle text-center">
                 <thead>
                     <tr>
+                        <!-- <th>ID</th> -->
                         <th>التاريخ</th>
                         <th>السلاح</th>
                         <th>رقم الديتيل</th>
@@ -82,6 +83,7 @@
                 <tbody>
                     @forelse($ReportsDetails as $report)
                     <tr>
+                        <!-- <td>{{$report?->Rid}}</td> -->
                         <td>{{ $report->date?->format('d-m-Y') }}</td>
                         <td>{{ $report->weapon?->name ?? '-' }}</td>
                         <td>{{ $report->details }}</td>
