@@ -31,6 +31,17 @@ class ResultsController extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
+        $validated=$request->validate(
+            [
+                'date_from' => ['nullable', 'date'],
+                'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
+            ],
+            [
+            'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
+            'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
+            'date_to.after_or_equal'=> 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
+            ]
+        );
         $Edit_report = null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
