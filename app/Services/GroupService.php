@@ -14,10 +14,10 @@ class GroupService
     /**
      * Create a new class instance.
      */
-    
+
     public function __construct(PersonalService $personalService)
     {
-        $this->personalService=$personalService;
+        $this->personalService = $personalService;
     }
 
     //Helpers
@@ -35,10 +35,10 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        $groups=Sv_team::with(['club', 'weapon']);
-        $groupsCount=$groups->count();
+        $groups = Sv_team::with(['club', 'weapon']);
+        $groupsCount = $groups->count();
         $groups = $groups->orderBy('tid')->cursorPaginate(config('app.admin_pagination_number'));
-        return ['groups'=>$groups,'groupsCount'=>$groupsCount];
+        return ['groups' => $groups, 'groupsCount' => $groupsCount];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
@@ -59,21 +59,29 @@ class GroupService
 
     public function searchQuery(Request $request)
     {
+        // Validate date inputs
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
+        ], [
+            'date_to.after_or_equal' => 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
+        ]);
+
+        // Query builder
         return Sv_team::with(['club', 'weapon'])
             ->when($request->team_name, fn($q) => $q->where('name', 'like', "%{$request->team_name}%"))
             ->when($request->weapon_id, fn($q) => $q->where('weapon_id', $request->weapon_id))
             ->when(
                 $request->date_from,
-                fn($q) =>
-                $q->whereDate('created_at', '>=', $request->date_from)
+                fn($q) => $q->whereDate('created_at', '>=', $request->date_from)
             )
             ->when(
                 $request->date_to,
-                fn($q) =>
-                $q->whereDate('created_at', '<=', $request->date_to)
+                fn($q) => $q->whereDate('created_at', '<=', $request->date_to)
             )
             ->orderBy('tid');
     }
+
 
     public function search(Request $request)
     {
@@ -98,13 +106,13 @@ class GroupService
                 fn($q) =>
                 $q->where('t.name', 'LIKE', "%{$request->team_name}%")
             )
-            ->select('sv_members.*', 't.name as team_name') 
+            ->select('sv_members.*', 't.name as team_name')
             ->orderBy('sv_members.mid')
             ->cursorPaginate(config('app.admin_pagination_number'));
     }
 
 
-    
+
     public function deleteGroup($tid)
     {
         $group = $this->getGroupById($tid);
@@ -132,7 +140,7 @@ class GroupService
     //update member group data
     public function updateMemberData($data, $mid, Request $request)
     {
-    
+
         $member = $this->personalService->getMemberByID($mid);
         if ($request->hasFile('front_id_pic')) {
             if ($member->front_id_pic && Storage::disk('public')->exists($member->front_id_pic)) {
