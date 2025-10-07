@@ -31,6 +31,17 @@ class PersonalController extends Controller
     }
     public function index(Request $request)
     {
+         $validated=$request->validate(
+            [
+                'date_from' => ['nullable', 'date'],
+                'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
+            ],
+            [
+            'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
+            'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
+            'date_to.after_or_equal'=> 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
+            ]
+        );
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
