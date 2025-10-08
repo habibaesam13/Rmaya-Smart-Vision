@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\PublicRegistration\PersonalRegistration;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 
@@ -379,6 +380,18 @@ Route::group(
                     Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
                 }
             );
+        });
+
+
+
+
+        //Public Routes
+        Route::prefix('public')->group(function(){
+            //Personal Registration
+            Route::prefix('personal')->group(function(){
+                    Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
+
+            });
         });
     }
 );   

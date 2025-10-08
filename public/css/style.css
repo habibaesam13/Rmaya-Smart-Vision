@@ -1,0 +1,170 @@
+*و*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: rgb(142, 76, 21);
+    color: #fff;
+}
+
+body {
+    direction: rtl;
+
+}
+
+main {
+    background: url("bg.jpg");
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.container {
+    width: 800px;
+}
+
+.text-brown {
+    color: rgb(142, 76, 21);
+}
+
+.w-logo {
+    width: 100px;
+}
+
+.bg-form {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.bg-baige {
+    background-color: rgb(245, 242, 239);
+}
+
+.color-icon {
+    color: #630;
+}
+
+.background-skewed {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    background: #e7dac2;
+    transform: skew(-10deg);
+    margin: 20px auto;
+
+}
+
+.form-control,
+.form-select,
+.file-upload {
+    border: 2px solid #8e4c15;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.file-upload:focus {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: #dbb106;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(231, 218, 194, .25);
+}
+
+.form-select {
+
+    background-position: left .75rem center;
+}
+
+.form-check-input:checked {
+    background-color: #8e4c15;
+    border-color: #8e4c15;
+}
+.bg-brown {
+    background-color: #8e4c15;
+    border-color: #8e4c15;
+}
+.btn-brown {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #8e4c15;
+    --bs-btn-border-color: #8e4c15;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #8e4c15;
+    --bs-btn-hover-border-color: #8e4c15;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #8e4c15;
+    --bs-btn-active-border-color: #8e4c15;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #8e4c15;
+    --bs-btn-disabled-border-color: #8e4c15;
+
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: #a05a20;
+    border-color: #a05a20;
+}
+
+@media (min-width:300px) {
+    main {
+        margin: 50px auto auto;
+        padding: 20px 10px 70px;
+        height: auto;
+    }
+
+    .title {
+        display: none;
+    }
+
+    .form-title {
+        font-size: 16px;
+    }
+
+    .gender-margin {
+        margin-bottom: 12px;
+    }
+}
+
+@media (min-width:768px) {
+    main {
+        margin: auto;
+        padding: 30px 10px 50px;
+      
+    }
+
+    .title {
+        display: block;
+        font-size: 20px;
+
+    }
+
+    .date-size {
+        font-size: 15px;
+    }
+
+    .form-title {
+        font-size: 20px;
+    }
+
+    .gender-margin {
+        margin-bottom: auto;
+    }
+}
+
+@media (min-width:1200px) {
+    .title {
+        display: block;
+        font-size: 27px;
+    }
+
+    .date-size {
+        font-size: 16px;
+    }
+}
