@@ -390,6 +390,7 @@ Route::group(
             //Personal Registration
             Route::prefix('personal')->group(function(){
                     Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
+                    Route::post('register',[PersonalRegistration::class,'store'])->name('store-public-personal-registration');
 
             });
         });

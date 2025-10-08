@@ -12,6 +12,13 @@
 
 <body>
     <nav class="d-flex justify-content-between align-items-center bg-baige px-5 py-2">
+        {{-- Success Message --}}
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
         <div class="d-flex align-items-center gap-3">
             <img class="w-logo" src="{{asset('header_footer/logo1.png')}}" alt="logo" />
             <h1 class="title text-brown fw-bold">ميادين الريف للرماية 2025
@@ -27,7 +34,8 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="form-title text-brown fw-bold text-center background-skewed">التسجيل الفردي في المسابقات</h3>
             </div>
-            <form action="">
+            <form action="{{route('store-public-personal-registration')}}" method="post" enctype="multipart/form-data">
+                @csrf
                 <div class="row  p-3">
                     <!--رقم البطاقة-->
                     <div class="col-md-6   my-2">
@@ -36,7 +44,9 @@
                                 <label for="id-num" class=" text-white mb-2">رقم البطاقه</label>
                                 <input type="text" id="id-num" name="ID" class="form-control text-center"
                                     inputmode="numeric" maxlength="15" required>
-
+                                @error('ID')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -47,6 +57,9 @@
                                 <label for="id-date" class=" text-white mb-2">تاريخ انتهاء الهوية</label>
                                 <input type="date" id="id-date" class="form-control text-center"
                                     placeholder="mm/dd/yyyy" name="Id_expire_date" required>
+                                @error('Id_expire_date')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -56,6 +69,9 @@
                             <div class="mb-1">
                                 <label for="name" class=" text-white mb-2"> الاسم بالكامل </label>
                                 <input type="text" id="name" class="form-control text-center" name='name' required>
+                                @error('name')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -66,6 +82,9 @@
                                 <label for="dateofBirth" class=" text-white mb-2">تاريخ الميلاد </label>
                                 <input type="date" id="birth-date" class="form-control text-center"
                                     placeholder="mm/dd/yyyy" name="dob" required>
+                                @error('dob')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -76,11 +95,15 @@
                                 <select class="form-select" id="floatingSelect" name="nat" required>
                                     <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
                                     @foreach($countries as $country)
-                                    <option value="{{ $country->id }}" {{ old('nat') == $country->id ? 'selected' : '' }}>
+                                    <option value="{{ $country->id }}"
+                                        {{ old('nat') == $country->id ? 'selected' : '' }}>
                                         {{ $country?->country_name_ar ?: $country->country_name }}
                                     </option>
                                     @endforeach
                                 </select>
+                                @error('nat')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -93,23 +116,29 @@
                                         <div
                                             class="d-flex justify-content-center align-items-center gap-3 gender-margin">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="gender" id="male" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+                                                <input class="form-check-input" type="radio" name="gender" id="male"
+                                                    value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
                                                 <label class="form-check-label text-light " for="male">
                                                     ذكر
                                                 </label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="gender" id="female" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+                                                <input class="form-check-input" type="radio" name="gender" id="female"
+                                                    value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
                                                 <label class="form-check-label text-light " for="female">
                                                     انثي
                                                 </label>
                                             </div>
+                                            @error('gender')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div>
-                                        <input type="text" class="form-control text-center" id="age" placeholder="العمر" readonly value="{{ old('age') }}" >
+                                        <input type="text" class="form-control text-center" id="age" placeholder="العمر"
+                                            readonly value="{{ old('age') }}">
                                     </div>
                                 </div>
                             </div>
@@ -120,14 +149,19 @@
                         <div class="p-1">
                             <div class="mb-1">
                                 <select class="form-select" id="club_id" name="club_id">
-                                    <option value="" disabled {{ old('club_id') ? '' : 'selected' }}>اختر النادي</option>
+                                    <option value="" disabled {{ old('club_id') ? '' : 'selected' }}>اختر النادي
+                                    </option>
                                     @foreach($clubs as $club)
-                                    <option value="{{ $club->cid }}" {{ old('club_id') == $club->cid ? 'selected' : '' }}>
+                                    <option value="{{ $club->cid }}"
+                                        {{ old('club_id') == $club->cid ? 'selected' : '' }}>
                                         {{ $club->name }}
                                     </option>
                                     @endforeach
 
                                 </select>
+                                @error('club_id')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -136,8 +170,11 @@
                         <div class="p-1">
                             <div class="mb-1">
                                 <select class="form-select" id="weapon_id" name="weapon_id">
-                                     <option value="" disabled selected>اختر النادي أولاً</option>
+                                    <option value="" disabled selected>اختر النادي أولاً</option>
                                 </select>
+                                @error('weapon_id')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -148,6 +185,9 @@
                                 <label for="phone-num-one" class=" text-white mb-2">رقم الهاتف 1</label>
                                 <input type="text" id="phone-num-one" class="form-control text-center"
                                     placeholder="055xxxxxxx" name="phone1">
+                                @error('phone1')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -158,6 +198,9 @@
                                 <label for="phone-num-two" class=" text-white mb-2">رقم الهاتف 2</label>
                                 <input type="text" id="phone-num-two" class="form-control text-center"
                                     placeholder="055xxxxxxx" name="phone2">
+                                @error('phone2')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -169,7 +212,11 @@
                             <div class="input-group mb-3">
                                 <label class="input-group-text rounded-2 text-white bg-brown" for="photofront"><i
                                         class="fa-solid fa-upload fa-2xl"></i></label>
-                                <input type="file" class="form-control rounded-2" id="photofront" name="front_id_pic" accept=".jpg, .jpeg, .png">
+                                <input type="file" class="form-control rounded-2" id="photofront" name="front_id_pic"
+                                    accept=".jpg, .jpeg, .png">
+                                @error('front_id_pic')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -181,7 +228,11 @@
                             <div class="input-group mb-3">
                                 <label class="input-group-text rounded-2 text-white bg-brown" for="photoBack"><i
                                         class="fa-solid fa-upload fa-2xl"></i></label>
-                                <input type="file" class="form-control rounded-2" id="photoBack" name="back_id_pic" accept=".jpg, .jpeg, .png">
+                                <input type="file" class="form-control rounded-2" id="photoBack" name="back_id_pic"
+                                    accept=".jpg, .jpeg, .png">
+                                @error('back_id_pic')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -279,56 +330,53 @@
 </script>
 <!-- UI form validation-->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    
-    const nationalID = document.getElementById('id-num');
-    nationalID.addEventListener('input', e => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 15) value = value.slice(0, 15);
-        e.target.value = value;
-    });
+    document.addEventListener('DOMContentLoaded', () => {
 
-  
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate() + 1).padStart(2, '0');
-    const minDate = `${year}-${month}-${day}`;
-    document.getElementById('id-date').setAttribute('min', minDate);
-
-    
-    const dobInput = document.getElementById('birth-date');
-    const todayStr = new Date().toISOString().split('T')[0];
-    dobInput.setAttribute('max', todayStr);
-
-    
-    function setupPhoneValidation(id) {
-        const phoneInput = document.getElementById(id);
-        phoneInput.addEventListener('input', e => {
+        const nationalID = document.getElementById('id-num');
+        nationalID.addEventListener('input', e => {
             let value = e.target.value.replace(/\D/g, '');
-
-            if (!value.startsWith('055')) {
-                value = '055' + value.replace(/^0+/, '');
-            }
-
-            if (value.length > 10) value = value.slice(0, 10);
+            if (value.length > 15) value = value.slice(0, 15);
             e.target.value = value;
         });
 
-        phoneInput.addEventListener('paste', e => e.preventDefault());
-    }
-    setupPhoneValidation('phone-num-one');
-    setupPhoneValidation('phone-num-two');
 
- 
-    const nameInput = document.getElementById('name');
-    nameInput.addEventListener('input', e => {
-        let value = e.target.value.normalize('NFC');
-        value = value.replace(/[^\u0600-\u06FF\s]/g, ''); 
-        e.target.value = value;
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate() + 1).padStart(2, '0');
+        const minDate = `${year}-${month}-${day}`;
+        document.getElementById('id-date').setAttribute('min', minDate);
+
+
+        const dobInput = document.getElementById('birth-date');
+        const todayStr = new Date().toISOString().split('T')[0];
+        dobInput.setAttribute('max', todayStr);
+
+
+        function setupPhoneValidation(id) {
+            const phoneInput = document.getElementById(id);
+            phoneInput.addEventListener('input', e => {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (!value.startsWith('055')) {
+                    value = '055' + value.replace(/^0+/, '');
+                }
+
+                if (value.length > 10) value = value.slice(0, 10);
+                e.target.value = value;
+            });
+
+            phoneInput.addEventListener('paste', e => e.preventDefault());
+        }
+        setupPhoneValidation('phone-num-one');
+        setupPhoneValidation('phone-num-two');
+
+
+        const nameInput = document.getElementById('name');
+        nameInput.addEventListener('input', e => {
+            let value = e.target.value.normalize('NFC');
+            value = value.replace(/[^\u0600-\u06FF\s]/g, '');
+            e.target.value = value;
+        });
     });
-});
 </script>
-
-
-
