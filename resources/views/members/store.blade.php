@@ -64,7 +64,7 @@ use Carbon\Carbon;
                         <div class="col-md-12">
                             <label for="nat" class="form-label">الجنسية</label>
                             <select name="nat" id="nat" class="form-select form-select-lg">
-                                <option value="" disabled>اختر الجنسية</option>
+                                <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
                                 @foreach($countries as $country)
                                 <option value="{{ $country->id }}" {{ old('nat') == $country->id ? 'selected' : '' }}>
                                     {{ $country?->country_name_ar ?: $country->country_name }}

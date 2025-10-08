@@ -14,7 +14,7 @@ body {
 }
 
 main {
-    background: url("bg.jpg");
+    background: url("../header_footer/bg.jpg");
     background-position: center;
     background-size: cover;
     display: flex;
