@@ -33,18 +33,18 @@ class StorePersonalRequest extends FormRequest
         return [
             'reg_type' => 'required|in:personal,group',
             'group_id' => 'nullable|exists:sv_teams,tid',
-            'name' => 'required|string',
+            'name' => 'required|string',//حروف عربي فقط ولا يقبل ارقام
             'Id_expire_date' => 'required|date|after:today',
             'dob' => 'required|date|before_or_equal:' . now()->subYear(16)->toDateString(),
             'nat' => 'required|exists:countries,id',
             'gender' => 'required|in:female,male',
             'club_id' => 'required|exists:sv_clubs,cid',
             'weapon_id' => 'required|exists:sv_weapons,wid',
-            'phone1' => 'required|string|max:20|min:10',
-            'phone2' => 'nullable|string|max:20|min:10',
+            'phone1' => 'required|string|max:10|min:10',//055xxxxxxx no letters
+            'phone2' => 'nullable|string|max:10|min:10',
             'front_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'back_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'mgid' => 'required|exists:member_groups,mgid',
+            'mgid' => 'required|exists:member_groups,mgid',//for admin only
             'reg_club' => 'required|exists:sv_clubs,cid',
             'registration_date' => 'required|date',
             'ID' => [
