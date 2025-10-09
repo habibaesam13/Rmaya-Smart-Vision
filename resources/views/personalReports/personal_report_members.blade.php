@@ -69,6 +69,7 @@
                 </form>
                 @endif
                 {{-- report save --}}
+                
                 <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
                     method="POST"
                     id="saveReportForm"

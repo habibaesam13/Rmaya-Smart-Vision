@@ -69,6 +69,7 @@ class ResultsController extends Controller
     }
     public function store(StoreReportForMembers $request)
     {
+        
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
@@ -115,17 +116,17 @@ class ResultsController extends Controller
 
     public function saveReport(Request $request, $rid)
     {
+        
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
-
+            
             if (!$playersData) {
                 return back()->withErrors(['players_data' => 'Invalid players data format']);
             }
 
             $report = $this->resultService->saveReport($request, $playersData, $rid);
-
             if ($report) {
-                return redirect()->back()->with('success', 'تم حفظ التقرير بنجاح');
+                 return redirect()->route('report-members', $rid)->with('success', 'تم حفظ التقرير بنجاح');
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء الحفظ');
