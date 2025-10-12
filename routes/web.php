@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
@@ -381,6 +382,22 @@ Route::group(
                     Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
                 }
             );
+
+            Route::prefix('final-results')->group(
+                function () {
+                    Route::get('reports' , [ FinalResultsController::class , 'index']);
+                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
+                    Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
+                    Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
+                    Route::post('final-members/detailed-repoert/{rid}',[FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+                    Route::get('final-report-members/{rid}', [FinalResultsController::class, 'show'])->name('report-members_final');
+                    Route::post('final-confirm-report/{rid}', [FinalResultsController::class, 'confirmReport'])->name('report-confirmation_final');
+
+                }
+            );
+
+
+
         });
 
 
@@ -399,7 +416,7 @@ Route::group(
             });
         });
     }
-);   
+);
 
 
 

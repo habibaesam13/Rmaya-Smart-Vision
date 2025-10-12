@@ -46,7 +46,7 @@
                 <div class="col-md-4">
                     <div class="info-box bg-light p-3 rounded">
                         <label class="text-muted small mb-1">التاريخ</label>
-                        <h5 class="mb-0 text-dark">{{ $report?->date ? $report->date->format('d-m-Y') : '---' }}</h5>
+                        <h5 class="mb-0 text-dark">{{ $report?->date ? date_create($report->date)->format('d-m-Y') : '---' }}</h5>
                     </div>
                 </div>
             </div>
@@ -54,13 +54,13 @@
             {{-- Action Buttons --}}
             <div class="d-flex flex-wrap gap-2">
                 @if(!$confirmed)
-                <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
+                <form action="{{route('add-player-to-report',$report?->id)}}" method="POST">
                     <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-user-plus"></i>
                         <span>إضافة رماة</span>
                     </button>
                 </form>
-                <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
+                <form action="{{route('report-confirmation_final',$report?->id)}}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-check-circle"></i>
@@ -70,7 +70,7 @@
                 @endif
                 {{-- report save --}}
 
-                <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
+                <form action="{{ route('detailed-members-report-save_final', $report?->id) }}"
                     method="POST"
                     id="saveReportForm"
                     enctype="multipart/form-data"
@@ -84,7 +84,7 @@
                             class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
                     </div>
                          {{-- Print Button --}}
-                <a href="{{ route('report.print', $report->Rid) }}"
+                <a href="{{ route('report.print', $report->id) }}"
                     target="_blank"
                     class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
                     <i class="fas fa-print"></i>
@@ -98,7 +98,7 @@
                     </button>
                 @endif
                 </form>
-                <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
+                <form action="{{route('personal-results-report-download-pdf',$report->id)}}" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
                         <span>PDF</span>
@@ -201,7 +201,7 @@
 
                                 @if(!$confirmed)
                                 <td class="text-center">
-                                    <form action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
+                                    <form action="{{ route('report-player-delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"
                                         method="POST" class="d-inline"
                                         onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
                                         @csrf
@@ -427,6 +427,5 @@
         this.submit();
     });
 </script>
-
 
 @endsection

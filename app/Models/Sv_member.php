@@ -89,4 +89,10 @@ class Sv_member extends Model
     {
         return $this->dob ? Carbon::parse($this->dob)->age : null;
     }
+
+
+    public function sv_initial_results()
+    {
+        return $this->hasMany(Sv_initial_results_players::class , 'player_id' , 'mid' );
+    }
 }
