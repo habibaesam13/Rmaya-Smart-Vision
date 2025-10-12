@@ -24,6 +24,9 @@ class WeaponService
     {
         return Sv_weapons::all();
     }
+    public function getAllPersonalWeapons(){
+        return Sv_weapons::where('reg_type','personal')->get();
+    }
     public function getWeaponById($id)
     {
         return Sv_weapons::findOrFail($id);
@@ -40,6 +43,8 @@ class WeaponService
         return $weapon->delete();
     }
 
-
+    public function getAllGroupWeapons(){
+        return Sv_weapons::where('reg_type','group')->get();
+    }
 
 }

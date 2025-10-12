@@ -29,7 +29,7 @@ class PersonalRegistration extends Controller
     public function index(){
         $countries=$this->countryService->getAllCountries();
         $clubs=$this->clubService->getAllClubs();
-        $weapons=$this->weaponService->getAllWeapons();
+        $weapons=$this->weaponService->getAllPersonalWeapons();
         return view('PublicRegistration.PersonalRegForm',compact('countries','clubs','weapons'));
     }
     public function store(StorePersonalRequest $request){

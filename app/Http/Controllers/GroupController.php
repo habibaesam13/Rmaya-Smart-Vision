@@ -30,14 +30,14 @@ class GroupController extends Controller
     {
         $groups = $this->groupService->getGroups()['groups'];
         $groupsCount= $this->groupService->getGroups()['groupsCount'];
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllGroupWeapons();
 
         return view('groups.registered_groups', ['groups' => $groups, 'weapons' => $weapons,'groupsCount'=>$groupsCount]);
     }
     public function search(Request $request)
     {
         $groups = $this->groupService->search($request);
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
         $groupsCount=Sv_team::count();
         return view('groups.registered_groups', [
             'groups'  => $groups,
@@ -63,7 +63,7 @@ class GroupController extends Controller
     public function edit(Request $request){
         $tid=intval($request->input('tid'));
         $clubs=$this->clubService->getAllClubs();
-        $weapons=$this->weaponService->getAllWeapons();
+        $weapons=$this->weaponService->getAllPersonalWeapons();
         $group=$this->groupService->getGroupById($tid);
         return view('groups.group_edit',compact(['group','clubs','weapons']));
     }
@@ -80,13 +80,13 @@ class GroupController extends Controller
         $members=$this->groupService->getMembersWithGroups()['members'];
         $members_count=$this->groupService->getMembersWithGroups()['members_count'];
         $groups = $this->groupService->getGroups();
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllGroupWeapons();
         return view('groups.groups_members',compact(['members','groups','weapons','members_count']));
     }
     public function membersByGroupSearch(Request $request){
         $members=$this->groupService->membersByGroupSearch($request);
         $groups = $this->groupService->getGroups();
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
         $members_count=$query = Sv_member::where('reg_type', 'group')->count();
         return view('groups.groups_members',compact(['members','groups','weapons','members_count']));
     }

@@ -30,8 +30,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
 use App\Http\Controllers\ClubsWeaponsController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\PublicRegistration\PersonalRegistration;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Http\Controllers\PublicRegistration\GroupRegistration;
+use App\Http\Controllers\PublicRegistration\PersonalRegistration;
 
 
 Route::group([
@@ -391,7 +392,10 @@ Route::group(
             Route::prefix('personal')->group(function(){
                     Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
                     Route::post('register',[PersonalRegistration::class,'store'])->name('store-public-personal-registration');
-
+            });
+            Route::prefix('group')->group(function(){
+                Route::get('registration',[GroupRegistration::class,'index'])->name('public-group-registration');
+                Route::post('register',[GroupRegistration::class,'store'])->name('store-public-group-registration');
             });
         });
     }

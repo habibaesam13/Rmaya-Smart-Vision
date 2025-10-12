@@ -76,7 +76,7 @@ class PersonalController extends Controller
     public function edit(Request $request)
     {
         $countries = $this->countryService->getAllCountries();
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
         $clubs = $this->clubService->getAllClubs();
         $memberGroups = Member_group::all();
         $id = $request->input('mid');
@@ -94,7 +94,7 @@ class PersonalController extends Controller
 
     public function create(){
         $countries = $this->countryService->getAllCountries();
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
         $clubs = $this->clubService->getAllClubs();
         $memberGroups = Member_group::all();
         return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));

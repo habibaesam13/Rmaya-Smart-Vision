@@ -35,7 +35,7 @@ class PersonalService
         $Membergroups = Member_group::all();
         $countries = $this->countriesService->getAllCountries();
         $clubs = $this->clubsService->getAllClubs();
-        $weapons = $this->weaponsService->getAllWeapons();
+        $weapons = $this->weaponsService->getAllPersonalWeapons();
         return [
             'Membergroups' => $Membergroups,
             'countries' => $countries,

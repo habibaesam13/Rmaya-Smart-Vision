@@ -179,7 +179,7 @@ class ResultsController extends Controller
 
     /**Preliminary results reports - clubs - details */
     public function getResportsDetails(Request $request){
-        $weapons=$this->weaponService->getAllWeapons();
+        $weapons=$this->weaponService->getAllPersonalWeapons();
         $ReportsDetails=$this->resultService->getReportsDetails($request);
         return view('personalReports.preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
     }

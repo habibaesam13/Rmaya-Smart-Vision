@@ -65,7 +65,7 @@ class ClubsWeaponsController extends Controller
     {
         $clubsWeapons = $this->clubsWeaponsService->getClubsWeaponsByClubId($club_id);
         $club = $this->clubsService->getClubById($club_id);
-        $weapons = $this->weaponsService->getAllWeapons(); //for add form
+        $weapons = $this->weaponsService->getAllPersonalWeapons(); //for add form
 
         return view('clubs_weapons.index', compact('clubsWeapons', 'club', 'weapons'));
     }
@@ -99,7 +99,7 @@ class ClubsWeaponsController extends Controller
             return redirect()->back()->withErrors(['error' => 'السلاح غير موجود']);
         }
         $club = $this->clubsService->getClubById($clubWeapon->cid);
-        $weapons = $this->weaponsService->getAllWeapons();
+        $weapons = $this->weaponsService->getAllPersonalWeapons();
 
         return view('sv_clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
     }
