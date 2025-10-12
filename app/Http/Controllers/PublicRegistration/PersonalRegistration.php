@@ -30,7 +30,7 @@ class PersonalRegistration extends Controller
         $countries=$this->countryService->getAllCountries();
         $clubs=$this->clubService->getAllClubs();
         $weapons=$this->weaponService->getAllWeapons();
-        return view('PublicRegistration.regForm',compact('countries','clubs','weapons'));
+        return view('PublicRegistration.PersonalRegForm',compact('countries','clubs','weapons'));
     }
     public function store(StorePersonalRequest $request){
         $data=$request->validated();
