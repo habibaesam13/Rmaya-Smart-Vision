@@ -15,6 +15,11 @@ class Sv_team extends Model
         'club_id',
         'weapon_id',
     ];
+    public function teamMembers()
+    {
+        return $this->hasMany(Sv_member::class, 'team_id', 'tid');
+    }
+
     public function club()
     {
         return $this->belongsTo(Sv_clubs::class, 'club_id', 'cid');
@@ -30,5 +35,4 @@ class Sv_team extends Model
             get: fn($value) => Carbon::parse($value)->format('Y-m-d'),
         );
     }
-    
 }

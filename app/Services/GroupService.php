@@ -6,6 +6,8 @@ use App\Models\Sv_team;
 use App\Models\Sv_member;
 use App\Models\Sv_weapons;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class GroupService
@@ -159,5 +161,64 @@ class GroupService
         }
         $member->update($data);
         return $member;
+    }
+
+
+
+
+    //groups registration
+
+    public function createNewGroup(Request $request)
+    {
+        
+        $data = $request->validate([
+            'name' => 'required|string',
+            'weapon_id' => [
+                'required',
+                Rule::exists('sv_weapons', 'wid')->where('reg_type', 'group'),
+            ],
+            'club_id' => 'nullable|exists:sv_clubs,cid',
+
+            'members' => 'required|array|min:1',
+            'members.*.name' => 'required|string',
+            'members.*.id_number' => 'required|string',
+            'members.*.id_expiry' => 'required|date',
+            'members.*.dob' => 'required|date',
+            'members.*.phone' => 'required|string',
+            'members.*.id_front' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'members.*.id_back' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'weapon_id.exists' => 'السلاح المختار غير متاح للتسجيل كفريق.',
+        ]);
+
+        
+        return DB::transaction(function () use ($data, $request) {
+
+            $team = Sv_team::create([
+                'name' => $data['name'],
+                'club_id' => $data['club_id'] ?? null,
+                'weapon_id' => $data['weapon_id'],
+            ]);
+
+            foreach ($data['members'] as $member) {
+                $frontPath = $member['id_front']->store('national_ids', 'public');
+                $backPath = $member['id_back']->store('national_ids', 'public');
+
+                $team->teamMembers()->create([
+                    'reg_type' => 'group',
+                    'team_id' => $team->tid,
+                    'weapon_id' => $data['weapon_id'],
+                    'name' => $member['name'],
+                    'ID' => $member['id_number'],
+                    'Id_expire_date' => $member['id_expiry'],
+                    'dob' => $member['dob'],
+                    'phone1' => $member['phone'],
+                    'front_id_pic' => $frontPath,
+                    'back_id_pic' => $backPath,
+                ]);
+            }
+
+            return $team;
+        });
     }
 }

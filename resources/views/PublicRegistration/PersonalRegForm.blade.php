@@ -26,7 +26,6 @@
                 <span class="date-size">من 03/ 12 / 2024 الى 14/ 02 / 2025</span>
             </h1>
         </div>
-
         <i class="fa-solid fa-globe fa-xl color-icon"></i>
     </nav>
     <main>

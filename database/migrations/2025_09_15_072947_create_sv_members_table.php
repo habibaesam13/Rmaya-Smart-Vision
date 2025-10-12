@@ -36,7 +36,7 @@ return new class extends Migration
 
             $table->enum('gender', ['male', 'female']);
 
-            $table->unsignedBigInteger('club_id');
+            $table->unsignedBigInteger('club_id')->nullable();
             $table->foreign('club_id')
                 ->references('cid')
                 ->on('sv_clubs')
