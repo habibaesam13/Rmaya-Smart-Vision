@@ -103,7 +103,5 @@ class GroupController extends Controller
         $member=$this->personalService->getMemberByID($mid);
        return redirect()->route('group-members', ['tid' => $member->team_id])
     ->with('success', 'تم تعديل البيانات بنجاح');
-
-
     }
 }

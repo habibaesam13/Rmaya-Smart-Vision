@@ -17,7 +17,7 @@ class WeaponController extends Controller
 
     public function index()
     {
-        $weapons = $this->weaponService->getAllWeapons();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
         return view('weapon.index', compact('weapons'));
     }
 
