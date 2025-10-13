@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicRegistration;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Public\GroupRegistrationRequest;
 use App\Services\GroupService;
 use App\Services\WeaponService;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class GroupRegistration extends Controller
         $groupsWeapons=$this->weaponService->getAllGroupWeapons();
         return view('PublicRegistration.GroupRegForm',['weapons'=>$groupsWeapons]);
     }
-    public function store(Request $request){
+    public function store(GroupRegistrationRequest $request){
         $team= $this->groupService->createNewGroup($request);
         if($team){
             return redirect()->back()->with('success','تم تسجيل الفريق بنجاح');

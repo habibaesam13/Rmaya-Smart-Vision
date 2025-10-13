@@ -12,22 +12,7 @@
 
 <body>
   <nav class="d-flex justify-content-between align-items-center bg-baige px-5 py-2">
-    {{-- Success Message --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-    @if ($errors->any())
-    <div class="alert alert-danger">
-      <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-      </ul>
-    </div>
-    @endif
+
     <div class="d-flex align-items-center gap-3">
       <img class="w-logo" src="{{asset('header_footer/logo1.png')}}" alt="logo" />
       <h1 class="title text-brown fw-bold">ميادين الريف للرماية 2025
@@ -39,39 +24,63 @@
   </nav>
 
   <main>
+    
     <div class="container bg-form p-3 rounded-3">
       <div class="d-flex justify-content-between align-items-center">
         <h3 class="form-title text-brown fw-bold text-center background-skewed">
           تسجيل فرق اسقاط صحون
         </h3>
       </div>
-
+      @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
       <form action="{{route('store-public-group-registration')}}" method="POST" enctype="multipart/form-data" class="p-2">
         @csrf
 
         <div class="my-2 w-75 mx-auto">
-          <input type="text" name="name" placeholder="أسم الفريق" class="form-control w-100" required>
+          <input type="text" name="team_name" placeholder="أسم الفريق"
+            class="form-control w-100 @error('team_name') is-invalid @enderror"
+            value="{{ old('team_name') }}" required>
+          @error('team_name')
+          <div class="invalid-feedback d-block">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="row mt-3">
           @foreach($weapons as $weapon)
           <div class="col-md-6 col-lg-4 col-xl-3">
             <div>
-              <input class="form-check-input weapon-radio"
+              <input class="form-check-input weapon-radio @error('weapon_id') is-invalid @enderror"
                 type="radio"
                 name="weapon_id"
                 id="weapon_{{$weapon->wid}}"
                 value="{{$weapon->wid}}"
+                {{ old('weapon_id') == $weapon->wid ? 'checked' : '' }}
                 data-members="{{$weapon->number_of_members}}">
               <label class="form-check-label" for="weapon_{{$weapon->wid}}">
                 {{$weapon->name}}
-
               </label>
             </div>
           </div>
           @endforeach
+          @error('weapon_id')
+          <div class="invalid-feedback d-block text-danger">{{ $message }}</div>
+          @enderror
         </div>
+
 
         <div class="tabel-container ">
           <table>
@@ -121,14 +130,14 @@
         for (let i = 0; i < membersCount; i++) {
           const row = `
         <tr>
-          <td><input required class="form-control form-control-sm id-num" type="text" name="members[${i}][id_number]" placeholder="0000 000000 0000"></td>
-          <td><input required class="form-control form-control-sm id-date" type="date" name="members[${i}][id_expiry]"></td>
+          <td><input required class="form-control form-control-sm id-num" type="text" name="members[${i}][ID]" placeholder="0000 000000 0000"></td>
+          <td><input required class="form-control form-control-sm id-date" type="date" name="members[${i}][Id_expire_date]"></td>
           <td><input required class="form-control form-control-sm name-input" type="text" name="members[${i}][name]" placeholder="الاسم"></td>
-          <td><input required class="form-control form-control-sm phone-num" type="number" name="members[${i}][phone]" placeholder="055 0000000"></td>
+          <td><input required class="form-control form-control-sm phone-num" type="number" name="members[${i}][phone1]" placeholder="055 0000000"></td>
           <td><input required class="form-control form-control-sm birth-date" type="date" name="members[${i}][dob]"></td>
           <td><input required class="form-control form-control-sm age" type="number" name="members[${i}][age]" readonly placeholder="00"></td>
-          <td><input required class="form-control form-control-sm id-front" type="file" name="members[${i}][id_front]" accept=".jpg,.jpeg,.png"></td>
-          <td><input required class="form-control form-control-sm id-back" type="file" name="members[${i}][id_back]" accept=".jpg,.jpeg,.png"></td>
+          <td><input required class="form-control form-control-sm id-front" type="file" name="members[${i}][front_id_pic]" accept=".jpg,.jpeg,.png"></td>
+          <td><input required class="form-control form-control-sm id-back" type="file" name="members[${i}][back_id_pic]" accept=".jpg,.jpeg,.png"></td>
         </tr>`;
           tbody.insertAdjacentHTML('beforeend', row);
         }
