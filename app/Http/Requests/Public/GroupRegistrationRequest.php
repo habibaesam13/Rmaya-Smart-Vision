@@ -38,7 +38,7 @@ class GroupRegistrationRequest extends FormRequest
             'members.*.ID' => [
                 'required',
                 'regex:/^\d{15}$/',
-                'distinct', // ✅ prevents duplicates within same request (team)
+                'distinct', //prevents duplicates within same request (team)
             ],
             'members.*.Id_expire_date' => ['required', 'date', 'after:today'],
             'members.*.name' => ['required', 'string', 'regex:/^[\p{Arabic}\s]+$/u'],
