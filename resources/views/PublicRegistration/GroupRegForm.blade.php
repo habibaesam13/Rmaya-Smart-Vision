@@ -24,11 +24,11 @@
   </nav>
 
   <main>
-    
+
     <div class="container bg-form p-3 rounded-3">
       <div class="d-flex justify-content-between align-items-center">
         <h3 class="form-title text-brown fw-bold text-center background-skewed">
-          تسجيل فرق اسقاط صحون             
+          تسجيل فرق اسقاط صحون
         </h3>
       </div>
       @if(session('success'))
@@ -85,7 +85,7 @@
         <div class="tabel-container ">
           <div class="text-warning d-flex m-2 gap-4">
             <p>الاسم يجب أن يكون باللغة العربية فقط</p>
-            <p>الهاتف : 055-  XXXXXXX</p>
+            <p>الهاتف : 055 XXXXXXX</p>
           </div>
           <table>
             <thead>
