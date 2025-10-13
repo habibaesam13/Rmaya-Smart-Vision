@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FinalResultStoreReportForMembers;
 use App\Http\Requests\StoreReportForMembers;
+use App\Models\SiteSettings;
 use App\Models\Sv_member;
+use App\Models\SVFianlResults;
 use App\Services\ClubService;
 use App\Services\CountriesService;
 use App\Services\FinalResultsService;
@@ -44,21 +46,22 @@ class FinalResultsController extends Controller
             ]
         );
         $Edit_report = null;
-//        if ($request->filled('addMembertoReportRid')) {
-//            $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-//            $available_players = $this->resultService->getAvailablePlayers($Edit_report);
-//            $reportSection = true;
-//        } else {
+
+        if ($request->filled('addMembertoReportRid')) {
+            $Edit_report = SVFianlResults::find($request->addMembertoReportRid);
+            $available_players = $this->resultService->getAvailablePlayers($Edit_report);
+            $reportSection = true;
+         } else {
             $available_players = $this->resultService->getConfirmedPlayers($request);
             $reportSection = false;
-//        }
+        }
 
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
         $membersCount = Sv_member::where('reg_type', 'personal')->count();
-        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality' , 'sv_final_results'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
@@ -66,7 +69,10 @@ class FinalResultsController extends Controller
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
 
-        return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players'));
+
+
+        $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
+        return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr'));
     }
 //    public function store(StoreReportForMembers $request)
     public function store(FinalResultStoreReportForMembers $request)
@@ -82,8 +88,6 @@ class FinalResultsController extends Controller
         if ($report) {
             return view('personalReports/final_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
         }
-
-        dd('error');
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
     }
 
@@ -122,6 +126,7 @@ class FinalResultsController extends Controller
     public function saveReport(Request $request, $rid)
     {
 
+
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
 
@@ -136,7 +141,7 @@ class FinalResultsController extends Controller
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء الحفظ');
         }
-        return redirect()->route('report-members', $rid)
+        return redirect()->route('report-members_final', $rid)
             ->with('info', 'تم الرجوع إلى التقرير.');
     }
 
@@ -159,7 +164,7 @@ class FinalResultsController extends Controller
     public function addPlayer($rid)
     {
 
-        return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
+        return redirect()->route('results-registered-members_final', ['addMembertoReportRid' => $rid]);
     }
     public function updateReport(FinalResultStoreReportForMembers $request, $rid)
     {
@@ -179,7 +184,7 @@ class FinalResultsController extends Controller
         }
 //          dd($report);
         return redirect()
-            ->route('report-members', $report->Rid)
+            ->route('report-members_final', $report->id)
             ->with('success', 'تم تحديث بيانات التقرير بنجاح');
     }
 
@@ -188,6 +193,19 @@ class FinalResultsController extends Controller
         $weapons=$this->weaponService->getAllWeapons();
         $ReportsDetails=$this->resultService->getReportsDetails($request);
         return view('personalReports.preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+    }
+
+
+    public function printData($rid)
+    {
+        $report = $this->resultService->getReport($rid);
+//        dd($report);
+        if (!$report) {
+            return redirect()->route('results-registered-members_final');
+        }
+        $siteSettings=SiteSettings::first();
+        $members = $this->resultService->getReportDetails($rid);
+        return view('personalReports.print', ['report' => $report, 'members' => $members,'siteSettings'=>$siteSettings]);
     }
 
 }

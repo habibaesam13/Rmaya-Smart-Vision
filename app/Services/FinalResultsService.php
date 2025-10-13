@@ -84,8 +84,12 @@ class FinalResultsService
 
             // Store new file
             $path = $file->store('reports_attachments', 'public');
-            $report->update(['attached_file' => $path]);
+
+            $report->file =  $path;
+            $report->save();
+
         }
+
 
         // Update player results
         foreach ($playersData as $playerId => $values) {
@@ -123,10 +127,28 @@ class FinalResultsService
     public function getAvailablePlayers($report)
     {
 
-        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-        return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderBy('mid')
-            ->get();
+        $addedPlayers = SVFianlResultsPlayer::pluck('player_id')->toArray();
+        return
+
+//            Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
+//            ->orderBy('mid')
+//            ->get();
+            DB::table('sv_members')->join('sv_initial_results_players','sv_initial_results_players.player_id','=','sv_members.mid')->join('sv_weapons' , 'sv_weapons.wid' , '=' , 'sv_members.weapon_id')
+                ->join('sv_clubs' , 'sv_clubs.cid' , '=' , 'sv_members.club_id')
+                ->select('sv_initial_results_players.*' ,
+                    'sv_members.name' ,
+                    'sv_members.phone1' ,
+                    'sv_members.phone2' ,
+                    'sv_members.mid' ,
+
+                    'sv_weapons.name as weapon_name' ,
+                    'sv_members.registration_date',
+                    'sv_clubs.name as club_name'
+
+                )
+                ->whereNotIn('mid', $addedPlayers)
+                ->orderBy('sv_initial_results_players.total' , 'desc')->get();
+
     }
     public function GetAllAvailablePlayers(Request $request)
     {
@@ -165,8 +187,9 @@ class FinalResultsService
             ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('Rid')
+            ->orderBy('id')
             ->cursorPaginate(config('app.admin_pagination_number'));
+
     }
 
 //    public function getConfirmedPlayers(Request $request)
@@ -215,19 +238,37 @@ class FinalResultsService
 //            ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
 //            ->with ('players_results')->orderBy('Rid')
 //            ->cursorPaginate(config('app.admin_pagination_number'));
-        return
 
-            Sv_member::query()
-                ->whereHas('sv_initial_results' , function ($query){
-                    $query->where('total' , '>' , 0);
-                })
-                ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
-                ->when($request->details, fn($q, $details) => $q->where('details', $details))
-                ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
-                ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
-                ->orderBy('mid')
-                ->get();
+//            Sv_member::query()
+//                ->whereHas('sv_initial_results' , function ($query){
+//                    $query->where('total' , '>' , 0);
+//                })
+//                ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
+//                ->when($request->details, fn($q, $details) => $q->where('details', $details))
+//                ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
+//                ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
+//                ->orderBy('mid')
 //            ->cursorPaginate(config('app.admin_pagination_number'));
+
+      return
+
+          DB::table('sv_members')->join('sv_initial_results_players','sv_initial_results_players.player_id','=','sv_members.mid')->join('sv_weapons' , 'sv_weapons.wid' , '=' , 'sv_members.weapon_id')
+          ->join('sv_clubs' , 'sv_clubs.cid' , '=' , 'sv_members.club_id')
+            ->select('sv_initial_results_players.*' ,
+                'sv_members.name' ,
+                'sv_members.phone1' ,
+                'sv_members.phone2' ,
+                'sv_members.mid' ,
+                'sv_weapons.name as weapon_name' ,
+                'sv_members.registration_date',
+                'sv_clubs.name as club_name'
+
+            )
+             ->orderBy('sv_initial_results_players.total' , 'desc')->get();
+
+
+
+
 
     }
 

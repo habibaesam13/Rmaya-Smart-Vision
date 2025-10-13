@@ -86,7 +86,7 @@
                 <h3>تقرير النتائج</h3>
                 <p class="text-muted m-0">نوع السلاح: {{ $report->weapon?->name ?? '-' }}</p>
                 <p class="text-muted m-0"> رقم الديتيل: {{ $report->details}}</p>
-                <p class="text-muted m-0">التاريخ: {{ $report->date?->format('d/m/Y') }}</p>
+                <p class="text-muted m-0">التاريخ: {{  optional( $report->date)->format('d/m/Y')  }}</p>
 
             </div>
             <div class="text-end">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FinalResultReportController;
 use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
 use Illuminate\Http\Request;
@@ -385,14 +386,32 @@ Route::group(
 
             Route::prefix('final-results')->group(
                 function () {
-                    Route::get('reports' , [ FinalResultsController::class , 'index']);
+                    Route::get('reports' , [ FinalResultsController::class , 'index'])->name('final_results.reports');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
                     Route::post('final-members/detailed-repoert/{rid}',[FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
                     Route::get('final-report-members/{rid}', [FinalResultsController::class, 'show'])->name('report-members_final');
                     Route::post('final-confirm-report/{rid}', [FinalResultsController::class, 'confirmReport'])->name('report-confirmation_final');
+                    Route::get('add-player-to-report/{rid}',[FinalResultsController::class, 'addPlayer'])->name('add-player-to-report_final');
+                    Route::get('registered-members', [FinalResultsController::class,'index'])->name('results-registered-members_final');
+                    Route::post('members/detailed-repoert/{rid}',[FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+                    Route::get('/reports/{rid}/print', [FinalResultsController::class, 'printData'])->name('report.print_final');
+                    Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
+                        return $controller->viewPDF($request);
+                    })->name('personal-results-report-view-pdf_final');
 
+                    Route::get('report-{rid}-members/download-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
+                        $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
+                        return $controller->downloadPDF($request);
+                    })->name('personal-results-report-download-pdf_final');
+
+
+                    /*********************final results report***********/
+                    Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
+
+                    Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                 }
             );
 

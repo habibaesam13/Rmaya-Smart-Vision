@@ -95,4 +95,10 @@ class Sv_member extends Model
     {
         return $this->hasMany(Sv_initial_results_players::class , 'player_id' , 'mid' );
     }
+
+    public function sv_final_results()
+    {
+        return $this->hasOne(SVFianlResultsPlayer::class , 'player_id' , 'mid' );
+    }
+
 }

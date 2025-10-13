@@ -16,4 +16,10 @@ class SVFianlResultsPlayer extends Model
         'notes',
 
     ];
+
+    public function player()
+    {
+        return $this->belongsTo(Sv_member::class, 'player_id', 'mid');
+    }
+
 }
