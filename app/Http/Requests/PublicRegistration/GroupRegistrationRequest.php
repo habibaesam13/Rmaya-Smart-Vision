@@ -1,53 +1,51 @@
 <?php
 
-namespace App\Http\Requests\Public;
+namespace App\Http\Requests\PublicRegistration;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePersonalRequest extends FormRequest
+class GroupRegistrationRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
-
     protected function prepareForValidation()
     {
         $this->merge([
             'reg_type' => $this->input('reg_type', 'personal'),
-            'reg_club' => $this->input('club_id'),
             'registration_date' => $this->input('registration_date', now()->toDateString()),
         ]);
     }
 
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
-            'reg_type' => 'required|in:personal',
+            'reg_type' => 'required|in:group',
             'name' => [
                 'required',
                 'string',
                 'regex:/^[\p{Arabic}\s]+$/u',
             ],
-            'reg_club' => 'required|exists:sv_clubs,cid',
-
             'Id_expire_date' => 'required|date|after:today',
             'dob' => 'required|date|before_or_equal:' . now()->subYear(16)->toDateString(),
-            'nat' => 'required|exists:countries,id',
-            'gender' => 'required|in:female,male',
-            'club_id' => 'required|exists:sv_clubs,cid',
-            'weapon_id' => 'required|exists:sv_weapons,wid',
+            'weapon_id' => [
+                'required',
+                Rule::exists('sv_weapons', 'wid')->where('reg_type', 'group'),
+            ],
             'phone1' => [
                 'required',
                 'regex:/^055\d{7}$/',
             ],
-            'phone2' => [
-                'nullable',
-                'regex:/^055\d{7}$/',
-            ],
-
             'front_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'back_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'registration_date' => 'required|date',
@@ -55,12 +53,7 @@ class StorePersonalRequest extends FormRequest
             'ID' => [
                 'required',
                 'regex:/^\d{15}$/',
-                Rule::unique('sv_members')->where(function ($query) {
-                    if ($this->reg_type === 'personal') {
-                        return $query->where('reg_type', 'personal');
-                    }
-                    return $query;
-                }),
+                'distinct',
             ],
         ];
     }
@@ -71,7 +64,7 @@ class StorePersonalRequest extends FormRequest
             'name.required' => 'الاسم مطلوب.',
             'name.regex' => 'الاسم يجب أن يحتوي على أحرف عربية ومسافات فقط.',
 
-            'reg_type.in' => 'نوع التسجيل يجب أن يكون personal فقط.',
+            'reg_type.in' => 'نوع التسجيل يجب أن يكون Group فقط.',
 
             'Id_expire_date.required' => 'تاريخ انتهاء الهوية مطلوب.',
             'Id_expire_date.date' => 'تاريخ انتهاء الهوية يجب أن يكون تاريخاً صحيحاً.',
@@ -80,24 +73,11 @@ class StorePersonalRequest extends FormRequest
             'dob.required' => 'تاريخ الميلاد مطلوب.',
             'dob.date' => 'تاريخ الميلاد يجب أن يكون تاريخاً صحيحاً.',
             'dob.before_or_equal' => 'تاريخ الميلاد يجب أن يكون قبل 16 سنة على الأقل.',
-
-            'nat.required' => 'الجنسية مطلوبة.',
-            'nat.exists' => 'الجنسية المحددة غير موجودة.',
-
-            'gender.required' => 'النوع مطلوب.',
-            'gender.in' => 'النوع يجب أن يكون ذكر أو أنثى.',
-
-            'club_id.required' => 'النادي مطلوب.',
-            'club_id.exists' => 'النادي المحدد غير موجود.',
-
             'weapon_id.required' => 'السلاح مطلوب.',
             'weapon_id.exists' => 'السلاح المحدد غير موجود.',
 
             'phone1.required' => 'رقم الهاتف الأول مطلوب.',
             'phone1.regex' => 'رقم الهاتف الأول يجب أن يبدأ بـ 055 ويتكون من 10 أرقام فقط.',
-
-            'phone2.regex' => 'رقم الهاتف الثاني يجب أن يبدأ بـ 055 ويتكون من 10 أرقام فقط.',
-
             'front_id_pic.required' => 'صورة البطاقة الأمامية مطلوبة.',
             'front_id_pic.mimes' => 'الصورة الأمامية يجب أن تكون بصيغة jpg أو jpeg أو png أو pdf.',
             'front_id_pic.max' => 'حجم الصورة الأمامية يجب ألا يتجاوز 2 ميجا.',
@@ -111,7 +91,7 @@ class StorePersonalRequest extends FormRequest
 
             'ID.required' => 'رقم الهوية مطلوب.',
             'ID.regex' => 'رقم الهوية يجب أن يحتوي على 15 رقم فقط دون حروف أو رموز.',
-            'ID.unique' => 'هذا الرقم مسجل بالفعل.',
+            'members.*.ID.distinct' => 'لا يمكن تكرار رقم الهوية داخل نفس الفريق.',
         ];
     }
 }
