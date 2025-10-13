@@ -13,19 +13,19 @@
 <body>
   <nav class="d-flex justify-content-between align-items-center bg-baige px-5 py-2">
     {{-- Success Message --}}
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-        @if ($errors->any())
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+    @if ($errors->any())
     <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+      <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+      </ul>
     </div>
     @endif
     <div class="d-flex align-items-center gap-3">
@@ -46,7 +46,7 @@
         </h3>
       </div>
 
-    
+
       <form action="{{route('store-public-group-registration')}}" method="POST" enctype="multipart/form-data" class="p-2">
         @csrf
 
@@ -59,14 +59,14 @@
           <div class="col-md-6 col-lg-4 col-xl-3">
             <div>
               <input class="form-check-input weapon-radio"
-                     type="radio"
-                     name="weapon_id"
-                     id="weapon_{{$weapon->wid}}"
-                     value="{{$weapon->wid}}"
-                     data-members="{{$weapon->number_of_members}}">
+                type="radio"
+                name="weapon_id"
+                id="weapon_{{$weapon->wid}}"
+                value="{{$weapon->wid}}"
+                data-members="{{$weapon->number_of_members}}">
               <label class="form-check-label" for="weapon_{{$weapon->wid}}">
                 {{$weapon->name}}
-                
+
               </label>
             </div>
           </div>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="tabel-container ">
-          <table >
+          <table>
             <thead>
               <tr>
                 <th style="min-width: 160px;">رقم الهوية</th>
@@ -120,21 +120,111 @@
 
         for (let i = 0; i < membersCount; i++) {
           const row = `
-            <tr>
-              <td class="px-1"><input required class="form-control form-control-sm" type="number" placeholder="0000 000000 0000" name="members[${i}][id_number]"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="date" name="members[${i}][id_expiry]"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="text" placeholder="الاسم" name="members[${i}][name]"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="number" placeholder="055 0000000" name="members[${i}][phone]"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="date" name="members[${i}][dob]"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="number" name="members[${i}][age]" placeholder="00"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="file" name="members[${i}][id_front]" accept="image/*"></td>
-              <td class="px-1"><input required class="form-control form-control-sm" type="file" name="members[${i}][id_back]" accept="image/*"></td>
-            </tr>`;
+        <tr>
+          <td><input required class="form-control form-control-sm id-num" type="text" name="members[${i}][id_number]" placeholder="0000 000000 0000"></td>
+          <td><input required class="form-control form-control-sm id-date" type="date" name="members[${i}][id_expiry]"></td>
+          <td><input required class="form-control form-control-sm name-input" type="text" name="members[${i}][name]" placeholder="الاسم"></td>
+          <td><input required class="form-control form-control-sm phone-num" type="number" name="members[${i}][phone]" placeholder="055 0000000"></td>
+          <td><input required class="form-control form-control-sm birth-date" type="date" name="members[${i}][dob]"></td>
+          <td><input required class="form-control form-control-sm age" type="number" name="members[${i}][age]" readonly placeholder="00"></td>
+          <td><input required class="form-control form-control-sm id-front" type="file" name="members[${i}][id_front]" accept=".jpg,.jpeg,.png"></td>
+          <td><input required class="form-control form-control-sm id-back" type="file" name="members[${i}][id_back]" accept=".jpg,.jpeg,.png"></td>
+        </tr>`;
           tbody.insertAdjacentHTML('beforeend', row);
         }
+
+        // Attach validation logic for all new rows
+        setupRowValidation();
       });
     });
+
+
+    function setupRowValidation() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate() + 1).padStart(2, '0');
+      const minIdExpiry = `${year}-${month}-${day}`;
+
+      const maxDob = minIdExpiry;
+
+      // --- ID Expiry must be in the future ---
+      document.querySelectorAll('.id-date').forEach(input => {
+        input.setAttribute('min', minIdExpiry);
+      });
+
+      // --- DOB max today ---
+      document.querySelectorAll('.birth-date').forEach(input => {
+        input.setAttribute('max', maxDob);
+
+        // AJAX: calculate age
+        input.addEventListener('change', function() {
+          const dob = this.value;
+          const ageField = this.closest('tr').querySelector('.age');
+          if (dob) {
+            fetch(`{{ route('calculate.age') }}?dob=${dob}`)
+              .then(response => response.json())
+              .then(data => {
+                ageField.value = data.age ?? '';
+              })
+              .catch(() => ageField.value = '');
+          } else {
+            ageField.value = '';
+          }
+        });
+      });
+
+      // --- National ID (15 digits numeric only) ---
+      document.querySelectorAll('.id-num').forEach(input => {
+        input.addEventListener('input', e => {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length > 15) value = value.slice(0, 15);
+          e.target.value = value;
+        });
+      });
+
+      // --- Name: Arabic letters + spaces only ---
+      document.querySelectorAll('.name-input').forEach(input => {
+        input.addEventListener('input', e => {
+          let value = e.target.value.normalize('NFC');
+          value = value.replace(/[^\u0600-\u06FF\s]/g, '');
+          e.target.value = value;
+        });
+      });
+
+      // --- Phone validation (must start with 055 and be 10 digits) ---
+      document.querySelectorAll('.phone-num').forEach(input => {
+        input.addEventListener('input', e => {
+          let value = e.target.value.replace(/\D/g, '');
+          if (!value.startsWith('055')) value = '055' + value.replace(/^0+/, '');
+          if (value.length > 10) value = value.slice(0, 10);
+          e.target.value = value;
+        });
+        input.addEventListener('paste', e => e.preventDefault());
+      });
+
+      // --- File validation (only images .jpg/.jpeg/.png, max size 2MB) ---
+      document.querySelectorAll('.id-front, .id-back').forEach(input => {
+        input.addEventListener('change', e => {
+          const file = e.target.files[0];
+          if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+              alert('يجب أن تكون صورة الهوية بصيغة JPG أو PNG فقط');
+              e.target.value = '';
+              return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+              alert('حجم الملف لا يجب أن يزيد عن 2 ميجابايت');
+              e.target.value = '';
+            }
+          }
+        });
+      });
+    }
   </script>
 
+
 </body>
+
 </html>
