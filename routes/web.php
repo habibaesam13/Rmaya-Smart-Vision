@@ -386,7 +386,7 @@ Route::group(
 
             Route::prefix('final-results')->group(
                 function () {
-                    Route::get('reports' , [ FinalResultsController::class , 'index']);
+                    Route::get('reports' , [ FinalResultsController::class , 'index'])->name('final_results.reports');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
@@ -409,7 +409,7 @@ Route::group(
 
 
                     /*********************final results report***********/
-                    Route::get('/final-report', [FinalResultReportController::class, 'index']);
+                    Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
 
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                 }

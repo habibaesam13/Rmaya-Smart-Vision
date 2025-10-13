@@ -195,8 +195,8 @@
 
                 {{-- لوحة تحكم الأندية --}}
                 <li
-                    class="side-nav-item 
-                    @if (request()->routeIs('personal.*') || request()->routeIs('results.*') || request()->routeIs('groups.*')) active @endif">
+                    class="side-nav-item
+                    @if (request()->routeIs('personal.*') || request()->routeIs('results.*') || request()->routeIs('groups.*')  || request()->routeIs('final_results.*')) active @endif">
 
                     <a data-bs-toggle="collapse" href="#sidebarLayouts_clubs" aria-expanded="false"
                         aria-controls="sidebarLayouts_clubs" class="side-nav-link">
@@ -231,9 +231,40 @@
                                     {{ __('lang.reportsDetails') }}
                                 </a>
                             </li>
+
+
+
+
+                            {{-- final_results.reports--}}
+                            <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
+                                <a href="{{ route('final_results.reports') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-person me-2"></i>
+                                    قائمة الافراد المتأهلين للتصفيات النهائية
+
+                                </a>
+                            </li>
+
+                            {{-- final_results.reports--}}
+                            <li class="side-nav-item  @if (request()->routeIs('final_reports.index')) active @endif  ">
+                                <a href="{{ route('final_reports.index') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-list me-2"></i>
+                                   final reports
+
+                                </a>
+                            </li>
+
+
+
+
                         </ul>
                     </div>
                 </li>
+
+
+
+
+
+
 
 
             </ul>
@@ -257,6 +288,7 @@
                 </div>
             </li>
             @endif
+
 
 
         </ul>
