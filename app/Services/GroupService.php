@@ -6,7 +6,10 @@ use App\Models\Sv_team;
 use App\Models\Sv_member;
 use App\Models\Sv_weapons;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Public\GroupRegistrationRequest;
 
 class GroupService
 {
@@ -159,5 +162,46 @@ class GroupService
         }
         $member->update($data);
         return $member;
+    }
+
+
+
+
+    //groups registration
+
+    public function createNewGroup(GroupRegistrationRequest $request )
+    {
+        
+        $data = $request->validated();
+
+        
+        return DB::transaction(function () use ($data) {
+
+            $team = Sv_team::create([
+                'name' => $data['team_name'],
+                'club_id' => $data['club_id'] ?? null,
+                'weapon_id' => $data['weapon_id'],
+            ]);
+
+            foreach ($data['members'] as $member) {
+                $frontPath = $member['front_id_pic']->store('national_ids', 'public');
+                $backPath = $member['back_id_pic']->store('national_ids', 'public');
+
+                $team->teamMembers()->create([
+                    'reg_type' => 'group',
+                    'team_id' => $team->tid,
+                    'weapon_id' => $data['weapon_id'],
+                    'name' => $member['name'],
+                    'ID' => $member['ID'],
+                    'Id_expire_date' => $member['Id_expire_date'],
+                    'dob' => $member['dob'],
+                    'phone1' => $member['phone1'],
+                    'front_id_pic' => $frontPath,
+                    'back_id_pic' => $backPath,
+                ]);
+            }
+
+            return $team;
+        });
     }
 }

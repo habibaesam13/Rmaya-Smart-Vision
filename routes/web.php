@@ -418,10 +418,6 @@ Route::group(
 
 
         });
-
-
-
-
         //Public Routes
         Route::prefix('public')->group(function(){
             //Personal Registration

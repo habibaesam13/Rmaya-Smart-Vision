@@ -13,13 +13,13 @@ class StorePersonalRequest extends FormRequest
     }
 
     protected function prepareForValidation()
-{
-    $this->merge([
-        'reg_type' => $this->input('reg_type', 'personal'),
-        'reg_club' => $this->input('club_id'),
-        'registration_date' => $this->input('registration_date', now()->toDateString()),
-    ]);
-}
+    {
+        $this->merge([
+            'reg_type' => $this->input('reg_type', 'personal'),
+            'reg_club' => $this->input('club_id'),
+            'registration_date' => $this->input('registration_date', now()->toDateString()),
+        ]);
+    }
 
 
     public function rules(): array

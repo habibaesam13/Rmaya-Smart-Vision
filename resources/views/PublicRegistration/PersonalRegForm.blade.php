@@ -26,7 +26,6 @@
                 <span class="date-size">من 03/ 12 / 2024 الى 14/ 02 / 2025</span>
             </h1>
         </div>
-
         <i class="fa-solid fa-globe fa-xl color-icon"></i>
     </nav>
     <main>
@@ -261,7 +260,7 @@
 </body>
 
 </html>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- ajax backend query -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
