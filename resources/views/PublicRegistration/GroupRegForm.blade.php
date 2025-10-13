@@ -85,7 +85,7 @@
         <div class="tabel-container ">
           <div class="text-warning d-flex m-2 gap-4">
             <p>الاسم يجب أن يكون باللغة العربية فقط</p>
-            <p>الهاتف : 055-  XXXXXXX</p>
+            <p>الهاتف : 055XXXXXXX</p>
           </div>
           <table>
             <thead>
