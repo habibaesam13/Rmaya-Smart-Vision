@@ -28,11 +28,11 @@
     <div class="container bg-form p-3 rounded-3">
       <div class="d-flex justify-content-between align-items-center">
         <h3 class="form-title text-brown fw-bold text-center background-skewed">
-          تسجيل فرق اسقاط صحون
+          تسجيل فرق اسقاط صحون             
         </h3>
       </div>
       @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show " role="alert">
         <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
@@ -120,6 +120,7 @@
     </div>
   </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.querySelectorAll('.weapon-radio').forEach(radio => {
       radio.addEventListener('change', function() {

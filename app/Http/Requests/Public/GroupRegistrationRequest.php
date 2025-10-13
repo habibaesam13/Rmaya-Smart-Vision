@@ -4,6 +4,7 @@ namespace App\Http\Requests\Public;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\Sv_weapons;
 
 class GroupRegistrationRequest extends FormRequest
 {
@@ -38,7 +39,7 @@ class GroupRegistrationRequest extends FormRequest
             'members.*.ID' => [
                 'required',
                 'regex:/^\d{15}$/',
-                'distinct', //prevents duplicates within same request (team)
+                'distinct', // prevents duplicates within same request (team)
             ],
             'members.*.Id_expire_date' => ['required', 'date', 'after:today'],
             'members.*.name' => ['required', 'string', 'regex:/^[\p{Arabic}\s]+$/u'],
@@ -52,6 +53,23 @@ class GroupRegistrationRequest extends FormRequest
             'members.*.front_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
             'members.*.back_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Only validate if team_name and members exist
+            if ($this->filled('weapon_id') && is_array($this->members)) {
+                $weapon = Sv_weapons::where('wid', $this->weapon_id)->first();
+
+                if ($weapon && $weapon->number_of_members !== count($this->members)) {
+                    $validator->errors()->add(
+                        'members',
+                        'عدد الأعضاء لا يطابق العدد المحدد للفريق (' . $weapon->number_of_members . ').'
+                    );
+                }
+            }
+        });
     }
 
     public function messages(): array
