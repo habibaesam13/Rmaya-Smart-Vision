@@ -187,8 +187,9 @@ class FinalResultsService
             ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('Rid')
+            ->orderBy('id')
             ->cursorPaginate(config('app.admin_pagination_number'));
+
     }
 
 //    public function getConfirmedPlayers(Request $request)

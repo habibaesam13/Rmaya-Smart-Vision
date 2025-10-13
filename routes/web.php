@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FinalResultReportController;
 use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
 use Illuminate\Http\Request;
@@ -407,6 +408,10 @@ Route::group(
                     })->name('personal-results-report-download-pdf_final');
 
 
+                    /*********************final results report***********/
+                    Route::get('/final-report', [FinalResultReportController::class, 'index']);
+
+                    Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                 }
             );
 

@@ -199,7 +199,7 @@ class FinalResultsController extends Controller
     public function printData($rid)
     {
         $report = $this->resultService->getReport($rid);
-        dd($report);
+//        dd($report);
         if (!$report) {
             return redirect()->route('results-registered-members_final');
         }
