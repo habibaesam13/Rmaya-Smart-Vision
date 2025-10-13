@@ -26,7 +26,7 @@ class PDFController extends Controller
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'default_font' => 'dejavusans', 
+            'default_font' => 'dejavusans',
             'directionality' => 'rtl',
         ]);
         $mpdf->WriteHTML($html);
@@ -34,12 +34,14 @@ class PDFController extends Controller
     }
     public function viewPDF(Request $request){
         $data=$this->provider->getData($request);
-       
+
         return $this->generatePDF($data,'I');
     }
     public function downloadPDF(Request $request){
         $data=$this->provider->getData($request);
+
         $siteSettings=SiteSettings::first();
+
         return $this->generatePDF($data,'D',$siteSettings);
     }
 }

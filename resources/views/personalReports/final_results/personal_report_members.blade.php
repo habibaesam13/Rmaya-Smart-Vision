@@ -25,7 +25,8 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="card-title mb-0">
                     <i class="ri-file-list-3-line text-primary me-2" style="font-size:2rem !important"></i>
-                    تقرير النتائج اليومية للأسلحة
+                    تقرير       {{ $report?->weapon?->name ?? '---' }}
+
                 </h2>
             </div>
 
@@ -54,7 +55,7 @@
             {{-- Action Buttons --}}
             <div class="d-flex flex-wrap gap-2">
                 @if(!$confirmed)
-                <form action="{{route('add-player-to-report',$report?->id)}}" method="POST">
+                <form action="{{route('add-player-to-report_final',$report?->id)}}" method="get">
                     <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-user-plus"></i>
                         <span>إضافة رماة</span>
@@ -83,8 +84,8 @@
                         <input type="file" name="attached_file" id="attached_file"
                             class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
                     </div>
-                         {{-- Print Button --}}
-                <a href="{{ route('report.print', $report->id) }}"
+                          {{-- Print Button --}}
+                <a href="{{ route('report.print_final', $report->id) }}"
                     target="_blank"
                     class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
                     <i class="fas fa-print"></i>
@@ -98,7 +99,7 @@
                     </button>
                 @endif
                 </form>
-                <form action="{{route('personal-results-report-download-pdf',$report->id)}}" method="GET">
+                <form action="{{route('personal-results-report-download-pdf_final',$report->id)}}" method="GET">
                     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
                         <span>PDF</span>
