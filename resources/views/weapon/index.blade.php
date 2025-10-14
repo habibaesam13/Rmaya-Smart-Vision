@@ -1,13 +1,36 @@
 @extends('admin.master')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
+
 @section('content')
-<div class="page-container my-4">
-    {{-- Add Weapon Form Section --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h2 class="card-title mb-4">
-                <i class="fas fa-plus-circle text-success me-2"></i>إضافة سلاح
-            </h2>
+<div class="page-container">
+    
+     <div class="row"> 
+     <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
+  <div class="col-12 col-md-8 mb-2 mb-md-0">
+          <h4 class="header-title">الأسلحة</h4>
+        </div>
+        <div class="col-12 col-md-4 text-md-end text-center">
+          
+          
+          <!--<a title="{{__('lang.print')}}" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
+            <i class="ri-printer-line"></i>&nbsp;&nbsp;{{__('lang.print')}}
+          </a>-->
+        </div>
+      </div>
+    
+    
+    
+ 
+ 
+          <div class="col-12">
+      <div class="card">
+    
+    
+  <div class="card-body">
+          <p class="text-muted font-14">
+            <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
+          </p>
+          <div class="card bg-search">
+              
 
             {{-- Success Message --}}
             @if(session('success'))
@@ -18,47 +41,47 @@
             @endif
 
             {{-- Form --}}
-            <form action="{{ route('weapons.store') }}" method="POST">
+            <form action="{{ route('weapons.store') }}" method="POST" class="card-body">
                 @csrf
                 <div class="row g-3 align-items-end">
                     <div class="col-md-9">
                         <label for="name" class="form-label fw-bold">اسم السلاح</label>
                         <input type="text" name="name" id="name" class="form-control form-control-lg" 
-                               value="{{ old('name') }}" placeholder="اكتب اسم السلاح" required>
+                               value="{{ old('name') }}" placeholder="  " required>
                         @error('name')
                         <div class="invalid-feedback d-block">
                             <i class="fas fa-exclamation-triangle me-1"></i>{{ $message }}
                         </div>
                         @enderror
                     </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-success btn-lg w-100">
-                            <i class="fas fa-plus me-2"></i>إضافة السلاح
-                        </button>
+                     <div class="col-md-3">
+                    <div class="">
+                      <div class="col-12 col-lg-5 col-md-6 ">
+                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-300" name="search" value="اضافة سلاح">
+                           <i class="fas fa-plus me-2"></i>&nbsp;&nbsp;حفظ 
+                       </button>
+                      </div>
+                      <br>
+                     
                     </div>
+                  </div>
                 </div>
             </form>
         </div>
-    </div>
-
-    {{-- Weapons Table Section --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-light">
-            <h5 class="card-title mb-0">
-                <i class="fas fa-list text-primary me-2"></i>جميع الأسلحة
-            </h5>
-        </div>
-        <div class="card-body p-0">
+    
+    
+ 
+ 
             @if($weapons->count() > 0)
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
+                <table class="table table-bordered mb-3">
+                    <thead class="bg-soft-primary">
                         <tr>
                             <th scope="col" class="text-start">
                                 <i class="fas fa-crosshairs me-2"></i>اسم السلاح
                             </th>
                             <th scope="col" class="text-center">
-                                <i class="fas fa-cogs me-2"></i>الإجراءات
+                                <i class="fas fa-cogs me-2"></i>التحكم
                             </th>
                         </tr>
                     </thead>
@@ -68,13 +91,13 @@
                             {{-- text-start عشان النص يبدأ من بداية العمود --}}
                             <td class="fw-semibold text-start">{{ $weapon->name }}</td>
                             <td>
-                                <div class="d-flex justify-content-center gap-3">
+                                <div class="d-flex justify-content-center gap-1">
                                     {{-- Edit Button --}}
                                     <a href="{{ route('weapons.edit', $weapon->wid) }}" 
-                                       class="icon-btn text-primary" 
+                                       class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
                                        title="تعديل السلاح"
                                        data-bs-toggle="tooltip">
-                                        <i class="fas fa-edit"></i>
+                                            <i class="ri-edit-box-line fs-16"></i>
                                     </a>
 
                                     {{-- Delete Button --}}
@@ -83,10 +106,10 @@
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا السلاح؟');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="icon-btn text-danger" 
+                                        <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
                                                 title="حذف السلاح"
                                                 data-bs-toggle="tooltip">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="ri-delete-bin-line fs-16"></i>
                                         </button>
                                     </form>
                                 </div>

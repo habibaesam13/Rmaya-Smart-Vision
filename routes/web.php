@@ -27,6 +27,7 @@ use App\Http\Controllers\ResultsController;
 use App\Exports\GroupsMembersExportProvider;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\Admin\LogsController;
+use App\Http\Controllers\Admin\NotiController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
@@ -201,7 +202,8 @@ Route::name('admin.')->group(
 );
 
 
-
+Route::get('logs/', [LogsController::class, 'index'])->name('logs.index');
+Route::get('noti/', [NotiController::class, 'index'])->name('noti.index');
 
 Route::group(
     [
