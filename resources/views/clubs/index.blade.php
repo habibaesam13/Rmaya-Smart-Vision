@@ -1,14 +1,34 @@
 @extends('admin.master')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 @section('content')
-<div class="page-container my-4">
-    {{-- Add Club Form Section --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h2 class="card-title mb-4">
-                <i class="fas fa-plus-circle text-success me-2" style="font-size:2rem !important"></i>إضافة نادي
-            </h2>
-
+<div class="page-container ">
+   <div class="row"> 
+     <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
+  <div class="col-12 col-md-8 mb-2 mb-md-0">
+          <h4 class="header-title">الأسلحة</h4>
+        </div>
+        <div class="col-12 col-md-4 text-md-end text-center">
+          
+          
+          <!--<a title="{{__('lang.print')}}" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
+            <i class="ri-printer-line"></i>&nbsp;&nbsp;{{__('lang.print')}}
+          </a>-->
+        </div>
+      </div>
+    
+    
+    
+ 
+ 
+          <div class="col-12">
+      <div class="card">
+    
+    
+  <div class="card-body">
+          <p class="text-muted font-14">
+            <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
+          </p>
+          <div class="card bg-search">
+              
             {{-- Success Message --}}
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -18,13 +38,13 @@
             @endif
 
             {{-- Form --}}
-            <form action="{{ route('clubs.store') }}" method="POST">
+            <form action="{{ route('clubs.store') }}" method="POST" class="card-body">
                 @csrf
                 <div class="row g-3 align-items-end">
                     <div class="col-md-9">
                         <label for="name" class="form-label fw-bold">اسم النادي</label>
                         <input type="text" name="name" id="name" class="form-control form-control-lg" 
-                               value="{{ old('name') }}" placeholder="اكتب اسم النادي" required>
+                               value="{{ old('name') }}" placeholder="  " required>
                         @error('name')
                         <div class="invalid-feedback d-block">
                             <i class="fas fa-exclamation-triangle me-1"></i>{{ $message }}
@@ -32,27 +52,28 @@
                         @enderror
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-success btn-lg w-100">
-                            <i class="fas fa-plus me-2"></i>إضافة النادي
-                        </button>
+                    <div class="">
+                      <div class="col-12 col-lg-5 col-md-6 ">
+                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-300" name="search" value="اضافة ">
+                           <i class="fas fa-plus me-2"></i>&nbsp;&nbsp;حفظ 
+                       </button>
+                      </div>
+                      <br>
+                     
                     </div>
+                  </div>
                 </div>
             </form>
         </div>
-    </div>
+ 
 
     {{-- Clubs Table Section --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-light">
-            <h5 class="card-title mb-0">
-                <i class="fas fa-list text-primary me-2"></i>جميع الأندية
-            </h5>
-        </div>
-        <div class="card-body p-0">
+    
+            
             @if($clubs->count() > 0)
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
+                 <table class="table table-bordered mb-0">
+                    <thead class="bg-soft-primary">
                         <tr>
                             <th scope="col" class="text-start">
                                 <i class="fas fa-tag me-2"></i>اسم النادي
@@ -61,7 +82,7 @@
                                 <i class="fas fa-info-circle me-2"></i>الحالة
                             </th>
                             <th scope="col" class="text-center">
-                                <i class="fas fa-cogs me-2"></i>الإجراءات
+                                <i class="fas fa-cogs me-2"></i>التحكم
                             </th>
                         </tr>
                     </thead>
@@ -76,23 +97,26 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="d-flex justify-content-center gap-3">
+                                <div class="d-flex justify-content-center gap-1">
                                     {{-- Toggle Status Button --}}
                                     <form action="{{ route('clubs.toggle-status', $club->cid) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="icon-btn text-warning" 
+                                        <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
                                                 title="{{ $club->active ? 'إلغاء التفعيل' : 'تفعيل' }}"
                                                 data-bs-toggle="tooltip">
-                                            <i class="fas fa-{{ $club->active ? 'pause' : 'play' }}"></i>
+                                            <!--<i class="fas fa-{{ $club->active ? 'pause' : 'play' }}"></i>-->
+
+                                         @if($club->active)  <i class="ri-pause-line"></i> @else  <i class="ri-play-line"></i> @endif
+                                           
                                         </button>
                                     </form>
 
                                     {{-- Edit Button --}}
                                     <a href="{{ route('clubs.edit', $club->cid) }}" 
-                                       class="icon-btn text-primary" 
+                                       class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
                                        title="تعديل"
                                        data-bs-toggle="tooltip">
-                                        <i class="fas fa-edit"></i>
+                                         <i class="ri-edit-box-line fs-16"></i>
                                     </a>
 
                                     {{-- Delete Button --}}
@@ -101,16 +125,16 @@
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا النادي؟');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="icon-btn text-danger" 
+                                        <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
                                                 title="حذف"
                                                 data-bs-toggle="tooltip">
-                                            <i class="fas fa-trash-alt"></i>
+                                             <i class="ri-delete-bin-line fs-16"></i>
                                         </button>
                                     </form>
 
                                     {{-- Custom Icon Example --}}
-                                    <a href="{{ route('clubs-weapons.index', $club->cid) }}" class="icon-btn text-dark" title="سلاح مرتبط">
-                                        <i class="fa-solid fa-gun"></i>
+                                    <a href="{{ route('clubs-weapons.index', $club->cid) }}"  data-bs-toggle="tooltip" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="سلاح مرتبط">
+                                        <i class="ri-infrared-thermometer-line"></i>
                                     </a>
                                 </div>
                             </td>

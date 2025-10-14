@@ -27,7 +27,7 @@ use App\Http\Controllers\ResultsController;
 use App\Exports\GroupsMembersExportProvider;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\Admin\LogsController;
-use App\Http\Controllers\Admin\NotiController;
+
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
@@ -202,8 +202,7 @@ Route::name('admin.')->group(
 );
 
 
-Route::get('logs/', [LogsController::class, 'index'])->name('logs.index');
-Route::get('noti/', [NotiController::class, 'index'])->name('noti.index');
+
 
 Route::group(
     [
@@ -385,6 +384,7 @@ Route::group(
                     Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
                 }
             );
+
             Route::prefix('final-results')->group(
                 function () {
                     Route::get('reports' , [ FinalResultsController::class , 'index'])->name('final_results.reports');
@@ -418,14 +418,13 @@ Route::group(
 
 
 
-
         });
         //Public Routes
         Route::prefix('public')->group(function(){
             //Personal Registration
             Route::prefix('personal')->group(function(){
-                Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
-                Route::post('register',[PersonalRegistration::class,'store'])->name('store-public-personal-registration');
+                    Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
+                    Route::post('register',[PersonalRegistration::class,'store'])->name('store-public-personal-registration');
             });
             Route::prefix('group')->group(function(){
                 Route::get('registration',[GroupRegistration::class,'index'])->name('public-group-registration');

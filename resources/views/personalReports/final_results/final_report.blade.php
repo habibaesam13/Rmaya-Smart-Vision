@@ -1,7 +1,9 @@
 @extends('admin.master')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 @section('content')
     <div class="page-container my-4">
         {{-- Success Message --}}
@@ -53,15 +55,16 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="d-flex flex-wrap gap-2">
+                <form class="d-flex flex-wrap gap-2" action="{{route('final_reports.index')}}"
+                      method="get"
+                      id="saveReportForm"
+                      enctype="multipart/form-data">
+                    @csrf
+
                     {{-- report save --}}
 
-                    <form action="#"
-                          method="POST"
-                          id="saveReportForm"
-                          enctype="multipart/form-data"
-                          class="d-flex align-items-center gap-2">
-                        @csrf
+                    <div
+                        class="d-flex align-items-center gap-2">
                         <input type="hidden" name="players_data" id="playersData">
 
                         <!-----start search------------->
@@ -70,9 +73,9 @@
                             {{-- الملف --}}
                             <div class="col-4">
                                 <div class="file-upload-wrapper p-1">
-                                    <select onchange="getClubs(this.value)" name="club"
+                                    <select onchange="getClubs(this.value)" name="club_id"
                                             class="form-control form-control-sm">
-                                        <option  value="">اختر النادي .....</option>
+                                        <option value="">اختر النادي .....</option>
                                         @foreach($clubs as $club)
                                             <option value="{{$club->cid}}">{{$club->name}}</option>
                                         @endforeach
@@ -80,12 +83,11 @@
                                 </div>
                             </div>
 
-
                             <div class="col-4">
                                 <div class="file-upload-wrapper p-1">
-                                    <select name="attached_file" id="weaponSelect"
+                                    <select name="weapon_id" required id="weaponSelect"
                                             class="form-control form-control-sm">
-                                        <option value=""> اختر السلاح  .....</option>
+                                        <option value=""> اختر السلاح .....</option>
 
                                     </select>
                                 </div>
@@ -93,80 +95,45 @@
 
                             <div class="col-4">
                                 <div class="file-upload-wrapper p-1">
-                                    <select name="attached_file"
+                                    <select name="rate"
                                             class="form-control form-control-sm">
                                         <option value="">فرز الترتيب .....</option>
                                         <option value="1">من الاول الى الأول</option>
-                                        <option value="2">من الاول الى الثانى </option>
+                                        <option value="2">من الاول الى الثانى</option>
                                         <option value="3">من الاول الى الثالث</option>
                                         <option value="4">من الاول الى العشرون</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm" placeholder="dddf">
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm" placeholder="dddf">
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm" placeholder="dddf">
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm" placeholder="dddf">
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="file-upload-wrapper p-1">
-                                    <input type="text" name="attached_file" id="attached_file"
-                                           class="form-control form-control-sm">
-                                </div>
-                            </div>
                         </div>
-                        <!----end search---------------->
 
 
-                    </form>
+                    </div>
+                    <!----end search---------------->
                     <div class="row">
                         {{-- Print Button --}}
                         <div class="d-flex">
                             <div>
-                                <a href="#"
+                                <a     onclick="exportDivToExcel('printArea', 'final_report.xlsx')"
                                    target="_blank"
                                    class="btn btn-outline-dark  d-flex align-items-center gap-2">
                                     <i class="fas fa-print"></i>
-                                    <span>طباعة</span>
+                                    <span >طباعة</span>
                                 </a>
                             </div>
-                            <form action="#" method="GET">
-                                <button type="submit" class="btn btn-danger   d-flex align-items-center gap-2">
+                            <div  >
+                                <button  onclick="printDiv('printArea')"  class="btn btn-danger   d-flex align-items-center gap-2">
                                     <i class="fas fa-print"></i>
                                     <span>PDF</span>
                                 </button>
-                            </form>
+                            </div>
                             <div class="col-4">
                                 <div class="file-upload-wrapper p-1">
-                                    <a class="btn btn-sm btn-warning"> Search </a>
+                                    <button type="submit" value="submit" class="btn btn-sm btn-warning"> Search</button>
 
-                                    <a class="btn btn-sm btn-primary"> Search </a>
+                                    <a class="btn btn-sm btn-primary" href="{{route('final_reports.index')}}">
+                                        Refresh </a>
                                 </div>
 
 
@@ -176,12 +143,12 @@
                     </div>
 
 
-                </div>
+                </form>
             </div>
         </div>
 
         {{-- Results Table Card --}}
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0" id="printArea">
             <div class="card-body">
                 @csrf
                 <div class="table-responsive">
@@ -189,54 +156,54 @@
                         <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>الهاتف</th>
-                            <th>رقم الهوية</th>
                             <th>الأسم</th>
-                            <th>رقم الهدف</th>
-                            <th>المجموع</th>
+                            <th>رقم الهوية</th>
+                            <th>السلاح</th>
+                            <th>علامة مكتسبة</th>
+                            <th>علامة المتعادلين</th>
+                            <th>الترتيب</th>
                             <th>ملاحظات</th>
-                            <th>إجراءات</th>
                         </tr>
                         </thead>
                         <tbody>
+                        @php
+                            $current=0;
+                            $last=count($res)-1;
+                            $prevColor = 'white';
+                            $currentColor = 'white';
+                        @endphp
                         @forelse($res as $index => $item)
-                            <tr>
+                            @php  $current = $index ;
+                                if( $index > 0 && $index <= $last  && $item->total === $res[$index - 1]->total ){
+                                    $currentColor = $prevColor;
+                                }elseif($index == 0){
+                                }else{
+                                    $r = rand(0, 255);
+                                    $g = rand(0, 255);
+                                    $b = rand(0, 255);
+                                    $currentColor = "rgb($r, $g, $b , 0.2)";
+                                }
+                            @endphp
+
+
+                            <tr style="background-color: {{$currentColor}} !important;">
                                 <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td>rrtrt</td>
-                                <td>rtrt</td>
-                                <td class="fw-bold">rtrtr</td>
+                                <td>{{$item->player_name}}</td>
+                                <td>{{$item->player_id}}</td>
+                                <td>{{$item->weapon_name}}</td>
+                                <td class="fw_bold total-input">{{$item->total}}</td>
                                 {{-- goal --}}
                                 <td>
-                                    <input type="number"
-                                           name="goal"
-                                           required
-                                           data-player="{{ $item->id }}"
-                                           class="form-control form-control-sm"
-                                           min="1"
-                                           value="rtrtr"
-                                    >
                                 </td>
-
                                 {{-- total --}}
                                 <td>
-                                    <input type="number"
-                                           name="total"
-                                           data-player="{{ $item->id }}"
-                                           class="form-control form-control-sm bg-light total-input"
-                                           placeholder="0"
-                                           id="total-{{ $index }}"
-                                           value="{{ old('total.'.$item->id, $item->total ?? '') }}">
+                                    {{   isset($sortedRatings[$index]   ) ? $sortedRatings[$index]   : ''  }}
+                                    {{--                                    {{   isset($sortedRatings[$index] [(string) $item->total]   ) ? $sortedRatings[$index] [(string) $item->total] : ''  }}--}}
                                 </td>
 
                                 {{-- notes --}}
                                 <td>
-                                    <input type="text"
-                                           name="notes"
-                                           data-player="{{ $item->id }}"
-                                           class="form-control form-control-sm"
-                                           placeholder="ملاحظات"
-                                           value="{{ old('notes.'.$item->id, $item->notes ?? '') }}"
-                                    >
+                                    {{$item->notes }}
                                 </td>
 
 
@@ -361,19 +328,19 @@
             weaponSelect.innerHTML = "<option value=''>  اختر سلاح ..... </option>";
 
             $.ajax({
-                type:'GET',
-                url: "{{url("/admin/final-results/get-weapons/")}}" + '/' + club  , // clean interpolation
+                type: 'GET',
+                url: "{{url("/admin/final-results/get-weapons/")}}" + '/' + club, // clean interpolation
                 {{--data:'_token = <?php echo csrf_token() ?>',--}}
-                success:function(data) {
+                success: function (data) {
                     let innerTxt = '';
                     let weaponSelect = document.getElementById('weaponSelect');
-                    data.weapons.forEach(  function (item) {
-                         innerTxt  +="<option value='"+  item.name +"'>" +      item.name   + "</option>";
-                     });
+                    data.weapons.forEach(function (item) {
+                        innerTxt += "<option value='" + item.wid + "'>" + item.name + "</option>";
+                    });
 
-                    if(data.weapons.length > 0) {
+                    if (data.weapons.length > 0) {
                         weaponSelect.innerHTML = innerTxt;
-                    }else{
+                    } else {
                         weaponSelect.innerHTML = "<option value=''> لا توجد اسلحة </option>";
 
                     }
@@ -381,6 +348,60 @@
             });
         }
     </script>
+
+
+    <script>
+        function printDiv(divId) {
+            let printContents = document.getElementById(divId).innerHTML;
+            let originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            window.print();
+
+            document.body.innerHTML = originalContents; // restore the page
+        }
+
+
+        // Print only a certain div
+        function printDiv(divId) {
+            const printContents = document.getElementById(divId).innerHTML;
+            const originalContents = document.body.innerHTML;
+
+            // Open a new window for printing — cleaner and safer
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print</title>');
+            // Optional: add your styles for the print page
+            printWindow.document.write('<style>body{font-family: Arial; padding:20px;} table{width:100%;border-collapse:collapse;} td,th{border:1px solid #000;padding:6px;text-align:center;}</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Export div content to Excel
+        function exportDivToExcel(divId, filename = 'report.xlsx') {
+            const div = document.getElementById(divId);
+            if (!div) return alert("Div not found!");
+
+            // If div contains a table — convert it directly
+            const table = div.querySelector("table");
+            if (!table) return alert("No table found inside the div!");
+
+            // Convert the HTML table into a worksheet
+            const ws = XLSX.utils.table_to_sheet(table);
+
+            // Create a new workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Report");
+
+            // Download as .xlsx
+            XLSX.writeFile(wb, filename);
+        }
+
+    </script>
+
+
 
 
 @endsection

@@ -25,20 +25,24 @@ class FinalResultReportController extends Controller
 
     public function index(Request $request)
     {
-        $clubs = $this->clubsService->getAllClubs();
+         $clubs = $this->clubsService->getAllClubs();
         $weapons = null;
-        $res = $this->finalResultsService->getReportsDetails($request);
-        return view('personalReports/final_results/final_report', compact('res' , 'clubs'));
+        if(  !empty($request->weapon_id)  ) {
+            $res = $this->finalResultsService->getReportsPlayersDetails($request);
+        }else{
+            $res = collect();
+        }
+        $sortedRatings =  $this->finalResultsService->getSortedRatings();
+         return view('personalReports/final_results/final_report', compact('res', 'clubs' , 'sortedRatings'));
     }
 
-    public function getWeaponsByClub(Request $request , $clubId)
+
+
+
+
+    public function getWeaponsByClub(Request $request, $clubId)
     {
-//        $weapons = Sv_weapons::has( 'clubs' , function ($q)use ($clubId){
-//            $q->where('cid' , $clubId);
-//        } )->get();
-        $weapons = DB::table('sv_weapons'    ) ->join('sv_clubs_weapons', 'sv_clubs_weapons.wid' , '=' , 'sv_weapons.wid')->whereRaw('sv_clubs_weapons.cid = ?' ,[$clubId] )->get();
-
-        return response()->json(array('weapons'=> $weapons), 200);
-
-     }
+        $weapons = DB::table('sv_weapons')->join('sv_clubs_weapons', 'sv_clubs_weapons.wid', '=', 'sv_weapons.wid')->whereRaw('sv_clubs_weapons.cid = ?', [$clubId])->get();
+        return response()->json(array('weapons' => $weapons), 200);
+    }
 }

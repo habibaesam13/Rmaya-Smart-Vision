@@ -25,14 +25,14 @@
 {{-- </div>--}}
 {{-- <div class="flex items-center justify-end mt-4">--}}
 {{-- @if (Route::has('password.request'))--}}
-{{-- <a  href="{{ route('password.request') }}">--}} {{-- {{ __('Forgot your password?') }}--}} {{-- </a>--}}
+{{-- <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">--}} {{-- {{ __('Forgot your password?') }}--}} {{-- </a>--}}
 {{-- @endif--}}
 {{-- <x-primary-button class="ms-3">--}}
 {{-- {{ __('Log in') }}--}} {{-- </x-primary-button>--}}
 {{-- </div>--}}
 {{-- </form>--}}
-{{-- </x-guest-layout>--}} 
-@extends('auth.master') @php $settings = \App\Models\SiteSettings::first(); // dd($settings); @endphp @section('content')
+{{-- </x-guest-layout>--}} @extends('admin.auth.master') @php $settings = \App\Models\SiteSettings::first(); // dd($settings); @endphp @section('content') 
+
 <style>
   html,
   body {
@@ -40,13 +40,7 @@
   }
 
   body {
-  background-color: #f3f6f8;
-  background-image:url({{ asset('admin/assets/images/bg-login.jpg') }});
-  background-size: cover;    
-  background-repeat: no-repeat; 
-  background-position: center;  
-  height: 100vh;               
-  margin: 0;                   
+    background-color: #f3f6f8;
   }
 
   ::-webkit-scrollbar {
@@ -77,7 +71,8 @@
     color: inherit;
   }
 
-  .line-text {
+
+ .line-text {
     position: relative;
     text-align: center;
     color: #fff;
@@ -166,6 +161,7 @@
     z-index: 0;
   }
 
+
   .container {
     position: relative;
     width: 850px;
@@ -247,7 +243,7 @@
 
   .input-box input {
     width: 100%;
-    padding: 10px;
+    padding: 13px 50px 13px 20px;
     background: transparent;
     border: none;
     outline: none;
@@ -263,8 +259,8 @@
   }
 
   .input-box i {
-      position: absolute;
-    right: 10px;
+    position: absolute;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 18px;
@@ -389,38 +385,29 @@
   }
 
   @media screen and (max-width: 650px) {
-      .container p {
-    margin: 0 0;
-}
+      .container h3 {
+    margin-bottom: 0;
+    font-size: 18px;}
+      
+.line-text{margin: 5px auto 0 auto;}
 
-   .container h3 {
-        margin-bottom: 0;
-        font-size: 16px;
-    }
-.line-text::before, .line-text::after {
-    width: 34%;}
-   .line-text {
-        margin: 0;
-    padding: 0.1rem 2rem;
-    }
-    .wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
+      .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    min-height: 100dvh; 
+    padding: 20px;
+  }
+
 
     .container {
-      height: calc(100vh - 40px);
+      height: calc(80vh - 40px);
       width: 100%;
-      display: flex;
-      justify-content: center;
+        display: flex;
+    justify-content: center;
     }
-.toggle-panel p {
-    margin-bottom: 10px;
-}
+
     .form-box {
       width: 100%;
       height: -webkit-fill-available;
@@ -432,13 +419,12 @@
     }
 
     .toggle-box::before {
-        left: 0;
-        top: -270%;
-        width: 100%;
-        height: 300%;
-        border-radius: 80px;
+      left: 0;
+      top: -260%;
+      width: 100%;
+      height: 300%;
+      border-radius: 100px;
     }
-
 
     .container.active .toggle-box::before {
       left: 0;
@@ -447,7 +433,7 @@
 
     .toggle-panel {
       width: 100%;
-      height: 31%;
+      height: 40%;
     }
 
     .toggle-panel.toggle-left {
@@ -471,7 +457,7 @@
 
   @media screen and (max-width: 400px) {
     .form-box {
-      padding: 270px 20px 20px 20px;
+     padding: 270px 20px 20px 20px;
     }
 
     .toggle-panel h1 {
@@ -485,45 +471,211 @@
     -webkit-text-fill-color: #fff !important;
     transition: background-color 5000s ease-in-out 0s;
   }
+
+ 
 </style>
-<div class="wrapper">
+<div class="wrapper ">
   <div class="container">
     <div class="form-box login">
-      <form method="POST" action="{{ route('login') }}"> @csrf <h1>تسجيل الدخول</h1>
+      <form action="">
+        <h1>SIGN IN</h1>
         <div class="input-box">
-          <label class="class="d-none" for="email"></label>
-          <input type="email" id="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Username">
-          <i class="ri-user-line pt-3"></i>
+          <input type="text" placeholder="Username" required>
+          <i class="ri-user-line"></i>
         </div>
         <div class="input-box">
-          <label for="password" class="d-none"></label>
-          <input type="password" id="password" type="password" name="password" required autocomplete="current-password" placeholder="password">
+          <input type="password" placeholder="password" required>
           <i class="ri-lock-line"></i>
         </div>
-        <div class="basic-container">
-          <input type="checkbox" id="remember_me" value="yes" name="remember">
-          <label  for="remember_me">Remember me</label>
-        </div> @if (Route::has('password.request')) 
-        <!--<a href="{{ route('password.request') }}">
-          {{ __('Forgot your password?') }}
-        </a> -->
-        @endif <button type="submit" class="btn">
-          <i class="ri-login-circle-line"></i> &nbsp;&nbsp; دخـــــــــول </button>
+        <div class="basic-container ">
+          <input type="checkbox" name="" value="Remember me">
+          <label> Remember me </label>
+        </div>
+        <button type="submit" class="btn">
+          <i class="ri-login-circle-line"></i> &nbsp;&nbsp; Login </button>
       </form>
     </div>
     <div class="toggle-box">
       <div class="toggle-panel toggle-left">
         <p>
           <a href="index.html" class="auth-brand mb-4">
-            <span class="logo-lg"> @if($settings && $settings->logo) <img src="{{ asset($settings->logo) }}" alt="Logo"> @else <img src="{{ asset('admin/assets/images/logo-dark.png') }}" alt="Default Logo"> @endif </span>
+            <span class="logo-lg"> @if($settings && $settings->logo) <img src="{{ asset('settings/'.$settings->logo) }}" alt="Logo"> @else <img src="{{ asset('admin/assets/images/logo-dark.png') }}" alt="Default Logo"> @endif </span>
           </a>
         </p>
-        <h2> ميادين الريف للرماية </h2>
-        <h3> 2025</h3>
-        <div class="line-text form-floating"> Rmaya Management System </div>
+        <h2> Fujairah </h2>
+        <h3> Culture and Media Authority </h3>
+        <div class="line-text form-floating"> FCMA </div>
       </div>
     </div>
   </div>
 </div>
-<!--<div id="particles-js"></div>-->
-@endsection
+<div id="particles-js"></div>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+  $.getScript("https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js", function() {
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 100,
+          "density": {
+            "enable": true,
+            "value_area": 500
+          }
+        },
+        "color": {
+          "value": "#aa2633"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#202020"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 5,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ccc",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 100
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true,
+      "config_demo": {
+        "hide_card": false,
+        "background_color": "#b61924",
+        "background_image": "",
+        "background_position": "50% 50%",
+        "background_repeat": "no-repeat",
+        "background_size": "cover"
+      }
+    });
+  });
+</script>
+<div class="container">
+  <div class="row ">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+      <form method="POST" action="{{ route('admin.login') }}" class="text-start mb-3"> @csrf <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" class="block mt-1 w-full form-control" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Enter your email">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" name="password" required autocomplete="current-password" class="form-control" placeholder="Enter your password">
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+          <div class="form-check">
+            {{-- <input type="checkbox" class="form-check-input" id="checkbox-signin">--}}
+            {{-- <label class="form-check-label" for="checkbox-signin">Remember me</label>--}}
+            <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
+            <label class="form-check-label" for="remember_me">Remember me</label>
+          </div>
+          <!--<a href="auth-recoverpw.html" class="text-muted border-bottom border-dashed">Forget Password</a>--> @if (Route::has('password.request')) <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+            {{ __('Forgot your password?') }}
+          </a> @endif
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary fw-semibold" type="submit">Login</button>
+        </div>
+      </form>
+      {{-- <p class="text-muted fs-14 mb-4">Don't have an account? 
+															<a href="auth-register.html" class="fw-semibold text-danger ms-1">Sign Up !</a>
+														</p>--}}
+      {{-- <div class="block mt-4">--}}
+      {{-- <label for="remember_me" class="inline-flex items-center">--}}
+      {{-- <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">--}}
+      {{-- <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>--}} {{-- </label>--}}
+      {{-- </div>--}}
+      <div class="flex items-center justify-end mt-4"> @if (Route::has('password.request')) <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+          {{ __('Forgot your password?') }}
+        </a> @endif {{-- <x-primary-button class="ms-3">--}}
+        {{-- {{ __('Log in') }}--}} {{-- </x-primary-button>--}}
+      </div>
+      {{-- <p class="mt-auto mb-0">--}}
+      {{-- <script>document.write(new Date().getFullYear())</script> © Highdmin - By 
+																<span class="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>--}}
+      {{-- </p>--}}
+    </div>
+    <a href="index.html" class="auth-brand mb-4">
+      <span class="logo-lg"> @if($settings && $settings->logo) <img src="{{ asset('settings/'.$settings->logo) }}" alt="Logo"> @else <img src="{{ asset('admin/assets/images/logo-dark.png') }}" alt="Default Logo"> @endif </span>
+    </a>
+  </div>
+</div> @endsection
