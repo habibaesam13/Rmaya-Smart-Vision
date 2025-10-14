@@ -1,69 +1,70 @@
 @extends('admin.master')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 @section('content')
-<div class="page-container my-4">
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h2 class="card-title mb-2">
-                <i class="fas fa-edit text-success me-2" style="font-size:2rem !important"></i>
-                تعديل بيانات {{$group->name}}
-            </h2>
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
-            {{-- Edit Form --}}
-            <form action="{{ route('group-update', $group->tid) }}" method="POST" class="mb-4">
+<div class="page-container">
+    <div class="col-12 d-flex justify-content-between align-items-center my-3">
+        <div class="col-md-12">
+            <h4 class="header-title"> تعديل بيانات {{$group->name}}</h4>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body"> 
+            @if (session('success')) 
+            <div class="alert alert-success">{{ session('success') }}</div> @endif @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif @if (session('warning')) <div class="alert alert-warning">{{ session('warning') }}</div>@endif @if ($errors->any()) @foreach ($errors->all() as $error) <div class="text-danger">{{$error}}</div>@endforeach <br>@endif
+            {{-- Success Message --}}
+            
+            <form action="{{ route('group-update', $group->tid) }}" method="POST" class="form-horizontal">
                 @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label for="name" class="form-label">اسم الفريق</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $group->name) }}"
-                        placeholder="اكتب اسم الفريق">
-                    @error('name')
-                    <div class="text-danger small">{{ $message }}</div>
-                    @enderror
-                    {{-- Clubs + Weapons in the same row --}}
-                    <div class="row">
+                <div class="row mb-3">
+                    @csrf
+                    @method('PUT')
+                    <div class="col-md-3">
+                        <label for="name" class="form-label">اسم الفريق</label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name', $group->name) }}"
+                            placeholder="اكتب اسم الفريق">
+                        @error('name')
+                        <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-3">
                         {{-- Clubs --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="club_id" class="form-label">النادي</label>
-                            <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
-                                </option>
-                                @foreach($clubs as $club)
-                                <option value="{{ $club->cid }}"
-                                    {{ request('club_id') == $club->cid ? 'selected' : '' }}>
-                                    {{ $club->name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        {{-- Weapons --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="weapon_id" class="form-label">السلاح</label>
-                            <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                <option value="" disabled selected>اختر النادي أولاً</option>
-                            </select>
+                        <label for="club_id" class="form-label">النادي</label>
+                        <select name="club_id" id="club_id" class="form-select form-select-lg">
+                            <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
+                            </option>
+                            @foreach($clubs as $club)
+                            <option value="{{ $club->cid }}"
+                                {{ request('club_id') == $club->cid ? 'selected' : '' }}>
+                                {{ $club->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    {{-- Weapons --}}
+                    <div class="col-md-3">
+                        <label for="weapon_id" class="form-label">السلاح</label>
+                        <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
+                            <option value="" disabled selected>اختر النادي أولاً</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-start gap-2 my-2" style="padding-top:8px">
+                        <div class="g-1 row justify-content-center">
+                            <div class="col-12 col-md-6">
+                                <button type="submit" class="btn btn-sm btn-info w-100">
+                                    تحديث
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <a href="{{ route('group-registration') }}" class="btn btn-sm btn-warning w-100">
+                                    الغاء
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
-                <button type="submit" class="btn btn-primary px-4">تحديث</button>
-                <a href="{{ route('group-registration') }}" class="btn btn-danger px-4 ms-2">إلغاء</a>
             </form>
         </div>
     </div>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const clubSelect = document.getElementById('club_id');

@@ -45,7 +45,7 @@ class StorePersonalRequest extends FormRequest
             'front_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'back_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'mgid' => 'required|exists:member_groups,mgid',//for admin only
-            'reg_club' => 'required|exists:sv_clubs,cid',
+            'reg_club' => 'nullable|exists:sv_clubs,cid',
             'registration_date' => 'required|date',
             'ID' => [
                 'required',
@@ -113,7 +113,6 @@ class StorePersonalRequest extends FormRequest
             'mgid.required' => 'المجموعة مطلوبة.',
             'mgid.exists' => 'المجموعة المحددة غير موجودة.',
 
-            'reg_club.required' => 'النادي المسجل مطلوب.',
             'reg_club.exists' => 'النادي المسجل المحدد غير موجود.',
 
             'registration_date.required' => 'تاريخ التسجيل مطلوب.',

@@ -4,22 +4,15 @@
    <div class="row"> 
      <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
   <div class="col-12 col-md-8 mb-2 mb-md-0">
-          <h4 class="header-title">الأسلحة</h4>
+          <h4 class="header-title">الأندية</h4>
         </div>
         <div class="col-12 col-md-4 text-md-end text-center">
-          
-          
           <!--<a title="{{__('lang.print')}}" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
             <i class="ri-printer-line"></i>&nbsp;&nbsp;{{__('lang.print')}}
           </a>-->
         </div>
       </div>
-    
-    
-    
- 
- 
-          <div class="col-12">
+    <div class="col-12">
       <div class="card">
     
     
@@ -72,7 +65,7 @@
             
             @if($clubs->count() > 0)
             <div class="table-responsive">
-                 <table class="table table-bordered mb-0">
+                 <table class="table table-bordered mb-3">
                     <thead class="bg-soft-primary">
                         <tr>
                             <th scope="col" class="text-start">

@@ -1,5 +1,4 @@
 @extends('admin.master')
- <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">-->
 @section('content')
 <div class="page-container">
     
@@ -74,7 +73,7 @@
  
             @if($weapons->count() > 0)
             <div class="table-responsive">
-                <table class="table table-bordered mb-0">
+                <table class="table table-bordered mb-3">
                     <thead class="bg-soft-primary">
                         <tr>
                             <th scope="col" class="text-start">

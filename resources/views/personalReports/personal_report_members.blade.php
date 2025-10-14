@@ -1,147 +1,147 @@
 @extends('admin.master')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
-
 @section('content')
-<div class="page-container my-4">
-    {{-- Success Message --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-    {{-- Header Card --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="card-title mb-0">
-                    <i class="ri-file-list-3-line text-primary me-2" style="font-size:2rem !important"></i>
-                    تقرير النتائج اليومية للأسلحة
-                </h2>
+<div class="page-container">
+    <div class="row">
+        <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
+            <div class="col-12 col-md-8 mb-2 mb-md-0">
+                <h4 class="header-title"> تقرير النتائج اليومية للأسلحة</h4>
             </div>
-
-            {{-- Report Info --}}
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="info-box bg-light p-3 rounded">
-                        <label class="text-muted small mb-1">السلاح</label>
-                        <h5 class="mb-0 text-dark">{{ $report?->weapon?->name ?? '---' }}</h5>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="info-box bg-light p-3 rounded">
-                        <label class="text-muted small mb-1">رقم الديتيل</label>
-                        <h5 class="mb-0 text-dark">{{ $report?->details ?? '---' }}</h5>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="info-box bg-light p-3 rounded">
-                        <label class="text-muted small mb-1">التاريخ</label>
-                        <h5 class="mb-0 text-dark">{{ $report?->date ? $report->date->format('d-m-Y') : '---' }}</h5>
-                    </div>
-                </div>
+            {{-- Success Message --}}
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-
-            {{-- Action Buttons --}}
-            <div class="d-flex flex-wrap gap-2">
-                @if(!$confirmed)
-                <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
-                    <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
-                        <i class="fas fa-user-plus"></i>
-                        <span>إضافة رماة</span>
-                    </button>
-                </form>
-                <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>اعتماد وإرسال النتائج الأولية</span>
-                    </button>
-                </form>
-                @endif
-                {{-- report save --}}
-
-                <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
-                    method="POST"
-                    id="saveReportForm"
-                    enctype="multipart/form-data"
-                    class="d-flex align-items-center gap-2">
-                    @csrf
-                    <input type="hidden" name="players_data" id="playersData">
-
-                    {{-- الملف --}}
-                    <div class="file-upload-wrapper">
-                        <input type="file" name="attached_file" id="attached_file"
-                            class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
-                    </div>
-                         {{-- Print Button --}}
-                <a href="{{ route('report.print', $report->Rid) }}"
-                    target="_blank"
-                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
-                    <i class="fas fa-print"></i>
-                    <span>طباعة</span>
-                </a>
-                @if(!$confirmed)
-                    {{-- زر الحفظ --}}
-                    <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
-                        <i class="fas fa-save"></i>
-                        <span>حفظ التقرير</span>
-                    </button>
-                @endif
-                </form>
-                <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
-                    <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                        <i class="fas fa-print"></i>
-                        <span>PDF</span>
-                    </button>
-                </form>
-
-
-
+            @endif
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            <div class="col-12 col-md-4 text-md-end text-center">
             </div>
         </div>
-    </div>
 
-    {{-- Results Table Card --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            @csrf
-            <div class="table-responsive">
-                <table class="table table-bordered ">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th>الهاتف</th>
-                            <th>رقم الهوية</th>
-                            <th>الأسم</th>
-                            <th>رقم الهدف</th>
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>4</th>
-                            <th>5</th>
-                            <th>6</th>
-                            <th>7</th>
-                            <th>8</th>
-                            <th>9</th>
-                            <th>10</th>
-                            <th>المجموع</th>
-                            <th>ملاحظات</th>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card bg-search">
+                        {{-- Report Info --}}
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="info-box bg-light p-3 rounded">
+                                    <label class="text-muted small mb-1">السلاح</label>
+                                    <h5 class="mb-0 text-dark">{{ $report?->weapon?->name ?? '---' }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-light p-3 rounded">
+                                    <label class="text-muted small mb-1">رقم الديتيل</label>
+                                    <h5 class="mb-0 text-dark">{{ $report?->details ?? '---' }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-light p-3 rounded">
+                                    <label class="text-muted small mb-1">التاريخ</label>
+                                    <h5 class="mb-0 text-dark">{{ $report?->date ? $report->date->format('d-m-Y') : '---' }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {{-- Action Buttons --}}
+                        <div class="d-flex flex-wrap gap-2">
                             @if(!$confirmed)
-                            <th>إجراءات</th>
+                            <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
+                                <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>إضافة رماة</span>
+                                </button>
+                            </form>
+                            <form action="{{route('report-confirmation',$report?->Rid)}}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>اعتماد وإرسال النتائج الأولية</span>
+                                </button>
+                            </form>
                             @endif
-                        </tr>
-                    </thead>
-                    <tbody>
+                            {{-- report save --}}
+
+                            <form action="{{ route('detailed-members-report-save', $report?->Rid) }}"
+                                method="POST"
+                                id="saveReportForm"
+                                enctype="multipart/form-data"
+                                class="d-flex align-items-center gap-2">
+                                @csrf
+                                <input type="hidden" name="players_data" id="playersData">
+
+                                {{-- الملف --}}
+                                <div class="file-upload-wrapper">
+                                    <input type="file" name="attached_file" id="attached_file"
+                                        class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
+                                </div>
+                                {{-- Print Button --}}
+                                <a href="{{ route('report.print', $report->Rid) }}"
+                                    target="_blank"
+                                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
+                                    <i class="fas fa-print"></i>
+                                    <span>طباعة</span>
+                                </a>
+                                @if(!$confirmed)
+                                {{-- زر الحفظ --}}
+                                <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
+                                    <i class="fas fa-save"></i>
+                                    <span>حفظ التقرير</span>
+                                </button>
+                                @endif
+                            </form>
+                            <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
+                                <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
+                                    <i class="fas fa-print"></i>
+                                    <span>PDF</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                {{-- Registered Teams --}}
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        @csrf
+                        <table class="table table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>الهاتف</th>
+                                    <th>رقم الهوية</th>
+                                    <th>الأسم</th>
+                                    <th>رقم الهدف</th>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                    <th>7</th>
+                                    <th>8</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                    <th>المجموع</th>
+                                    <th>ملاحظات</th>
+                                    @if(!$confirmed)
+                                    <th>إجراءات</th>
+                                    @endif
+                                </tr>
+                            </thead>
+
+                            <tbody>
                         @forelse($members as $index => $member)
                         <tr>
                             <td class="text-center fw-bold">{{ $index + 1 }}</td>
@@ -222,15 +222,12 @@
                         </tr>
                         @endforelse
                     </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
 
-                </table>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<style>
+               <style>
     .info-box {
         border-left: 4px solid #97ca52;
         transition: all 0.3s ease;
