@@ -52,8 +52,7 @@ Route::group([
     })->middleware(['auth', 'verified'])->name('dashboard');
 });
 
-
-
+ 
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -211,6 +210,10 @@ Route::group(
         'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath', 'auth']
     ],
     function () {
+
+ Route::get('access_denied', function () {
+           return view('admin.access_denied');
+        })->name('access_denied');
 
         // Admin routes
         Route::prefix('admin')->group(function () {

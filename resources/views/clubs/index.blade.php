@@ -15,7 +15,7 @@
     <div class="col-12">
       <div class="card">
     
-    
+     @if(checkModulePermission('clubs', 'add'))
   <div class="card-body">
           <p class="text-muted font-14">
             <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
@@ -57,7 +57,7 @@
                   </div>
                 </div>
             </form>
-        </div>
+        </div> @endif
  
 
     {{-- Clubs Table Section --}}
@@ -91,6 +91,7 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-1">
+                                     @if(checkModulePermission('clubs', 'active'))
                                     {{-- Toggle Status Button --}}
                                     <form action="{{ route('clubs.toggle-status', $club->cid) }}" method="POST" class="d-inline">
                                         @csrf
@@ -103,6 +104,8 @@
                                            
                                         </button>
                                     </form>
+                                    @endif
+                                     @if(checkModulePermission('clubs', 'edit'))
 
                                     {{-- Edit Button --}}
                                     <a href="{{ route('clubs.edit', $club->cid) }}" 
@@ -111,7 +114,8 @@
                                        data-bs-toggle="tooltip">
                                          <i class="ri-edit-box-line fs-16"></i>
                                     </a>
-
+                                     @endif
+                                     @if(checkModulePermission('clubs', 'delete'))
                                     {{-- Delete Button --}}
                                     <form action="{{ route('clubs.destroy', $club->cid) }}" method="POST" 
                                           class="d-inline"
@@ -124,11 +128,13 @@
                                              <i class="ri-delete-bin-line fs-16"></i>
                                         </button>
                                     </form>
-
+                                    @endif
+                                     @if(checkModulePermission('clubs', 'clubs_weapons_view'))
                                     {{-- Custom Icon Example --}}
                                     <a href="{{ route('clubs-weapons.index', $club->cid) }}"  data-bs-toggle="tooltip" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="سلاح مرتبط">
                                         <i class="ri-infrared-thermometer-line"></i>
                                     </a>
+                                     @endif
                                 </div>
                             </td>
                         </tr>

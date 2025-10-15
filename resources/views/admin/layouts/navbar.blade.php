@@ -39,49 +39,56 @@
           <span class="menu-text"> @lang('lang.settings') </span>
         </a>
       </li> @endif 
+        @if(checkModulePermission('weapons', 'view')) 
        <li class="side-nav-item @if (request()->routeIs('weapons.*')) active @endif">
             <a href="{{ route('weapons.index') }}" class="side-nav-link">
                 <span class="menu-icon"><i class="ri-sword-line"></i></span>
                 <span class="menu-text">{{ __('lang.Weapons') }}</span>
             </a>
-        </li>
-
+        </li> @endif 
+        
+  @if(checkModulePermission('clubs', 'view')) 
         {{-- Clubs --}}
         <li class="side-nav-item @if (request()->routeIs('clubs.*')) active @endif">
             <a href="{{ route('clubs.index') }}" class="side-nav-link">
                 <span class="menu-icon"><i class="ri-shield-line"></i></span>
                 <span class="menu-text">{{ __('lang.Clubs') }}</span>
             </a>
-        </li>
-         {{-- Personal Registered --}}
+        </li> @endif 
+        
+         @if(checkModulePermission('members', 'view'))  
+             {{-- Personal Registered --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-registration') }}" class="side-nav-link">
-                        <span class="menu-icon"><i class="fa-solid fa-user"></i></span>
+                        <span class="menu-icon"><i class="ri-file-user-line"></i></span>
                         <span class="menu-text">{{ __('lang.Personal') }}</span>
                     </a>
-                </li>
+                </li> @endif 
+          @if(checkModulePermission('members', 'add')) 
                 {{-- Personal Registration --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-create') }}" class="side-nav-link">
-                        <span class="menu-icon"><i class="fa-solid fa-person"></i></span>
+                        <span class="menu-icon"><i class="ri-folder-add-line"></i></span>
                         <span class="menu-text">{{ __('lang.PersonalCreate') }}</span>
                     </a>
-                </li>
+                </li> @endif 
+          @if(checkModulePermission('members_groups', 'view')) 
                 {{-- Registered Groups --}}
                 <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
                     <a href="{{ route('group-registration') }}" class="side-nav-link">
-                        <span class="menu-icon"><i class="fa-solid fa-people-group"></i></span>
+                        <span class="menu-icon"><i class="ri-team-line"></i></span>
                         <span class="menu-text">{{ __('lang.RegisteredGroups') }}</span>
                     </a>
-                </li>
+                </li> @endif 
+          @if(checkModulePermission('members_groups', 'rpt')) 
                 {{-- Memebrs in Groups --}}
                 <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
                     <a href="{{ route('groups-members') }}" class="side-nav-link">
-                        <span class="menu-icon"><i class="fa-solid fa-users-line"></i></span>
+                        <span class="menu-icon"><i class="ri-file-list-line"></i></span>
                         <span class="menu-text">{{ __('lang.GroupsMembers') }}</span>
                     </a>
                 </li>
-                
+            @endif    
                 
                 
                      {{-- لوحة تحكم الأندية --}}

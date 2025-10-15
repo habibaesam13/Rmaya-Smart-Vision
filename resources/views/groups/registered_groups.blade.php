@@ -139,6 +139,7 @@
                                             <td>{{ $group->created_at}}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-3">
+                                                     @if(checkModulePermission('members_groups', 'show_mems'))
                                                     <form action="{{route('group-members')}}" method="GET" class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="tid" value="{{ $group->tid }}">
@@ -147,6 +148,8 @@
                                                         </button>
                                                     </form>
                                                     {{-- Edit Button --}}
+                                                    @endif
+                                                     @if(checkModulePermission('members_groups', 'edit'))
                                                     <form action="{{route('group-edit')}}" method="GET" class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="tid" value="{{ $group->tid}}">
@@ -154,6 +157,8 @@
                                                             <i class="ri-edit-box-line fs-16"></i>
                                                         </button>
                                                     </form>
+                                                    @endif
+                                                     @if(checkModulePermission('members_groups', 'delete'))
                                                     {{-- Delete Button --}}
                                                     <form action="{{ route('group-registration')}}" method="POST" class="d-inline"
                                                         onsubmit="return confirm('هل أنت متأكد من حذف هذا الفريق؟');">
@@ -164,7 +169,7 @@
                                                             <i class="ri-delete-bin-line fs-16"></i>
                                                         </button>
                                                         </button>
-                                                    </form>
+                                                    </form>@endif
                                                 </div>
                                             </td>
                                         </tr>

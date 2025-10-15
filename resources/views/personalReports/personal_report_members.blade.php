@@ -89,8 +89,7 @@
                                 <a href="{{ route('report.print', $report->Rid) }}"
                                     target="_blank"
                                     class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
-                                    <i class="fas fa-print"></i>
-                                    <span>طباعة</span>
+                                    <i class="ri-printer-line"></i>
                                 </a>
                                 @if(!$confirmed)
                                 {{-- زر الحفظ --}}
@@ -102,8 +101,7 @@
                             </form>
                             <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                                 <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                                    <i class="fas fa-print"></i>
-                                    <span>PDF</span>
+                                    <i class="ri-file-pdf-2-line"></i>
                                 </button>
                             </form>
                         </div>
@@ -115,7 +113,7 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
                         @csrf
-                        <table class="table table-bordered mb-0">
+                        <table class="table table-bordered mb-3">
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">#</th>

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\Logs;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -27,8 +28,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        
+         $id = auth()->id();
+                        Logs::create(
+                            [
+                                'admin_id' => $id,
+                                'module_name' => 'users',
+                                'item_id' =>  $id,
+                                'action' => 'Login',
+                            ]
+                        );
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect('/ar/admin/dashboard');
+
+        //return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

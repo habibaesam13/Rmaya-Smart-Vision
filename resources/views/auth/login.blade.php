@@ -492,7 +492,7 @@
       <form method="POST" action="{{ route('login') }}"> @csrf <h1>تسجيل الدخول</h1>
         <div class="input-box">
           <label class="class="d-none" for="email"></label>
-          <input type="email" id="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Username">
+          <input type="text" id="email" name="username" :value="old('username')" required autofocus autocomplete="username" placeholder="Username">
           <i class="ri-user-line pt-3"></i>
         </div>
         <div class="input-box">

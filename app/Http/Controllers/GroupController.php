@@ -28,6 +28,7 @@ class GroupController extends Controller
     }
     public function index()
     {
+          if(!checkModulePermission('members_groups', 'view')) {   return redirect()->route('access_denied');  }
         $groups = $this->groupService->getGroups()['groups'];
         $groupsCount= $this->groupService->getGroups()['groupsCount'];
         $weapons = $this->weaponService->getAllGroupWeapons();
@@ -46,12 +47,14 @@ class GroupController extends Controller
         ]);
     }
     public function delete(Request $request){
+         if(!checkModulePermission('members_groups', 'delete')) {   return redirect()->route('access_denied');  }
         $tid=$request->input('tid');
         $this->groupService->deleteGroup($tid);
         return redirect()->route('group-registration')
             ->with('success', 'تم حذف الفريق بنجاح ');
     }
     public function show(Request $request){
+         if(!checkModulePermission('members_groups', 'show_mems')) {   return redirect()->route('access_denied');  }
         $tid=intval($request->input('tid'));
         $group=$this->groupService->getGroupById($tid);
         $TeamMembers=$this->groupService->viewGroupMembers($tid);
@@ -61,6 +64,7 @@ class GroupController extends Controller
         return view('groups.group_members',compact('TeamMembers','group'));
     }
     public function edit(Request $request){
+         if(!checkModulePermission('members_groups', 'edit')) {   return redirect()->route('access_denied');  }
         $tid=intval($request->input('tid'));
         $clubs=$this->clubService->getAllClubs();
         $weapons=$this->weaponService->getAllPersonalWeapons();
@@ -68,6 +72,7 @@ class GroupController extends Controller
         return view('groups.group_edit',compact(['group','clubs','weapons']));
     }
     public function update(EditGroupRequest $request,$tid){
+           if(!checkModulePermission('members_groups', 'edit')) {   return redirect()->route('access_denied');  }
         $data=$request->validated();
         $group=$this->groupService->updateGroupData($data,$tid);
         if(!$group){
@@ -77,6 +82,7 @@ class GroupController extends Controller
     }
 
     public function getMembersWithGroups(){
+        if(!checkModulePermission('members_groups', 'rpt')) {   return redirect()->route('access_denied');  }
         $members=$this->groupService->getMembersWithGroups()['members'];
         $members_count=$this->groupService->getMembersWithGroups()['members_count'];
         $groups = $this->groupService->getGroups();

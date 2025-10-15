@@ -356,6 +356,7 @@
                                                 <td>{{ $player->registration_date }}</td>
                                                 <td>
                                                     <div class="d-flex justify-content-center gap-1">
+                                                        @if(checkModulePermission('members', 'edit'))
                                                         {{-- Edit Button --}}
                                                         <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                             @csrf
@@ -364,6 +365,8 @@
                                                                 <i class="ri-edit-box-line fs-16"></i>
                                                             </button>
                                                         </form>
+                                                        @endif
+                                                        @if(checkModulePermission('members', 'delete'))
                                                         {{-- Delete Button --}}
                                                         <form action="{{route('personal-registration-delete')}}" method="POST"
                                                             class="d-inline"
@@ -376,6 +379,8 @@
                                                                 <i class="ri-delete-bin-line fs-16"></i>
                                                             </button>
                                                         </form>
+                                                         @endif
+                                                        @if(checkModulePermission('members', 'active'))
 
                                                         {{-- Toggle Status Button --}}
                                                         <form action="{{route('personal-registration-toggle')}}" method="POST"
@@ -387,7 +392,7 @@
                                                                 <!--<i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>-->
                                                                 @if($club->active) <i class="ri-pause-line"></i> @else <i class="ri-play-line"></i> @endif
                                                             </button>
-                                                        </form>
+                                                        </form>@endif
                                                     </div>
                                                 </td>
                                             </tr>
@@ -466,6 +471,8 @@
                                         <td>{{ $member->registration_date}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-1">
+                                                 
+                                                        @if(checkModulePermission('members', 'edit'))
                                                 {{-- Edit Button --}}
                                                 <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                     @csrf
@@ -474,6 +481,8 @@
                                                         <i class="ri-edit-box-line fs-16"></i>
                                                     </button>
                                                 </form>
+                                                  @endif
+                                                        @if(checkModulePermission('members', 'delete'))
                                                 {{-- Delete Button --}}
                                                 <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
                                                     onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
@@ -485,7 +494,8 @@
                                                         <i class="ri-delete-bin-line fs-16"></i>
                                                     </button>
                                                 </form>
-
+                                                       @endif
+                                                        @if(checkModulePermission('members', 'active'))
                                                 {{-- Toggle Status Button --}}
                                                 <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
                                                     @csrf
@@ -495,7 +505,7 @@
                                                         <!--<i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>-->
                                                         @if($club->active) <i class="ri-pause-line"></i> @else <i class="ri-play-line"></i> @endif
                                                     </button>
-                                                </form>
+                                                </form>@endif
                                             </div>
                                         </td>
                                     </tr>

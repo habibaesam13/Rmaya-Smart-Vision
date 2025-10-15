@@ -105,7 +105,7 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="طباعة التقرير">
-                                            <i class="fa-solid fa-print"></i>
+                                            <i class="ri-printer-line"></i>
                                         </a>
 
                                         {{-- Attached File Icon (shown only if exists) --}}
@@ -115,7 +115,7 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="عرض الملف المرفق">
-                                            <i class="fa-solid fa-file"></i>
+                                            <i class="ri-attachment-line"></i>
                                         </a>
                                     </td>
 

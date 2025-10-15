@@ -25,7 +25,7 @@ class RoleController extends Controller
 
     public function index()
     {
-        if( checkModulePermission('roles', 'view') ) {
+        if( checkModulePermission('users', 'view_roles') ) {
 
             $roles = Role::get();
             return view('admin.role-permission.role.index', ['roles' => $roles]);
@@ -36,7 +36,7 @@ class RoleController extends Controller
 
     public function create()
     {
-        if( checkModulePermission('roles', 'add') ) {
+        if( checkModulePermission('users', 'add_role') ) {
 
             return view('admin.role-permission.role.create');
         }else {
@@ -47,7 +47,7 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        if( checkModulePermission('roles', 'add') ) {
+        if( checkModulePermission('users', 'add_role') ) {
 
             $request->validate([
                 'name' => [
@@ -70,7 +70,7 @@ class RoleController extends Controller
     public function edit(Role $role)
 
     {
-        if( checkModulePermission('roles', 'edit') ) {
+        if( checkModulePermission('roles', 'edit_role') ) {
 
             return view('admin.role-permission.role.edit', [
                 'role' => $role
@@ -82,7 +82,7 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        if( checkModulePermission('roles', 'edit') ) {
+        if( checkModulePermission('users', 'edit_role') ) {
 
             $request->validate([
                 'name' => [
@@ -104,7 +104,7 @@ class RoleController extends Controller
 
     public function destroy($roleId)
     {
-        if( checkModulePermission('roles', 'delete') ) {
+        if( checkModulePermission('users', 'delete_role') ) {
 
             $role = \App\Models\Role::with('modules')->find($roleId);
             $role->modules()->delete();
@@ -117,7 +117,7 @@ class RoleController extends Controller
 
     public function addPermissionToRole($roleId)
     {
-        if( checkModulePermission('permissions', 'edit') ) {
+        if( checkModulePermission('users', 'roles_perm') ) {
 
             $permissions = Permission::get();
             $role = Role::findOrFail($roleId);
@@ -138,7 +138,7 @@ class RoleController extends Controller
 
     public function givePermissionToRole(Request $request, $roleId)
     {
-        if( checkModulePermission('permissions', 'edit') ) {
+        if( checkModulePermission('users', 'roles_perm') ) {
 
             $request->validate([
                 'permission' => 'required'
@@ -155,7 +155,7 @@ class RoleController extends Controller
 
     public function giveModuleToRoleShow($role_id)
     {
-        if( checkModulePermission('permissions', 'view') ) {
+        if( checkModulePermission('users', 'roles_perm') ) {
 
             $role_name = Role::where('id', $role_id)->value('name');
             $role_modules = RoleModule::where('role_id', $role_id);
@@ -171,7 +171,7 @@ class RoleController extends Controller
     public function giveModuleToRoleStore(Request $request, $roleId)
     {
 
-        if( checkModulePermission('permissions', 'edit') ) {
+        if( checkModulePermission('users', 'roles_perm') ) {
 
             //        DB::beginTransaction();
             try {

@@ -10,7 +10,7 @@ use App\Models\SV_initial_results;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Models\sv_initial_results_players;
+use App\Models\Sv_initial_results_players;
 use App\Models\Sv_member;
 
 class ResultsService

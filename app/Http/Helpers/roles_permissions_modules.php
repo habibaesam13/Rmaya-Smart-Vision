@@ -1,61 +1,5 @@
 <?php
 
-//$modules_array = array(
-//    "0"=>array(
-//        'name' =>'Courses',
-//        'single_name' =>'course',
-//        'url_module_title'=>"courses",
-//        'fontawesome_icon_class'=>"fa-bars",
-//        'sub_modules'=>"",
-//        'mod_do'=>array(
-//            "0"=>array('can_do'=>"dash",'can_do_label'=>"dashboard -  احصائيات"),
-//            "1"=>array('can_do'=>"edit",'can_do_label'=>"Edit - تعديل  "),
-//            "2"=>array('can_do'=>"delete",'can_do_label'=>"Delete - حذف "),
-//            "3"=>array('can_do'=>"print",'can_do_label'=>"Print - طباعه "),
-//            "4"=>array('can_do'=>"eval",'can_do_label'=>"Evaluation 1- تقييم اولي  "),
-//            "5"=>array('can_do'=>"eval2",'can_do_label'=>"Evaluation 2 - تقييم نهائي  "),
-//            "6"=>array('can_do'=>"attend",'can_do_label'=>"Attendance rpt - سجل الحضور   "),
-//            "7"=>array('can_do'=>"active",'can_do_label'=>"Activation - تفعيل  "),
-//            "8"=>array('can_do'=>"trans",'can_do_label'=>"Tarnsfer - تحويل دورة  "),
-//            "9"=>array('can_do'=>"add_time",'can_do_label'=>"Add time - اضافة مواعيد "),
-//            "10"=>array('can_do'=>"del_time",'can_do_label'=>"Del time  - حذف مواعيد "),
-//            "11"=>array('can_do'=>"appr1",'can_do_label'=>"St affairs approve - موافقة شؤون الطلاب حالات خاصة"),
-//            "12"=>array('can_do'=>"appr2",'can_do_label'=>"Manager assist. approve  - موافقة مساعد المدير حالات خاصة "),
-//            "13"=>array('can_do'=>"appr3",'can_do_label'=>"Finance approve - موافقة المالية حالات خاصة  "),
-//            "14"=>array('can_do'=>"appr4",'can_do_label'=>" Manager Approve -  موافقة المدير حالات خاصة"),
-//            "15"=>array('can_do'=>"trans_appr",'can_do_label'=>" Manager assist. approve (trans) - موافقة مساعد المدير علي التحويل "),
-//            "16"=>array('can_do'=>"trans_appr2",'can_do_label'=>" Manager approve (trans)- موافقة المدير علي التحويل "),
-//            "17"=>array('can_do'=>"schad",'can_do_label'=>"Courses Schadule -جدول الدورات "),
-//            "18"=>array('can_do'=>"add_attend",'can_do_label'=>"Add attendance -تسجيل الحضور   "),
-//            "19"=>array('can_do'=>"view_spec",'can_do_label'=>"view special cases - عرض الحالات الخاصة  "),
-//            "20"=>array('can_do'=>"inv",'can_do_label'=>"Invoice - فاتورة "),
-//            "21"=>array('can_do'=>"rec",'can_do_label'=>"Receipt - ايصال "),
-//            "22"=>array('can_do'=>"groups",'can_do_label'=>"Groups - مجموعات الدورات "),
-//            "23"=>array('can_do'=>"confirm_pay",'can_do_label'=>"confirm payment - تأكيد الدفع في الفاتوره  "),
-//            "24"=>array('can_do'=>"cancel_lectures",'can_do_label'=>"Cancel lectures - الغاء محاضرات "),
-//            "25"=>array('can_do'=>"tracking",'can_do_label'=>"Course Tracking - متابعة الدورات  "),
-//            "26"=>array('can_do'=>"add_group",'can_do_label'=>"Add Group -  اضافة جروب  "),
-//            "27"=>array('can_do'=>"edit_group",'can_do_label'=>"Edit Group - تعديل جروب   "),
-//            "28"=>array('can_do'=>"delete_group",'can_do_label'=>"Delete Group -  حذف جروب  "),
-//            "29"=>array('can_do'=>"invoice_no",'can_do_label'=>"Invoice No. -  رقم الفاتورة   "),
-//            "30"=>array('can_do'=>"eval_appr",'can_do_label'=>"Evaluation approve  -  الموافقة علي التقييم    "),
-//
-//        )
-//    ),
-//    "1"=>array(
-//        'name' =>'Teachers',
-//        'single_name' =>'Teacher',
-//        'url_module_title'=>"teachers",
-//        'fontawesome_icon_class'=>"fa-bars",
-//        'sub_modules'=>"",
-//        'mod_do'=>array(
-//            "0"=>array('can_do'=>"add",'can_do_label'=>"Add - اضافة"),
-//            "1"=>array('can_do'=>"edit",'can_do_label'=>" Edit - تعديل  "),
-//            "2"=>array('can_do'=>"delete",'can_do_label'=>" Delete - حذف "),
-//            "3"=>array('can_do'=>"print",'can_do_label'=>"Print - طباعه "),
-//
-//        )
-//    ), 		);
 
 use App\Models\RoleModule;
 
@@ -64,111 +8,127 @@ function getModules()
 {
     $modules = array(
         "0" => array(
-            'name' => 'Events',
-            'code' => 'events', // i put it
-            'single_name' => 'Event',
-            'url_module_title' => "events",
+            'name' => 'الأندية',
+            'code' => 'clubs', // i put it
+            'single_name' => 'club',
+            'url_module_title' => "clubs",
             'fontawesome_icon_class' => "fa-bars",
             'sub_modules' => "",
             'mod_do' => array(
                 "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة"  ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
                 "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "3" => array('can_do' => "print", 'can_do_label' => "Print - طباعه " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'Print'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation' ),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-                "7" => array('can_do' => "show_print", 'can_do_label' => "Print Show Item - طباعه عرض العنصر "   , "can_do_label_ar" => 'طباعه عرض العنصر'  , "can_do_label_en" => 'Print Show Item'),
+                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'حذف'  , "can_do_label_en" => 'Delete'),
+                "3" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation' ),
+                "4" => array('can_do' => "clubs_weapons_view", 'can_do_label' => "club weapons -  اسلحة النادي"  , "can_do_label_ar" => 'club weapons -  اسلحة النادي'  , "can_do_label_en" => ''),
+                "5" => array('can_do' => "clubs_weapons_add", 'can_do_label' => "Add club weapons -  اضافة سلاح نادي"  , "can_do_label_ar" => 'اضافة سلاح نادي'  , "can_do_label_en" => ''),
+                "6" => array('can_do' => "clubs_weapons_edit", 'can_do_label' => "edit club weapons -  تعديل سلاح نادي"  , "can_do_label_ar" => 'تعديل سلاح نادي'  , "can_do_label_en" => ''),
+                "7" => array('can_do' => "clubs_weapons_delete", 'can_do_label' => "Delete club weapons -  حذف سلاح نادي"  , "can_do_label_ar" => 'حذف سلاح نادي'  , "can_do_label_en" => ''),
+                "8" => array('can_do' => "clubs_weapons_active", 'can_do_label' => "Active club weapons -  تفعيل سلاح نادي"  , "can_do_label_ar" => 'تفعيل سلاح نادي', "can_do_label_en" => ''),
+
 //                "8" => array('can_do' => "view", 'can_do_label' => "view - قائمة"),
 
             )
         ),
         "1" => array(
-            'name' => 'Event Places',
-            'code' => 'event_places',//i put it
-
-            'single_name' => 'Event Place',
-
-            'url_module_title' => "event_places",
+            'name' => 'الأسلحة',
+            'code' => 'weapons',//i put it
+            'single_name' => 'weapon',
+            'url_module_title' => "weapon",
             'fontawesome_icon_class' => "fa-bars",
             'sub_modules' => "",
             'mod_do' => array(
                 "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" , "can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
                 "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  "  , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف " , "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "3" => array('can_do' => "print", 'can_do_label' => "Print - طباعه " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'Print'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات" , "can_do_label_ar" => 'احائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض" , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-                "7" => array('can_do' => "show_print", 'can_do_label' => "Print Show Item - طباعه عرض العنصر " , "can_do_label_ar" => 'طباعة عرض عنصر'  , "can_do_label_en" => 'Print Item'),
-
+                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف " , "can_do_label_ar" => 'حذف'  , "can_do_label_en" => 'Delete'),
+                "3" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
             )
         ),
         "2" => array(
-            'name' => 'Event Types',
-            'code' => 'event_types',//i put it
-
-            'single_name' => 'Event Type',
-
-            'url_module_title' => "event_types",
+            'name' => 'المسجلين افراد',
+            'code' => 'members',//i put it
+            'single_name' => 'member',
+            'url_module_title' => "members",
             'fontawesome_icon_class' => "fa-bars",
             'sub_modules' => "",
             'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة"  ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "3" => array('can_do' => "print", 'can_do_label' => "Print - طباعه " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'Print'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-                "7" => array('can_do' => "show_print", 'can_do_label' => "Print Show Item - طباعه عرض العنصر "   , "can_do_label_ar" => 'طباعه عرض العنصر'  , "can_do_label_en" => 'Print Show Item'),
-//                '8' => array('can_do' => 'active' , 'can_do_label' => 'Active - الحالة' ) //here
+                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" , "can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
+                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  "  , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
+                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف " , "can_do_label_ar" => 'حذف'  , "can_do_label_en" => 'Delete'),
+                "3" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
+                "4" => array('can_do' => "print", 'can_do_label' => "Print - طباعة  " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'print'),
+            )
+        ),
+         "3" => array(
+            'name' => 'المسجلين فرق',
+            'code' => 'members_groups',//i put it
+            'single_name' => 'group',
+            'url_module_title' => "members_groups",
+            'fontawesome_icon_class' => "fa-bars",
+            'sub_modules' => "",
+            'mod_do' => array(
+                "0" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  "  , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
+                "1" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف " , "can_do_label_ar" => 'حذف'  , "can_do_label_en" => 'Delete'),
+                "2" => array('can_do' => "show_mems", 'can_do_label' => "members - عرض الاعضاء  " , "can_do_label_ar" => 'عرض الاعضاء'  , "can_do_label_en" => 'members'),
+                "3" => array('can_do' => "print", 'can_do_label' => "Print - طباعة  " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'print'),
+                "4" => array('can_do' => "rpt", 'can_do_label' => "Report - تقرير الفرق  " , "can_do_label_ar" => 'تقرير الفرق'  , "can_do_label_en" => 'report'),
+            )
+        ),
+
+  "4" => array(
+            'name' => ' لوحة تحكم الاندية',
+            'code' => 'club_panel',//i put it
+            'single_name' => 'club_panel',
+            'url_module_title' => "club_panel",
+            'fontawesome_icon_class' => "fa-bars",
+            'sub_modules' => "",
+            'mod_do' => array(
+                "0" => array('can_do' => "reg", 'can_do_label' => " Register - تسجيل داخلي  "  , "can_do_label_ar" => 'تسجيل داخلي'  , "can_do_label_en" => 'Register'),
+                "1" => array('can_do' => "club_mem", 'can_do_label' => "Club member - المسجلين  " , "can_do_label_ar" => 'المسجلين'  , "can_do_label_en" => 'members'),
+                "2" => array('can_do' => "add_res_rpt", 'can_do_label' => "Add result rpt - اضافة تقرير نتائج اولية   " , "can_do_label_ar" => 'اضافة تقرير نتائج اولية '  , "can_do_label_en" => 'Add result rpt'),
+                "3" => array('can_do' => "absents", 'can_do_label' => "member - المتغيبين  " , "can_do_label_ar" => 'المتغيبين'  , "can_do_label_en" => 'members'),
+            )
+        ),
+        
+         "5" => array(
+            'name' => ' تقرير النتائج النهائية',
+            'code' => 'final_results',//i put it
+            'single_name' => 'final_results',
+            'url_module_title' => "final_results",
+            'fontawesome_icon_class' => "fa-bars",
+            'sub_modules' => "",
+            'mod_do' => array(
+                "0" => array('can_do' => "mem", 'can_do_label' => "Members - المسجلين  " , "can_do_label_ar" => 'المسجلين'  , "can_do_label_en" => 'members'),
+                "1" => array('can_do' => "add_res_rpt", 'can_do_label' => "Add result rpt - اضافة تقرير نتائج اولية   " , "can_do_label_ar" => 'اضافة تقرير نتائج اولية '  , "can_do_label_en" => 'Add result rpt'),
+                "2" => array('can_do' => "final_results", 'can_do_label' => "Final results - نتيجة التصفيات النهائية  " , "can_do_label_ar" => 'نتيجة التصفيات النهائية'  , "can_do_label_en" => 'Final results'),
+                "3" => array('can_do' => "absents", 'can_do_label' => "member - المتغيبين  " , "can_do_label_ar" => 'المتغيبين'  , "can_do_label_en" => 'members'),
 
             )
         ),
 
-
-        "3" => array(
-            'name' => 'Sliders',
-            'code' => 'sliders',//i put it
-
-            'single_name' => 'Slider',
-
-            'url_module_title' => "sliders",
+        
+        
+ "11" => array(
+            'name' => 'Users',
+            'code' => 'users',//i put it
+            'single_name' => 'users',
+            'url_module_title' => "users",
             'fontawesome_icon_class' => "fa-bars",
             'sub_modules' => "",
             'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "3" => array('can_do' => "print", 'can_do_label' => "Print - طباعه " , "can_do_label_ar" => 'طباعة'  , "can_do_label_en" => 'Print'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-                "7" => array('can_do' => "show_print", 'can_do_label' => "Print Show Item - طباعه عرض العنصر "   , "can_do_label_ar" => 'طباعه عرض العنصر'  , "can_do_label_en" => 'Print Show Item'),
+                "0" => array('can_do' => "show", 'can_do_label' => " View - عرض  "),
+                "1" => array('can_do' => "add", 'can_do_label' => " add - اضافة  "),
+                "2" => array('can_do' => "edit", 'can_do_label' => " edit - تعديل  "),
+                "3" => array('can_do' => "delete", 'can_do_label' => " delete - حذف  "),
+                "4" => array('can_do' => "view_roles", 'can_do_label' => " View role- عرض الجروبات   "),
+                "5" => array('can_do' => "add_role", 'can_do_label' => " Add role - اضافة جروب  "),
+                "6" => array('can_do' => "edit_role", 'can_do_label' => " edit role -  تعديل جروب  "),
+				"7" => array('can_do' => "delete_role", 'can_do_label' => "delete role - حذف جروب   "),
+                "8" => array('can_do' => "roles_perm", 'can_do_label' => "  role permissions - صلاحيات الجروب   "),
 
             )
         ),
-
-
-        "4" => array(
-            'name' => 'Pages',
-            'code' => 'pages',//i put it
-            'single_name' => 'Page',
-            'url_module_title' => "pages",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-
-        "5" => array(
+     
+          "12" => array(
             'name' => 'Settings',
             'code' => 'settings',//i put it
             'single_name' => 'Setting',
@@ -176,131 +136,10 @@ function getModules()
             'fontawesome_icon_class' => "fa-bars",
             'sub_modules' => "",
             'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
+                "0" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
             )
         ),
-        "6" => array(
-            'name' => 'Visitors',
-            'code' => 'visitors',//i put it
-            'single_name' => 'Visitors',
-            'url_module_title' => "visitors",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-        "7" => array(
-            'name' => 'Reports',
-            'code' => 'reports',//i put it
-            'single_name' => 'Reports',
-            'url_module_title' => "reports",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-
-        "8" => array(
-            'name' => 'Admins',
-            'code' => 'admins',//i put it
-            'single_name' => 'Admin',
-            'url_module_title' => "admins",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-
-        //here
-        "9" => array(
-            'name' => 'Roles',
-            'code' => 'roles',//i put it
-            'single_name' => 'Role',
-            'url_module_title' => "roles",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  " , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-
-
-        "10" => array(
-            'name' => 'Pages',
-            'code' => 'pages',//i put it
-            'single_name' => 'Page',
-            'url_module_title' => "pages",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-        "11" => array(
-            'name' => 'Permissions',
-            'code' => 'permissions',//i put it
-            'single_name' => 'Permission',
-            'url_module_title' => "permission",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
-        "12" => array(
-            'name' => 'Reports',
-            'code' => 'reports',//i put it
-            'single_name' => 'Report',
-            'url_module_title' => "report",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "add", 'can_do_label' => "Add - اضافة" ,"can_do_label_ar" => 'اضافة'  , "can_do_label_en" => 'Add'),
-                "1" => array('can_do' => "edit", 'can_do_label' => " Edit - تعديل  " , "can_do_label_ar" => 'تعديل'  , "can_do_label_en" => 'Edit'),
-                "2" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "4" => array('can_do' => "active", 'can_do_label' => "Activation - تفعيل  "  , "can_do_label_ar" => 'تفعيل'  , "can_do_label_en" => 'Activation'),
-                "5" => array('can_do' => "dash", 'can_do_label' => "dashboard -  احصائيات"  , "can_do_label_ar" => 'احصائيات'  , "can_do_label_en" => 'Dashboard'),
-                "6" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-            )
-        ),
+       
 
         "13" => array(
             'name' => 'Logs',
@@ -316,20 +155,7 @@ function getModules()
             )
         ),
 
-        "14" => array(
-            'name' => 'contact_us',
-            'code' => 'contact_us',//i put it
-            'single_name' => 'Contact_us',
-            'url_module_title' => "contact_us",
-            'fontawesome_icon_class' => "fa-bars",
-            'sub_modules' => "",
-            'mod_do' => array(
-                "0" => array('can_do' => "delete", 'can_do_label' => " Delete - حذف ", "can_do_label_ar" => 'الغاء'  , "can_do_label_en" => 'Delete'),
-                "1" => array('can_do' => "show", 'can_do_label' => "show -  عرض"  , "can_do_label_ar" => 'عرض'  , "can_do_label_en" => 'Show'),
-
-            )
-        ),
-
+     
 
 
 
