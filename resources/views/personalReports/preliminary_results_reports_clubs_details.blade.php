@@ -101,21 +101,21 @@
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">
                                         <a href="{{route('report-members',$report->Rid)}}"
-                                            class="icon-btn me-2"
+                                            class=" me-2"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="طباعة التقرير">
-                                            <i class="ri-printer-line"></i>
+                                            <i class="ri-printer-line icon-btn"></i>
                                         </a>
 
                                         {{-- Attached File Icon (shown only if exists) --}}
                                         <a href="{{ $report->attached_file ? asset('storage/' . $report->attached_file) : '#' }}"
                                             target="_blank"
-                                            class="icon-btn {{ $report->attached_file ? '' : 'disabled' }}"
+                                            class=" {{ $report->attached_file ? '' : 'disabled' }}"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="عرض الملف المرفق">
-                                            <i class="ri-attachment-line"></i>
+                                            <i class="ri-attachment-line icon-btn"></i>
                                         </a>
                                     </td>
 
@@ -145,14 +145,14 @@
                         height: 38px;
                         border-radius: 8px;
                         background-color: #f8f9fa;
-                        color: #0d6efd;
+                        color: #bf1e2f;
                         transition: all 0.2s ease-in-out;
                         text-decoration: none;
                     }
-
+                    
                     .icon-btn:hover {
-                        background-color: #e9ecef;
-                        color: #0a58ca;
+                        background-color: #bf1e2f;
+                        color: #f8f9fa;
                     }
 
                     .icon-btn.disabled {

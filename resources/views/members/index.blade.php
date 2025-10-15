@@ -252,7 +252,7 @@
                             @endisset -->
                             @if($reportSection)
                             <div class="card border-success mb-3 rounded-3 overflow-hidden">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header  text-white" style="background-color: #bf1e2f;">
                                     <h5 class="mb-0">
                                         <i class="fas fa-file-alt me-2"></i>
                                         إضافة تقرير يومي
@@ -276,8 +276,8 @@
                                     </div>
                                     @endif
                                     <form action="{{ isset($Edit_report) 
-                        ? route('update-report-registered-members', $Edit_report->Rid)
-                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
+                                        ? route('update-report-registered-members', $Edit_report->Rid)
+                                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
                                         @csrf
 
                                         <div class="row g-3 align-items-end mb-3">
@@ -306,7 +306,7 @@
 
                                     <hr>
                                     @isset($available_players)
-                                    <table class="table table-bordered mb-0">
+                                    <table class="table table-bordered mb-3">
                                         <thead class="bg-soft-primary">
 
                                             <tr>
