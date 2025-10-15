@@ -4,120 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Sv_clubs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-
-//
-//    public function index()
-//    {
-//        if( checkModulePermission('admins', 'view') ) {
-//
-//            $users = User::get();
-//            return view('admin.role-permission.user.index', ['users' => $users]);
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
-//    public function create()
-//    {
-//        if( checkModulePermission('admins', 'add') ) {
-//
-//            $roles = Role::pluck('id', 'name');
-//            return view('admin.role-permission.user.create', ['roles' => $roles]);
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
-//    public function store(Request $request)
-//    {
-//        if( checkModulePermission('admins', 'add') ) {
-//
-//            $request->validate([
-//                'name' => 'required|string|max:255',
-//                'email' => 'required|email|max:255|unique:users,email',
-//                'password' => 'required|string|min:8|max:20',
-//                'roles' => 'required'
-//            ]);
-//
-//            $user = User::create([
-//                'name' => $request->name,
-//                'email' => $request->email,
-//                'password' => Hash::make($request->password),
-//            ]);
-//
-//            $user->syncRoles($request->roles);
-////      $m =  $user->roles()->sync($request->roles);
-////      dd($m);
-//            return redirect(route('admin.users.index'))->with('status', 'User created successfully with roles');
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
-//    public function edit(User $user)
-//    {
-//        if( checkModulePermission('admins', 'edit') ) {
-//
-//            $roles = Role::pluck('name', 'name')->all();
-//            $userRoles = $user->roles->pluck('name', 'name')->all();
-//            return view('admin.role-permission.user.edit', [
-//                'user' => $user,
-//                'roles' => $roles,
-//                'userRoles' => $userRoles
-//            ]);
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
-//    public function update(Request $request, User $user)
-//    {
-//        if( checkModulePermission('admins', 'edit') ) {
-//
-//            $request->validate([
-//                'name' => 'required|string|max:255',
-//                'password' => 'nullable|string|min:8|max:20',
-//                'roles' => 'required'
-//            ]);
-//
-//            $data = [
-//                'name' => $request->name,
-//                'email' => $request->email,
-//            ];
-//
-//            if (!empty($request->password)) {
-//                $data += [
-//                    'password' => Hash::make($request->password),
-//                ];
-//            }
-//
-//            $user->update($data);
-//            $user->syncRoles($request->roles);
-//
-//            return redirect(route('admin.users.index'))->with('success', __('lang.User Updated Successfully with roles'));
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
-//    public function destroy($userId)
-//    {
-//        if( checkModulePermission('admins', 'delete') ) {
-//
-//            $user = User::findOrFail($userId);
-//            $user->delete();
-//            return redirect(route('admin.users.index'))->with('error', __('lang.User Deleted Successfully'));
-//        } else {
-//            return redirect()->back()->with('error', __('lang.not permitted'));
-//        }
-//    }
-//
 
 
 
@@ -137,9 +30,9 @@ class UserController extends Controller
 
     public function create()
     {
-
+            $clubs = Sv_clubs::pluck('cid', 'name');
             $roles = Role::pluck('id', 'name');
-            return view('admin.role-permission.user.create', ['roles' => $roles]);
+            return view('admin.role-permission.user.create', ['roles' => $roles,'clubs'=>$clubs]);
      }
 
     public function store(Request $request)
@@ -147,6 +40,7 @@ class UserController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8|max:20',
                 'roles' => 'required'
@@ -154,6 +48,8 @@ class UserController extends Controller
 
             $user = User::create([
                 'name' => $request->name,
+                'username' => $request->username,
+                'clubid' => $request->clubid,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
@@ -166,13 +62,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-
+            $clubs = Sv_clubs::pluck('cid', 'name');
             $roles = Role::pluck('name', 'name')->all();
             $userRoles = $user->roles->pluck('name', 'name')->all();
             return view('admin.role-permission.user.edit', [
                 'user' => $user,
                 'roles' => $roles,
-                'userRoles' => $userRoles
+                'userRoles' => $userRoles,
+                'clubs'=>$clubs
             ]);
      }
 
@@ -181,11 +78,14 @@ class UserController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
+                 'username' => 'required|string|max:255',
                 'password' => 'nullable|string|min:8|max:20',
                 'roles' => 'required'
             ]);
 
             $data = [
+                'username' => $request->username,
+                'clubid' => $request->clubid,
                 'name' => $request->name,
                 'email' => $request->email,
             ];

@@ -31,6 +31,7 @@ class PersonalController extends Controller
     }
     public function index(Request $request)
     {
+        if(!checkModulePermission('members', 'view')) {   return redirect()->route('access_denied');  }
          $validated=$request->validate(
             [
                 'date_from' => ['nullable', 'date'],
@@ -58,6 +59,7 @@ class PersonalController extends Controller
     }
     public function destroy(Request $request)
     {
+        if(!checkModulePermission('members', 'delete')) {   return redirect()->route('access_denied');  }
         $id = $request->input('mid');
         $this->personalService->delete($id);
         return redirect()->route('personal-registration')
@@ -65,6 +67,7 @@ class PersonalController extends Controller
     }
     public function toggleAcivationStatus(Request $request)
     {
+        if(!checkModulePermission('members', 'active')) {   return redirect()->route('access_denied');  }
         $id = $request->input('mid');
         $this->personalService->toggleActivation($id);
         return redirect()->route('personal-registration')
@@ -75,6 +78,7 @@ class PersonalController extends Controller
 
     public function edit(Request $request)
     {
+        if(!checkModulePermission('members', 'edit')) {   return redirect()->route('access_denied');  }
         $countries = $this->countryService->getAllCountries();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $clubs = $this->clubService->getAllClubs();
@@ -85,6 +89,7 @@ class PersonalController extends Controller
     }
     public function update(PersonalUpdateRequest $request, $mid)
     {
+         if(!checkModulePermission('members', 'edit')) {   return redirect()->route('access_denied');  }
         $data = $request->validated();
         $this->personalService->updatePersonalData($data, $mid, $request);
         return redirect()->route('personal-registration')
@@ -93,6 +98,7 @@ class PersonalController extends Controller
 
 
     public function create(){
+         if(!checkModulePermission('members', 'add')) {   return redirect()->route('access_denied');  }
         $countries = $this->countryService->getAllCountries();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $clubs = $this->clubService->getAllClubs();
@@ -100,6 +106,7 @@ class PersonalController extends Controller
         return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));
     }
     public function store(StorePersonalRequest $request){
+         if(!checkModulePermission('members', 'add')) {   return redirect()->route('access_denied');  }
         $data=$request->validated();
         $member=$this->personalService->RegisterNewMember($data,$request);
         if (!$member){

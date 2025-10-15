@@ -9,21 +9,47 @@
 
 
         <div class="row">
+            
+            
+            
+            
+      <div class="col-12 d-flex justify-content-between align-items-center my-3">
+      <div>
+      <h4 class="header-title">{{__('lang.admins_roles')}}</h4>
+      </div>
+      <div>
+     
+     
+     
+    <div class="buttons">
+						  @if(checkModulePermission('users', 'add_role'))
+                            <a href="{{ url(route('admin.roles.create')) }}"
+                               class="btn btn-sm btn-info min-w-180 float-end me-1"> <i class="ri-group-line"></i>
+ &nbsp; {{__('lang.Add Role')}}</a>
+							   @endif
+
+							   
+					  @if(checkModulePermission('users', 'view'))
+                            <a href="{{ url(route('admin.users.index')) }}"
+                               class="btn btn-sm btn-primary min-w-180 float-end me-1"> <i class="ri-user-settings-line"></i> &nbsp; {{__('lang.users')}}</a>
+                        </div>@endif
+
+     
+     
+     
+     
+     
+     
+     
+         </div>
+    </div>
+            
+            
+            
 
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header border-bottom border-dashed d-flex align-items-center"
-                         style="  justify-content: space-between;">
-
-                        <h4 class="header-title">{{__('lang.roles')}}</h4>
-                        <div class="buttons">
-                            <a href="{{ url(route('admin.roles.create')) }}"
-                               class="btn btn-soft-primary rounded-pill  float-end">{{__('lang.Add Role')}}</a>
-                            <a href="{{ url(route('admin.users.index')) }}"
-                               class="btn btn-primary rounded-pill  mx-1">{{__('lang.users')}}</a>
-                        </div>
-
-                    </div>
+                 
                     <div class="card-body">
 
 
@@ -34,7 +60,7 @@
                             <div class="alert alert-danger">{{ session('error') }}</div>
                         @endif
 
-
+<div class="table-responsive">
                         <table
                             {{--                                id="datatable-buttons"--}}
                             class="table table-striped dt-responsive nowrap w-100">
@@ -58,17 +84,18 @@
                                     <td>{{ $role->name }}</td>
                                     <td>
                                         {{--                                            <a href="{{url( route('admin.roles.give-permissions' , $role->id)) }}"--}}
-                                        {{--                                               class="btn btn-soft-warning btn-icon btn-sm rounded-circle"><i--}}
+                                        {{--                                               class="btn btn-soft-success btn-icon btn-sm rounded-circle"><i--}}
                                         {{--                                                    class="ri-key-2-fill   fs-16"></i>--}}
 
                                         {{--                                            </a>--}}
-                                        <a href="{{url( route( 'admin.give_module_to_role_show' , $role->id)) }}"
-                                           class="btn btn-soft-warning btn-icon btn-sm rounded-circle"><i
+                                          @if(checkModulePermission('users', 'roles_perm'))
+											  <a href="{{url( route( 'admin.give_module_to_role_show' , $role->id)) }}"
+                                           class="btn btn-soft-success btn-icon btn-sm rounded-circle"><i
                                                 class="ri-key-2-fill   fs-16"></i>
 
-                                        </a>
-
-                                        @if(checkModulePermission('roles', 'add'))
+                                        </a>  @endif
+                     @if($role->id>8)
+                                        @if(checkModulePermission('users', 'edit_role'))
                                             <a href="{{ url(route('admin.roles.edit',$role->id) ) }}"
                                                class="btn btn-soft-success btn-icon btn-sm rounded-circle"><i
                                                     class="ri-edit-box-line fs-16"></i>
@@ -76,19 +103,21 @@
                                             </a>
                                         @endif
 
-                                        @if(checkModulePermission('roles', 'delete'))
+                                        @if(checkModulePermission('users', 'delete_role'))
                                             <span onclick="confirmDeletion(this)"
                                                   data-attr="{{ url(route( 'admin.roles.delete' , $role->id )) }}"
-                                                  class="btn btn-soft-danger btn-icon btn-sm rounded-circle"><i
+                                                  class="btn btn-soft-success btn-icon btn-sm rounded-circle"><i
                                                     class="ri-delete-bin-line fs-16"></i>
 
                                                 </span>
                                         @endif
+                     @endif
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                        </div>
 
                     </div> <!-- end card body-->
                 </div> <!-- end card -->

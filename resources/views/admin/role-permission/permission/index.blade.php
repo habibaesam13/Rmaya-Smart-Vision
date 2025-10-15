@@ -1,20 +1,9 @@
 @extends('admin.master')
 
 @section('content')
-
-
-
-
-
-
-
     <!-----------------start ------------------>
-
     <div class="page-container">
-
-
         <div class="row">
-
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">

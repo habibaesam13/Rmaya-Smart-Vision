@@ -23,7 +23,7 @@
           <div class="col-12">
       <div class="card">
     
-    
+     @if(checkModulePermission('weapons', 'add')) 
   <div class="card-body">
           <p class="text-muted font-14">
             <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
@@ -66,7 +66,7 @@
                   </div>
                 </div>
             </form>
-        </div>
+        </div> @endif
     
     
  
@@ -91,6 +91,7 @@
                             <td class="fw-semibold text-start">{{ $weapon->name }}</td>
                             <td>
                                 <div class="d-flex justify-content-center gap-1">
+                                    @if(checkModulePermission('weapons', 'edit')) 
                                     {{-- Edit Button --}}
                                     <a href="{{ route('weapons.edit', $weapon->wid) }}" 
                                        class="btn btn-soft-success btn-icon btn-sm rounded-circle" 
@@ -98,7 +99,9 @@
                                        data-bs-toggle="tooltip">
                                             <i class="ri-edit-box-line fs-16"></i>
                                     </a>
-
+ 
+                             @endif 
+                             @if(checkModulePermission('weapons', 'delete')) 
                                     {{-- Delete Button --}}
                                     <form action="{{ route('weapons.destroy', $weapon->wid) }}" method="POST" 
                                           class="d-inline"
@@ -110,7 +113,7 @@
                                                 data-bs-toggle="tooltip">
                                             <i class="ri-delete-bin-line fs-16"></i>
                                         </button>
-                                    </form>
+                                    </form>@endif 
                                 </div>
                             </td>
                         </tr>

@@ -24,6 +24,7 @@ class ClubsController extends Controller
      */
     public function index()
     {
+         if(!checkModulePermission('clubs', 'view')) {   return redirect()->route('access_denied');  }
         return view('clubs.index', [
             'clubs' => $this->clubService->getAllClubs()
         ]);
@@ -35,6 +36,7 @@ class ClubsController extends Controller
      */
     public function store(StoreClubRequest $request)
     {
+        if(!checkModulePermission('clubs', 'add')) {   return redirect()->route('access_denied');  }
         $this->clubService->createClub($request->validated());
         return redirect()->route('clubs.index')->with('success', 'تم إضافة النادي بنجاح.');
     }
@@ -44,6 +46,7 @@ class ClubsController extends Controller
      */
     public function show($id)
     {
+        if(!checkModulePermission('clubs', 'view')) {   return redirect()->route('access_denied');  }
         $club = $this->clubService->getClubById($id);
         return view('clubs.show', compact('club'));
     }
@@ -53,6 +56,7 @@ class ClubsController extends Controller
      */
     public function edit($id)
     {
+        if(!checkModulePermission('clubs', 'edit')) {   return redirect()->route('access_denied');  }
         $club = $this->clubService->getClubById($id);
         return view('clubs.edit', compact('club'));
     }
@@ -62,6 +66,7 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!checkModulePermission('clubs', 'edit')) {   return redirect()->route('access_denied');  }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -74,6 +79,7 @@ class ClubsController extends Controller
      */
     public function destroy($id)
     {
+        if(!checkModulePermission('clubs', 'delete')) {   return redirect()->route('access_denied');  }
         $this->clubService->deleteClub($id);
         return redirect()->route('clubs.index')->with('success', 'تم حذف النادي بنجاح.');
     }
