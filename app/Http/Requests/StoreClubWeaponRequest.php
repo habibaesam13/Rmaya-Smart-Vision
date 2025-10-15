@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use DB;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClubWeaponRequest extends FormRequest
@@ -34,13 +35,13 @@ class StoreClubWeaponRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'wid.required' => 'The weapon field is required.',
-            'wid.exists' => 'The selected weapon is invalid.',
-            'cid.required' => 'The club field is required.',
-            'cid.exists' => 'The selected club is invalid.',
-            'gender.required' => 'The gender field is required.',
-            'age_from.required' => 'The age from field is required.',
-            'success_degree.required' => 'The success degree field is required.',
+            'wid.required' => 'حقل السلاح مطلوب.',
+            'wid.exists' => 'السلاح المحدد غير صحيح.',
+            'cid.required' => 'حقل النادي مطلوب.',
+            'cid.exists' => 'النادي المحدد غير صحيح.',
+            'gender.required' => 'حقل الجنس مطلوب.',
+            'age_from.required' => 'حقل العمر من مطلوب.',
+            'success_degree.required' => 'حقل درجة النجاح مطلوب.',
         ];
     }
     public function withValidator($validator)
@@ -56,5 +57,4 @@ class StoreClubWeaponRequest extends FormRequest
             }
         });
     }
-
 }

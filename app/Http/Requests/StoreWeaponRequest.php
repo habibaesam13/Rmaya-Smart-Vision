@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class StoreWeaponRequest extends FormRequest
 {
     /**
@@ -23,17 +24,15 @@ class StoreWeaponRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
     public function messages(): array
     {
         return [
-            'name.required'=>'Name is required',
-            'name.string'=>'Name must be a string',
-            'name.max'=>'Name must be less than 255 characters',
+            'name.required' => 'الاسم مطلوب',
+            'name.string' => 'يجب أن يكون الاسم نصاً',
+            'name.max' => 'يجب أن يكون الاسم أقل من 255 حرفاً',
         ];
     }
-
-
 }
