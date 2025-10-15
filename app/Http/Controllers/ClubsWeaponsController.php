@@ -101,7 +101,7 @@ class ClubsWeaponsController extends Controller
         $club = $this->clubsService->getClubById($clubWeapon->cid);
         $weapons = $this->weaponsService->getAllPersonalWeapons();
 
-        return view('sv_clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
+        return view('clubs_weapons.edit', compact('clubWeapon', 'club', 'weapons'));
     }
 
     /**

@@ -149,7 +149,7 @@
                                     <td>
                                         <div class="d-flex justify-content-center gap-3">
                                             {{-- Edit Button --}}
-                                            <a href="{{ route('clubs-weapons.edit', [$clubWeapon->cwid]) }}"
+                                            <a href="{{ route('clubs-weapons.edit', $clubWeapon->cwid) }}"
                                                 class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="تعديل">
                                                 <i class="ri-edit-box-line fs-16"></i>
                                             </a>
