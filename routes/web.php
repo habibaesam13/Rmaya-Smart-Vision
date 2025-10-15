@@ -54,6 +54,9 @@ Route::group([
 });
 
 
+ 
+
+
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -195,8 +198,10 @@ Route::group(
     ],
     function () {
 
-        Route::get('access_denied', function () {
-            return view('admin.access_denied');
+
+ Route::get('access_denied', function () {
+           return view('admin.access_denied');
+
         })->name('access_denied');
 
         // Admin routes
@@ -476,7 +481,8 @@ Route::group(
                         }
                         unset($arr);
 
-                        // ✅ Flatten while keeping same order and mapping back to arr1 keys
+                        
+                      
                         $flattened = [];
                         $index = 0;
                         foreach ($arr1 as $key => $val) {

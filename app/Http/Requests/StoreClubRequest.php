@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class StoreClubRequest extends FormRequest
 {
     /**
@@ -29,10 +30,10 @@ class StoreClubRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Club name is required.',
-            'name.string' => 'Club name must be a string.',
-            'name.max' => 'Club name must not exceed 255 characters.',
-            'name.unique' => 'This club name is already exists.',
+            'name.required' => 'اسم النادي مطلوب.',
+            'name.string' => 'يجب أن يكون اسم النادي نصاً.',
+            'name.max' => 'يجب ألا يتجاوز اسم النادي 255 حرفاً.',
+            'name.unique' => 'اسم النادي هذا موجود بالفعل.',
         ];
-    }   
+    }
 }

@@ -31,20 +31,20 @@
                 <div class="card-body">
                     <div class="card bg-search">
                         {{-- Report Info --}}
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-4">
+                        <div class="row g-3 mb-4 mt-1 d-flex justify-content-center">
+                            <div class="col-md-3">
                                 <div class="info-box bg-light p-3 rounded">
                                     <label class="text-muted small mb-1">السلاح</label>
                                     <h5 class="mb-0 text-dark">{{ $report?->weapon?->name ?? '---' }}</h5>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="info-box bg-light p-3 rounded">
                                     <label class="text-muted small mb-1">رقم الديتيل</label>
                                     <h5 class="mb-0 text-dark">{{ $report?->details ?? '---' }}</h5>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="info-box bg-light p-3 rounded">
                                     <label class="text-muted small mb-1">التاريخ</label>
                                     <h5 class="mb-0 text-dark">{{ $report?->date ? $report->date->format('d-m-Y') : '---' }}</h5>
@@ -54,7 +54,7 @@
 
 
                         {{-- Action Buttons --}}
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="d-flex flex-wrap gap-2 mb-2">
                             @if(!$confirmed)
                             <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
                                 <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
@@ -79,18 +79,18 @@
                                 class="d-flex align-items-center gap-2">
                                 @csrf
                                 <input type="hidden" name="players_data" id="playersData">
-
+                                 @if(!$confirmed)
                                 {{-- الملف --}}
                                 <div class="file-upload-wrapper">
                                     <input type="file" name="attached_file" id="attached_file"
                                         class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
                                 </div>
+                                @endif
                                 {{-- Print Button --}}
                                 <a href="{{ route('report.print', $report->Rid) }}"
                                     target="_blank"
                                     class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
-                                    <i class="fas fa-print"></i>
-                                    <span>طباعة</span>
+                                    <i class="ri-printer-line"></i>
                                 </a>
                                 @if(!$confirmed)
                                 {{-- زر الحفظ --}}
@@ -102,8 +102,7 @@
                             </form>
                             <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                                 <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                                    <i class="fas fa-print"></i>
-                                    <span>PDF</span>
+                                    <i class="ri-file-pdf-2-line"></i>
                                 </button>
                             </form>
                         </div>
@@ -115,7 +114,7 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
                         @csrf
-                        <table class="table table-bordered mb-0">
+                        <table class="table table-bordered mb-3">
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">#</th>
@@ -229,7 +228,7 @@
 
                <style>
     .info-box {
-        border-left: 4px solid #97ca52;
+        border-left: 4px solid #bf1e2f;
         transition: all 0.3s ease;
     }
 

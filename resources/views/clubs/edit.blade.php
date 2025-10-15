@@ -1,29 +1,48 @@
+
 @extends('admin.master')
 @section('content')
-<div class="page-container my-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <h4 class="card-title mb-4">تعديل نادي</h4>
-
+<div class="page-container">
+    <div class="col-12 d-flex justify-content-between align-items-center my-3">
+        <div class="col-md-12">
+            <h4 class="header-title">تعديل نادي</h4>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body"> @if (session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif @if (session('warning')) <div class="alert alert-warning">{{ session('warning') }}</div>@endif @if ($errors->any()) @foreach ($errors->all() as $error) <div class="text-danger">{{$error}}</div>@endforeach <br>@endif
             {{-- Success Message --}}
             @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
-            {{-- Form --}}
-            <form action="{{ route('clubs.update', $club->cid) }}" method="POST" class="mb-4">
+            <form action="{{ route('clubs.update', $club->cid) }}" method="POST" class="form-horizontal">
                 @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label for="name" class="form-label">اسم النادي</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $club->name) }}" placeholder="اكتب اسم النادي">
-                    @error('name')
+                <div class="row">
+
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label for="name" class="form-label">اسم النادي</label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name', $club->name) }}" placeholder="اكتب اسم النادي">
+                        @error('name')
                         <div class="text-danger small">{{ $message }}</div>
-                    @enderror
+                        @enderror
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-start gap-2 my-2" style="padding-top:8px">
+                        <div class="g-1 row justify-content-center">
+                            <div class="col-12 col-md-6">
+                                <button type="submit" class="btn btn-sm btn-info w-100">
+                                   تحديث
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <a href="{{ route('clubs.index') }}" class="btn btn-sm btn-warning w-100">
+                                    الغاء
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary px-4">تحديث</button>
-                <a href="{{ route('clubs.index') }}" class="btn btn-danger px-4 ms-2">إلغاء</a>
             </form>
         </div>
     </div>
+</div>
 @endsection

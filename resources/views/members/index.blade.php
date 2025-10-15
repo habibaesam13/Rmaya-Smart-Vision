@@ -7,50 +7,48 @@
                 <h4 class="header-title">المسجلين افراد</h4>
             </div>
             <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
 
-                <span class="badge badge-outline-primary">
-                    عدد المسجلين : {{$membersCount}}</span>
+                    <span class="badge badge-outline-primary"> عدد المسجلين : {{$membersCount}}</span>
 
-                <a title="Excel" href="{{ isset($reportSection) && $reportSection
-                        ? route('personal.results.export.excel')
-                        : route('members.export.excel') }}" class="btn btn-sm btn-primary  "><i class="ri-file-excel-line"></i></a>
-
-                <a title="PDF" href="{{ isset($reportSection) && $reportSection
-                        ? route('personal-results-download-pdf')
-                        : route('members-download-pdf') }}" class="btn btn-sm btn-primary  "><i class="ri-file-pdf-2-line"></i> </a>
-                <!--
-             <form action="{{ isset($reportSection) && $reportSection
-                        ? route('personal.results.export.excel')
-                        : route('members.export.excel') }}" method="post" class="mb-0">
+                    <!-- Excel Download Form -->
+                    <form
+                        action="{{ isset($reportSection) && $reportSection
+                ? route('personal.results.export.excel')
+                : route('members.export.excel') }}"
+                        method="post"
+                        class="mb-0">
                         @csrf
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
-                        <button type="submit"  class="btn btn-sm btn-primary">
-                           <i class="ri-file-excel-line"></i>
 
+                       
+
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
+                            <i class="ri-file-excel-line fs-5"></i>
                         </button>
                     </form>
 
-                     <form action="{{ isset($reportSection) && $reportSection
-                        ? route('personal-results-download-pdf')
-                        : route('members-download-pdf') }}" method="get" class="mb-0">
+                    <!-- PDF Download Form -->
+                    <form
+                        action="{{ isset($reportSection) && $reportSection
+                ? route('personal-results-download-pdf')
+                : route('members-download-pdf') }}"
+                        method="get"
+                        class="mb-0">
+
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
-                        <button type="submit" class="btn btn-sm btn-primary ">
-                            <i class="ri-file-pdf-2-line"></i>
-                            <!--<span>تحميل PDF</span>-->
-                <!--   </button>
-                    </form>-->
+                        <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center" title="تحميل PDF">
+                            <i class="ri-file-pdf-2-line fs-5"></i>
+                        </button>
+                    </form>
 
-
-
-
-                <!--<a title="{{__('lang.print')}}" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
-            <i class="ri-printer-line"></i>&nbsp;&nbsp;{{__('lang.print')}}
-          </a>-->
+                </div>
             </div>
+
         </div>
         <div class="col-12">
             <div class="card">
@@ -58,7 +56,7 @@
                     <p class="text-muted font-14">
                         <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
                     </p>
-                    <div class="card bg-search">
+                    <div class="card bg-search ">
 
 
                         @if(session('success'))
@@ -221,7 +219,7 @@
                                 </div>
                                 @endif
                             </div>
-                            <div class="col-md-12 col-lg-2 col-12" style="padding-top:8px">
+                            <div class="col-md-12 col-lg-2 col-12 mb-2" style="padding-top:8px">
                                 <div class="g-1 row justify-content-center">
                                     <div class="col-12 col-lg-5 col-md-6 ">
                                         <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
@@ -229,9 +227,9 @@
                                         </button>
                                     </div>
                                     <div class="col-12 col-lg-7 col-md-6">
-                                        <button type="submit" class="btn btn-sm btn-warning  mb-3 w-100" name="reset" value="اعادة ضبط">
-                                            <i class="ri-refresh-line"></i>&nbsp;&nbsp;اعادة ضبط
-                                        </button>
+                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
+                                            اعادة ضبط
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -257,7 +255,7 @@
                             @endisset -->
                             @if($reportSection)
                             <div class="card border-success mb-3 rounded-3 overflow-hidden">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header  text-white" style="background-color: #bf1e2f;">
                                     <h5 class="mb-0">
                                         <i class="fas fa-file-alt me-2"></i>
                                         إضافة تقرير يومي
@@ -280,9 +278,12 @@
                                         </ul>
                                     </div>
                                     @endif
-                                    <form action="{{ isset($Edit_report)
-                        ? route('update-report-registered-members', $Edit_report->Rid)
-                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
+
+
+                                    <form action="{{ isset($Edit_report) 
+                                        ? route('update-report-registered-members', $Edit_report->Rid)
+                                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
+
                                         @csrf
 
                                         <div class="row g-3 align-items-end mb-3">
@@ -311,7 +312,7 @@
 
                                     <hr>
                                     @isset($available_players)
-                                    <table class="table table-bordered mb-0">
+                                    <table class="table table-bordered mb-3">
                                         <thead class="bg-soft-primary">
 
                                             <tr>
@@ -378,7 +379,9 @@
                                                                 <i class="ri-delete-bin-line fs-16"></i>
                                                             </button>
                                                         </form>
-                                                         @endif
+
+                                                        @endif
+
                                                         @if(checkModulePermission('members', 'active'))
 
                                                         {{-- Toggle Status Button --}}
@@ -471,7 +474,9 @@
                                         <td>
                                             <div class="d-flex justify-content-center gap-1">
 
-                                                        @if(checkModulePermission('members', 'edit'))
+
+                                                @if(checkModulePermission('members', 'edit'))
+
                                                 {{-- Edit Button --}}
                                                 <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                     @csrf
@@ -480,8 +485,10 @@
                                                         <i class="ri-edit-box-line fs-16"></i>
                                                     </button>
                                                 </form>
-                                                  @endif
-                                                        @if(checkModulePermission('members', 'delete'))
+
+                                                @endif
+                                                @if(checkModulePermission('members', 'delete'))
+
                                                 {{-- Delete Button --}}
                                                 <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
                                                     onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
@@ -493,8 +500,10 @@
                                                         <i class="ri-delete-bin-line fs-16"></i>
                                                     </button>
                                                 </form>
-                                                       @endif
-                                                        @if(checkModulePermission('members', 'active'))
+
+                                                @endif
+                                                @if(checkModulePermission('members', 'active'))
+
                                                 {{-- Toggle Status Button --}}
                                                 <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
                                                     @csrf

@@ -227,7 +227,8 @@
 
                 {{-- Action Buttons --}}
                 <div class="d-flex gap-2 mt-4"> <button type="submit" class="btn btn-success">
-                        <i class="fas fa-search me-2"></i>بحث </button> <a href="{{ url()->current() }}"
+                        <i class="fas fa-search me-2"></i>بحث </button> 
+                        <a href="{{ url()->current() }}"
                         class="btn btn-danger"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
                 </div>
             </form>

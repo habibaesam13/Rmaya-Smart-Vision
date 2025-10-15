@@ -46,7 +46,7 @@ class GroupsMembersExportProvider implements FromCollection, ExcelProviderInterf
                     'الأسم'   => $member->name,
                     'الهاتف'   => $member->phone1,
                     'العمر'=> $member->age_calculation(),
-                    'الفريق'=>$member->club?->name,
+                    'الفريق'=>$member->team?->name,
                     'السلاح'=>$member->weapon?->name,
                 ];
             });
