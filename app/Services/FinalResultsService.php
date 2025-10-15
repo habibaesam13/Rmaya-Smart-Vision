@@ -201,23 +201,6 @@ class FinalResultsService
     public function getReportsPlayersDetails(Request $request)
     {
 
-        //here
-//        $query = SVFianlResults::query();
-//
-//        $query
-//            ->
-//            join('sv_fianl_results_players', 'sv_fianl_results_players.Rid', '=', 'sv_fianl_results.id')
-//            ->join('sv_members', 'sv_members.mid', '=', 'sv_fianl_results_players.player_id')
-//            ->select('sv_fianl_results_players.*', 'sv_fianl_results.*')
-//            ->where('confirmed', true)
-//            ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
-//            ->when($request->details, fn ($q, $details) => $q->where('details', $details))
-//            ->when($request->from_date, fn ($q, $from) => $q->whereDate('date', '>=', $from))
-//            ->when($request->to_date, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-//            ->orderBy('sv_fianl_results.id');
-//        $data = $query->cursorPaginate(config('app.admin_pagination_number'));
-//        return $data;
-
         $query = SVFianlResults::query();
 
         $query
@@ -225,7 +208,7 @@ class FinalResultsService
             join('sv_fianl_results_players', 'sv_fianl_results_players.Rid', '=', 'sv_fianl_results.id')
             ->join('sv_members', 'sv_members.mid', '=', 'sv_fianl_results_players.player_id')
             ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
-            ->select('sv_fianl_results_players.*', 'sv_fianl_results.*', 'sv_members.name as player_name', 'sv_members.ID as player_id', 'sv_weapons.name as weapon_name')
+            ->select('sv_fianl_results_players.id as result_player_id', 'sv_fianl_results_players.second_total', 'sv_fianl_results_players.total', 'sv_fianl_results.*', 'sv_members.name as player_name', 'sv_members.mid as player_id',  'sv_members.ID as ID', 'sv_weapons.name as weapon_name')
             ->where('sv_fianl_results.confirmed', true);
 
         if (!empty($request->weapon_id)) {
@@ -235,22 +218,12 @@ class FinalResultsService
             $query = $query->where('sv_fianl_results.details', $request->details);
         }
         if (!empty($request->to_date)) {
-//            $query =  $query ->  whereDate('date', '<=', $request->to_date) ;
             $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
-
         }
         if (!empty($request->from_date)) {
-//            $query =  $query ->  whereDate('date',  '>=', $request->from_date) ;
             $query = $query->whereDate('sv_fianl_results.date', '=>', $request->from_date);
-
         }
-//                        ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
-//        ->when($request->details, fn ($q, $details) => $q->where('details', $details))
-//        ->when($request->from_date, fn ($q, $from) => $q->whereDate('date', '>=', $from))
-//        ->when($request->to_date, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-
-
-        $query->orderBy('sv_fianl_results_players.total', 'desc');
+        $query->orderBy('sv_fianl_results_players.total', 'desc')->orderBy('sv_fianl_results_players.second_total', 'desc');
         $data = $query->cursorPaginate(config('app.admin_pagination_number'));
         return $data;
 
@@ -356,32 +329,128 @@ class FinalResultsService
         return $arr;
     }
 
-//    public function getSortedRatings()
-//    {
-//        $arr = [0=> 'first' ,
-//            1=> 'second' ,
-//            2=> 'third' ,
-//            3=> 'fourth' ,
-//            4=> 'fifth' ,
-//            5=> 'sixth' ,
-//            6=> 'seventh' ,
-//            7=> 'eighth' ,
-//            8=> 'ninth' ,
-//            9=> 'tenth' ,
-//            10 => 'eleventh' ,
-//            11=> 'twelvth' ,
-//            12=> 'thirteenth' ,
-//            13=> 'fourteenth' ,
-//            14=> 'fifteenth' ,
-//            15=> 'sixteenth' ,
-//        ];
-//        $records =  SVFianlResultsPlayer::groupBy('total'  )->orderBy(  'total' , 'desc')->pluck('total')->map(function ($item, $key) use ($arr) {
-////            return  [$arr[(int) $key]   => $item] ;
-//            return  [  $item    => $arr[$key]] ;
-//
-//        });
-//        return  json_decode($records , true);
-//     }
+
+    public function updateSecondTotalOfResultPlayer($id, $val)
+    {
+        return SVFianlResultsPlayer::where('id', $id)->update(['second_total' => $val]);
+
+    }
 
 
+    public function getOrdersArray($arr1, $arr2)
+    {
+        $final = [];
+
+        // Extract keys and values to allow same foreach structure
+        $keys = array_keys($arr1);
+        $values1 = array_values($arr1);
+        $values2 = array_values($arr2);
+
+        $count = count($values1);
+        $previ = -1;
+        $next = -1;
+
+        foreach ($values1 as $i => $item1) {
+            $key1 = $keys[$i];
+
+            if ($i != 0) {
+                $previ = $values1[$i - 1];
+            }
+
+            if ($i < $count - 1) {
+                $next = $values1[$i + 1];
+            }
+
+            if ($previ === $item1) {
+                $final[$item1][] = $values2[$i];
+            } elseif ($i === 0 && $next === $item1) {
+                $final[$item1][] = $values2[$i];
+            } elseif ($i == $count - 1 && $previ === $item1) {
+                $final[$item1][] = $values2[$i];
+            } elseif ($previ !== $item1 && $item1 === $next && $i !== $count - 1) {
+                $final[$item1][] = $values2[$i];
+            } else {
+                $final[$item1][] = $item1;
+            }
+        }
+
+        // Sort the outer array by key descending (e.g., 60 > 20)
+        krsort($final);
+
+        // Sort each inner array descending
+        foreach ($final as &$arr) {
+            rsort($arr);
+        }
+        unset($arr);
+
+        // ✅ Flatten while keeping same order and mapping back to arr1 keys
+        $flattened = [];
+        $index = 0;
+        foreach ($arr1 as $key => $val) {
+            $flattened[$key] = null; // initialize to preserve order
+        }
+
+        // Fill the flattened array sequentially (values in order)
+        $allValues = [];
+        foreach ($final as $group) {
+            foreach ($group as $value) {
+                $allValues[] = $value;
+            }
+        }
+
+        // Map flattened values to original keys in order
+        $i = 0;
+        foreach (array_keys($flattened) as $key) {
+            if (isset($allValues[$i])) {
+                $flattened[$key] = $allValues[$i];
+            }
+            $i++;
+        }
+
+        return $flattened;
+
+    }
+
+
+    public function getArraysOfOrdersArray(Request $request)
+    {
+
+
+        $query = SVFianlResults::query();
+
+        $query
+            ->
+            join('sv_fianl_results_players', 'sv_fianl_results_players.Rid', '=', 'sv_fianl_results.id')
+            ->join('sv_members', 'sv_members.mid', '=', 'sv_fianl_results_players.player_id')
+            ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
+            ->select('sv_fianl_results_players.id as result_player_id', 'sv_fianl_results_players.second_total', 'sv_fianl_results_players.total', 'sv_fianl_results.*', 'sv_members.name as player_name', 'sv_members.mid as player_id', 'sv_weapons.name as weapon_name')
+            ->where('sv_fianl_results.confirmed', true);
+
+        if (!empty($request->weapon_id)) {
+            $query = $query->where('sv_fianl_results.weapon_id', $request->weapon_id);
+        }
+        if (!empty($request->details)) {
+            $query = $query->where('sv_fianl_results.details', $request->details);
+        }
+        if (!empty($request->to_date)) {
+//            $query =  $query ->  whereDate('date', '<=', $request->to_date) ;
+            $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
+
+        }
+        if (!empty($request->from_date)) {
+//            $query =  $query ->  whereDate('date',  '>=', $request->from_date) ;
+            $query = $query->whereDate('sv_fianl_results.date', '=>', $request->from_date);
+
+        }
+//                        ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
+//        ->when($request->details, fn ($q, $details) => $q->where('details', $details))
+//        ->when($request->from_date, fn ($q, $from) => $q->whereDate('date', '>=', $from))
+//        ->when($request->to_date, fn ($q, $to) => $q->whereDate('date', '<=', $to))
+
+        $arr1 = $query->orderBy('sv_fianl_results_players.total', 'desc')->pluck('total', 'result_player_id')->toArray();
+        $arr2 = $query->orderBy('sv_fianl_results_players.total', 'desc')->pluck('second_total', 'result_player_id')->toArray();
+//        $data = $query->cursorPaginate(config('app.admin_pagination_number'));
+        return [$arr1 , $arr2];
+
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sv_clubs;
 use App\Models\Sv_weapons;
+use App\Models\SVFianlResultsPlayer;
 use App\Services\FinalResultsService;
 use App\Services\WeaponService;
 use Illuminate\Http\Request;
@@ -44,5 +45,11 @@ class FinalResultReportController extends Controller
     {
         $weapons = DB::table('sv_weapons')->join('sv_clubs_weapons', 'sv_clubs_weapons.wid', '=', 'sv_weapons.wid')->whereRaw('sv_clubs_weapons.cid = ?', [$clubId])->get();
         return response()->json(array('weapons' => $weapons), 200);
+    }
+
+    public function updateSecondTotal($id , Request $request )
+    {
+       $m = $this->finalResultsService->updateSecondTotalOfResultPlayer($id , $request->second_total);
+         return redirect()->back();
     }
 }

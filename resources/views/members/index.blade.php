@@ -1,6 +1,5 @@
 @extends('admin.master')
 @section('content')
-
 <div class="page-container">
     <div class="row">
         <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
@@ -23,6 +22,9 @@
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
+
+                       
+
                         <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
                             <i class="ri-file-excel-line fs-5"></i>
                         </button>
@@ -35,6 +37,7 @@
                 : route('members-download-pdf') }}"
                         method="get"
                         class="mb-0">
+
                         @foreach(request()->query() as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
@@ -275,9 +278,12 @@
                                         </ul>
                                     </div>
                                     @endif
+
+
                                     <form action="{{ isset($Edit_report) 
                                         ? route('update-report-registered-members', $Edit_report->Rid)
                                         : route('generate-report-registered-members') }}" method="POST" id="reportForm">
+
                                         @csrf
 
                                         <div class="row g-3 align-items-end mb-3">
@@ -339,11 +345,11 @@
                                                 <td>{{ $player->club?->name ?? '---' }}</td>
                                                 <td>{{ $player->registrationClub?->name ?? '---' }}</td>
                                                 <td>
-                                                    {{ $player->nationality && trim($player->nationality->country_name_ar ?? '') !== '' 
-                                ? $player->nationality->country_name_ar 
-                                : (trim($player->nationality->country_name ?? '') !== '' 
-                                    ? $player->nationality->country_name 
-                                    : '---') 
+                                                    {{ $player->nationality && trim($player->nationality->country_name_ar ?? '') !== ''
+                                ? $player->nationality->country_name_ar
+                                : (trim($player->nationality->country_name ?? '') !== ''
+                                    ? $player->nationality->country_name
+                                    : '---')
                             }}
                                                 </td>
                                                 <td>{{ $player->member_group?->name ?? '---' }}</td>
@@ -373,7 +379,9 @@
                                                                 <i class="ri-delete-bin-line fs-16"></i>
                                                             </button>
                                                         </form>
+
                                                         @endif
+
                                                         @if(checkModulePermission('members', 'active'))
 
                                                         {{-- Toggle Status Button --}}
@@ -451,11 +459,11 @@
                                         <td>{{ $member->club?->name ?? '---' }}</td>
                                         <td>{{ $member->registrationClub?->name ?? '---' }}</td>
                                         <td>
-                                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== '' 
-                                ? $member->nationality->country_name_ar 
-                                : (trim($member->nationality->country_name ?? '') !== '' 
-                                    ? $member->nationality->country_name 
-                                    : '---') 
+                                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== ''
+                                ? $member->nationality->country_name_ar
+                                : (trim($member->nationality->country_name ?? '') !== ''
+                                    ? $member->nationality->country_name
+                                    : '---')
                                 }}
                                         </td>
 
@@ -466,7 +474,9 @@
                                         <td>
                                             <div class="d-flex justify-content-center gap-1">
 
+
                                                 @if(checkModulePermission('members', 'edit'))
+
                                                 {{-- Edit Button --}}
                                                 <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                     @csrf
@@ -475,8 +485,10 @@
                                                         <i class="ri-edit-box-line fs-16"></i>
                                                     </button>
                                                 </form>
+
                                                 @endif
                                                 @if(checkModulePermission('members', 'delete'))
+
                                                 {{-- Delete Button --}}
                                                 <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
                                                     onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
@@ -488,8 +500,10 @@
                                                         <i class="ri-delete-bin-line fs-16"></i>
                                                     </button>
                                                 </form>
+
                                                 @endif
                                                 @if(checkModulePermission('members', 'active'))
+
                                                 {{-- Toggle Status Button --}}
                                                 <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
                                                     @csrf
