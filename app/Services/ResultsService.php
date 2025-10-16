@@ -172,7 +172,7 @@ class ResultsService
     //البحث فى النتائج الأولية اليومية
     public function searchInitialResultsReports(Request $request)
     {
-        if ($request->q || $request->date) {
+        
             $query = Sv_initial_results_players::query()
                 ->with(['player.club', 'player.weapon', 'report.weapon']);
             $query->whereHas('report', function ($sub) use ($request) {
@@ -188,10 +188,10 @@ class ResultsService
                         ->orWhere('phone1', 'like', "%{$request->q}%");
                 });
             }
-            $results = $query->orderByDesc('Rid')
-                ->cursorPaginate(200);
+            $results = $query->orderBy('Rid')
+                ->cursorPaginate(config('app.admin_pagination_number'));
 
             return $results;
-        }
+        
     }
 }
