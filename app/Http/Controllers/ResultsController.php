@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SaveMembersReportRequest;
 use App\Models\Sv_member;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
@@ -11,6 +10,8 @@ use App\Services\ResultsService;
 use App\Services\PersonalService;
 use App\Services\CountriesService;
 use App\Http\Requests\StoreReportForMembers;
+use App\Http\Requests\SaveMembersReportRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ResultsController extends Controller
 {
@@ -31,15 +32,15 @@ class ResultsController extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
-        $validated=$request->validate(
+        $validated = $request->validate(
             [
                 'date_from' => ['nullable', 'date'],
                 'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
             ],
             [
-            'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
-            'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
-            'date_to.after_or_equal'=> 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
+                'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
+                'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
+                'date_to.after_or_equal' => 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
             ]
         );
         $Edit_report = null;
@@ -69,7 +70,7 @@ class ResultsController extends Controller
     }
     public function store(StoreReportForMembers $request)
     {
-        
+
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
@@ -116,17 +117,17 @@ class ResultsController extends Controller
 
     public function saveReport(Request $request, $rid)
     {
-        
+
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
-            
+
             if (!$playersData) {
                 return back()->withErrors(['players_data' => 'Invalid players data format']);
             }
 
             $report = $this->resultService->saveReport($request, $playersData, $rid);
             if ($report) {
-                 return redirect()->route('report-members', $rid)->with('success', 'تم حفظ التقرير بنجاح');
+                return redirect()->route('report-members', $rid)->with('success', 'تم حفظ التقرير بنجاح');
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء الحفظ');
@@ -178,17 +179,22 @@ class ResultsController extends Controller
     }
 
     /**Preliminary results reports - clubs - details */
-    public function getResportsDetails(Request $request){
-        $weapons=$this->weaponService->getAllPersonalWeapons();
-        $ReportsDetails=$this->resultService->getReportsDetails($request);
-        return view('personalReports/initial_results/preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+    public function getResportsDetails(Request $request)
+    {
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $ReportsDetails = $this->resultService->getReportsDetails($request);
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
     }
     //search initial results reports
-    public function searchIninitialResultsReports(Request $request){
-        $weapons=$this->weaponService->getAllPersonalWeapons();
-        
-        $results=$this->resultService->searchIninitialResultsReports($request);
-        
-        return $results ? view('personalReports/initial_results/search_reports',compact(['results','weapons'])) : "لا يوجد نتائج مطابقة للبحث";
+    public function searchInitialResultsReports(Request $request)
+    {
+        $results = $this->resultService->searchInitialResultsReports($request);
+
+
+        if (empty($results)) {
+            $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+
+        return view('personalReports.initial_results.search_reports', compact('results'));
     }
 }

@@ -82,7 +82,7 @@
                 {{-- Registered Teams --}}
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <table class="table table-bordered mb-0">
+                        <table class="table table-bordered mb-3">
                             <thead>
                                 <tr>
                                     <th>التاريخ</th>
@@ -149,7 +149,7 @@
                         transition: all 0.2s ease-in-out;
                         text-decoration: none;
                     }
-                    
+
                     .icon-btn:hover {
                         background-color: #bf1e2f;
                         color: #f8f9fa;
@@ -159,10 +159,14 @@
                         opacity: 0.4;
                         pointer-events: none;
                     }
-                    .dis.disabled{
+
+                    .dis.disabled {
                         opacity: 0.4;
                         pointer-events: none;
                     }
                 </style>
-
-                @endsection
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

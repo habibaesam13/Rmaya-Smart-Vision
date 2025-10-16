@@ -131,7 +131,7 @@
                         {{-- Registered Teams --}}
                         <div class="card shadow-sm border-0">
                             <div class="card-body">
-                                <table class="table table-bordered mb-0">
+                                <table class="table table-bordered mb-3">
                                     <thead >
                                         <tr>
                                             <th>اسم الفريق</th>

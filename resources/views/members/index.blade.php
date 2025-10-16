@@ -23,7 +23,7 @@
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
 
-                       
+
 
                         <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
                             <i class="ri-file-excel-line fs-5"></i>
@@ -346,11 +346,11 @@
                                                 <td>{{ $player->registrationClub?->name ?? '---' }}</td>
                                                 <td>
                                                     {{ $player->nationality && trim($player->nationality->country_name_ar ?? '') !== ''
-                                ? $player->nationality->country_name_ar
-                                : (trim($player->nationality->country_name ?? '') !== ''
-                                    ? $player->nationality->country_name
-                                    : '---')
-                            }}
+                                                        ? $player->nationality->country_name_ar
+                                                        : (trim($player->nationality->country_name ?? '') !== ''
+                                                            ? $player->nationality->country_name
+                                                            : '---')
+                                                    }}
                                                 </td>
                                                 <td>{{ $player->member_group?->name ?? '---' }}</td>
                                                 <td>{{ $player->registration_date }}</td>
@@ -428,7 +428,7 @@
                             </div>
                             @else
 
-                            <table class="table table-bordered mb-0">
+                            <table class="table table-bordered mb-3">
                                 <thead class="bg-soft-primary">
 
                                     <tr>
@@ -590,73 +590,9 @@
                         opacity: 0.8;
                     }
                 </style>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const clubSelect = document.getElementById('club_id');
-                        const weaponSelect = document.getElementById('weapon_id');
+            </div>
+        </div>
+    </div>
+</div>
 
-                        clubSelect.addEventListener('change', function() {
-                            const clubId = this.value;
-
-                            // Clear weapons dropdown
-                            weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
-
-                            if (clubId) {
-                                // Fetch weapons for selected club
-                                fetch(`{{ url('') }}/admin/clubs/${clubId}/weapons`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        weaponSelect.innerHTML =
-                                            '<option value="" disabled selected>اختر السلاح</option>';
-
-                                        data.weapons.forEach(weapon => {
-                                            const option = document.createElement('option');
-                                            option.value = weapon.wid;
-                                            option.textContent = weapon.name;
-                                            weaponSelect.appendChild(option);
-                                        });
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        weaponSelect.innerHTML =
-                                            '<option value="" disabled selected>حدث خطأ في التحميل</option>';
-                                    });
-                            } else {
-                                weaponSelect.innerHTML = '<option value="" disabled selected>اختر النادي أولاً</option>';
-                            }
-                        });
-                    });
-                </script>
-                <script>
-                    document.getElementById("reportForm").addEventListener("submit", function(e) {
-                        const container = document.getElementById("checkedMembersContainer");
-                        container.innerHTML = "";
-
-                        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
-                            let hidden = document.createElement("input");
-                            hidden.type = "hidden";
-                            hidden.name = "checkedMembers[]";
-                            hidden.value = cb.value;
-                            container.appendChild(hidden);
-                        });
-                    });
-                </script>
-
-                <script>
-                    //date
-                    // Get the current date
-                    const today = new Date();
-
-                    // Format the date to 'YYYY-MM-DD' for the input type="date"
-                    const year = today.getFullYear();
-                    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-                    const day = today.getDate().toString().padStart(2, '0');
-
-                    const formattedDate = `${year}-${month}-${day}`;
-
-                    // Set the value of the input field
-                    document.getElementById('report_date').value = formattedDate;
-                </script>
-
-                @endsection
+@endsection

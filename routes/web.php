@@ -371,14 +371,12 @@ Route::group(
                     })->name('personal-results-download-pdf');
 
                     //print report data
-                    // web.php
                     Route::get('/reports/{rid}/print', [ReportController::class, 'print'])->name('report.print');
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
                     //search in initial results reports
-                    Route::get('initial-reports-results-search', [ResultsController::class, 'searchIninitialResultsReports'])->name('initial-results-serach');
-                    Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
+                    Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');
                 }
             );
 

@@ -170,9 +170,9 @@ class ResultsService
 
 
     //البحث فى النتائج الأولية اليومية
-    public function searchIninitialResultsReports(Request $request)
+    public function searchInitialResultsReports(Request $request)
     {
-        if ($request->weapon_id) {
+        if ($request->q || $request->date) {
             $query = Sv_initial_results_players::query()
                 ->with(['player.club', 'player.weapon', 'report.weapon']);
             $query->whereHas('report', function ($sub) use ($request) {
@@ -189,10 +189,9 @@ class ResultsService
                 });
             }
             $results = $query->orderByDesc('Rid')
-                ->cursorPaginate(config('app.admin_pagination_number'));
-            
-            return $results? $results :'لا يوجد نتائج مطابقة لبحثك';
+                ->cursorPaginate(200);
+
+            return $results;
         }
-        return "يجب ادخال السلاح";
     }
 }
