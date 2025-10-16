@@ -54,7 +54,7 @@ Route::group([
 });
 
 
- 
+
 
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -402,10 +402,13 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf_final');
-                    /*********************final results report***********/
-                    Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
+                    /*********************final Eliminations results report***********/
+                    Route::get('/final-report-eliminations', [FinalResultReportController::class, 'index'])->name('final_reports.index');
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                     Route::get('/final_report_save_second_total/{id}', [FinalResultReportController::class, 'updateSecondTotal'])->name('final_report_save_second_total.update');
+                    Route::get('/final-reports', [FinalResultReportController::class, 'firstList'])->name('final_reports.first_list');
+                    Route::delete('/delete-report/{id}', [FinalResultReportController::class, 'deleteReport'])->name('final_reports_delete.delete');
+
 
 
 
@@ -481,8 +484,8 @@ Route::group(
                         }
                         unset($arr);
 
-                        
-                      
+
+
                         $flattened = [];
                         $index = 0;
                         foreach ($arr1 as $key => $val) {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Http\Traits\ImageTrait;
 use App\Models\SVFianlResultsPlayer;
 use Mpdf\Image\Svg;
 use App\Models\Sv_report;
@@ -16,6 +17,8 @@ use App\Models\Sv_member;
 
 class FinalResultsService
 {
+    use ImageTrait;
+
     /**
      * Create a new class instance.
      */
@@ -197,8 +200,22 @@ class FinalResultsService
 
     }
 
+    public function getReportsDetailsWithWeapons(Request $request, $withPaging = 'yes')
+    {
+        $query = SVFianlResults::query()->with('weapon')->where('confirmed', true)
+            ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
+            ->when($request->details, fn ($q, $details) => $q->where('details', $details))
+            ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
+            ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
+            ->orderBy('id');
+        if ($withPaging == 'yes') {
+            return $query->cursorPaginate(config('app.admin_pagination_number'));
+        }
+        return $query->get();
+    }
 
-    public function getReportsPlayersDetails(Request $request)
+
+    public function getReportsPlayersDetails(Request $request , $pagination='yes')
     {
 
         $query = SVFianlResults::query();
@@ -208,25 +225,41 @@ class FinalResultsService
             join('sv_fianl_results_players', 'sv_fianl_results_players.Rid', '=', 'sv_fianl_results.id')
             ->join('sv_members', 'sv_members.mid', '=', 'sv_fianl_results_players.player_id')
             ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
-            ->select('sv_fianl_results_players.id as result_player_id', 'sv_fianl_results_players.second_total', 'sv_fianl_results_players.total', 'sv_fianl_results.*', 'sv_members.name as player_name', 'sv_members.mid as player_id',  'sv_members.ID as ID', 'sv_weapons.name as weapon_name')
+            ->select('sv_fianl_results_players.id as result_player_id', 'sv_fianl_results_players.second_total', 'sv_fianl_results_players.total', 'sv_fianl_results.*', 'sv_members.name as player_name', 'sv_members.mid as player_id', 'sv_members.club_id', 'sv_members.ID as ID', 'sv_weapons.name as weapon_name')
             ->where('sv_fianl_results.confirmed', true);
+
+        if (!empty($request->club_id)) {
+            $query = $query->where('sv_members.club_id', $request->club_id);
+        }
 
         if (!empty($request->weapon_id)) {
             $query = $query->where('sv_fianl_results.weapon_id', $request->weapon_id);
         }
-        if (!empty($request->details)) {
-            $query = $query->where('sv_fianl_results.details', $request->details);
+        if (!empty($request->details_date)) {
+            $query = $query->whereDate('sv_fianl_results.date', $request->details_date);
         }
-        if (!empty($request->to_date)) {
-            $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
-        }
-        if (!empty($request->from_date)) {
-            $query = $query->whereDate('sv_fianl_results.date', '=>', $request->from_date);
+//        if (!empty($request->to_date)) {
+//            $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
+//        }
+        if (!empty($request->total)) {
+            $query = $query->where('sv_fianl_results_players.total', '<=', $request->total);
         }
         $query->orderBy('sv_fianl_results_players.total', 'desc')->orderBy('sv_fianl_results_players.second_total', 'desc');
-        $data = $query->cursorPaginate(config('app.admin_pagination_number'));
-        return $data;
 
+        if($pagination == 'yes') {
+            if (!empty($request->rate_limiting)) {
+                $data = $query->limit($request->rate_limiting)->cursorPaginate($request->rate_limiting);
+            } else {
+                $data = $query->cursorPaginate(config('app.admin_pagination_number'));
+            }
+        }else{
+            if (!empty($request->rate_limiting)) {
+                $data = $query->limit($request->rate_limiting)->get();
+            } else {
+                $data = $query->get();
+            }
+        }
+        return $data;
     }
 
 //    public function getConfirmedPlayers(Request $request)
@@ -450,7 +483,21 @@ class FinalResultsService
         $arr1 = $query->orderBy('sv_fianl_results_players.total', 'desc')->pluck('total', 'result_player_id')->toArray();
         $arr2 = $query->orderBy('sv_fianl_results_players.total', 'desc')->pluck('second_total', 'result_player_id')->toArray();
 //        $data = $query->cursorPaginate(config('app.admin_pagination_number'));
-        return [$arr1 , $arr2];
+        return [$arr1, $arr2];
 
+    }
+
+
+    public function deleteReport($id)
+    {
+        $report = SVFianlResults::with('finalPlayers')->find($id);
+        if ($report) {
+            if (count($report->finalPlayers))
+                $report->finalPlayers()->delete();
+            $this->deleteImage($report, 'file');
+            $report->delete();
+            return true;
+        }
+        return false;
     }
 }
