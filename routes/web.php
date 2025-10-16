@@ -336,7 +336,7 @@ Route::group(
 
 
             );
-            Route::prefix('results')->group(
+            Route::prefix('results/initial-results')->group(
                 function () {
                     Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
@@ -386,6 +386,8 @@ Route::group(
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
+                    //search in initial results reports
+                    Route::get('initial-reports-results-search',[ResultsController::class,'searchIninitialResultsReports'])->name('initial-results-serach');
                 }
             );
             Route::prefix('final-results')->group(

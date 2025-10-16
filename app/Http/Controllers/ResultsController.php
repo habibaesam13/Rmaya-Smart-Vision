@@ -76,7 +76,7 @@ class ResultsController extends Controller
         $members = $this->resultService->getReportDetails($report->Rid);
 
         if ($report) {
-            return view('personalReports.personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
+            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
@@ -91,7 +91,7 @@ class ResultsController extends Controller
         }
         $members = $this->resultService->getReportDetails($rid);
         $confirmed = $report->confirmed;
-        return view('personalReports.personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
+        return view('personalReports/initial_results/personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
     }
     public function confirmReport($rid)
     {
@@ -181,6 +181,14 @@ class ResultsController extends Controller
     public function getResportsDetails(Request $request){
         $weapons=$this->weaponService->getAllPersonalWeapons();
         $ReportsDetails=$this->resultService->getReportsDetails($request);
-        return view('personalReports.preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+    }
+    //search initial results reports
+    public function searchIninitialResultsReports(Request $request){
+        $weapons=$this->weaponService->getAllPersonalWeapons();
+        
+        $results=$this->resultService->searchIninitialResultsReports($request);
+        
+        return $results ? view('personalReports/initial_results/search_reports',compact(['results','weapons'])) : "لا يوجد نتائج مطابقة للبحث";
     }
 }

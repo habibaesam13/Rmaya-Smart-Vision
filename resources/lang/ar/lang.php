@@ -294,5 +294,6 @@ return [
     'logs_' . 'create' => 'kklk',
     'logs_' . 'create' => 'kklk',
     'logs_' . 'create' => 'kklk',
+    'Search_daily_preliminary_results'=>'البحث فى النتائج الأولية اليومية',
 
 ];

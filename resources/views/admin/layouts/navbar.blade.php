@@ -130,9 +130,13 @@
                                 </a>
                             </li>
 
-
-
-
+                            {{-- search in intial results reports Search_daily_preliminary_results --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('initial-results-serach') }}" class="side-nav-link">
+                                    <i class="ri-search-line"></i>
+                                    {{ __('lang.Search_daily_preliminary_results') }}
+                                </a>
+                            </li>
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">

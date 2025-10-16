@@ -111,7 +111,7 @@
                                         {{-- Attached File Icon (shown only if exists) --}}
                                         <a href="{{ $report->attached_file ? asset('storage/' . $report->attached_file) : '#' }}"
                                             target="_blank"
-                                            class=" {{ $report->attached_file ? '' : 'disabled' }}"
+                                            class="dis {{ $report->attached_file ? '' : 'disabled' }}"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="عرض الملف المرفق">
@@ -156,6 +156,10 @@
                     }
 
                     .icon-btn.disabled {
+                        opacity: 0.4;
+                        pointer-events: none;
+                    }
+                    .dis.disabled{
                         opacity: 0.4;
                         pointer-events: none;
                     }
