@@ -6,30 +6,42 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">المسجلين فرق تفصيلي</h4>
             </div>
-            <div class="col-12 col-md-4 text-md-end text-center">
 
-                <span class="badge badge-outline-primary">
-                    عدد المسجلين : {{$members_count}}</span>
+        <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
 
-                <form action="{{route('groups.members.export.excel')}}" method="post" class="mb-0">
-                    @csrf
-                    @foreach(request()->query() as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                    <button type="submit" class="btn btn-success btn-lg d-flex align-items-center gap-2">
-                       <i class="ri-file-excel-line"></i>
-                    </button>
-                </form>
-                <form action="{{ route('groups-download-pdf') }}" method="get" class="mb-0">
-                    @foreach(request()->query() as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                    <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
-                        <i class="ri-file-pdf-2-line"></i>
-                    </button>
-                </form>
+                    <span class="badge badge-outline-primary"> عدد المسجلين : {{$members_count}}</span>
 
+                    <!-- Excel Download Form -->
+                    <form
+                        action="{{route('groups.members.export.excel')}}"
+                        method="post"
+                        class="mb-0">
+                        @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
+                            <i class="ri-file-excel-line fs-5"></i>
+                        </button>
+                    </form>
+
+                    <!-- PDF Download Form -->
+                    <form
+                       action="{{ route('groups-download-pdf') }}"
+                        method="get"
+                        class="mb-0">
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center" title="تحميل PDF">
+                            <i class="ri-file-pdf-2-line fs-5"></i>
+                        </button>
+                    </form>
+
+                </div>
             </div>
+
         </div>
         <div class="col-12">
             <div class="card">

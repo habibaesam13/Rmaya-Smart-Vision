@@ -41,11 +41,11 @@ class FinalResultStoreReportForMembers extends FormRequest
     public function messages(): array
     {
         return [
-            'checkedMembers.required' => 'You must select at least one member.',
-            'checkedMembers.array'    => 'The selected members must be sent as an array.',
-            'checkedMembers.*.exists' => 'One or more selected members do not exist in the system.',
-            'date.date'               => 'The date field must be a valid date.',
-            'details.integer'         => 'The details field must be an integer value.',
+            'checkedMembers.required' => 'يجب اختيار عضو واحد على الأقل.',
+            'checkedMembers.array'    => 'يجب إرسال الأعضاء المحددين كمصفوفة.',
+            'checkedMembers.*.exists' => 'عضو أو أكثر من الأعضاء المحددين غير موجودين في النظام.',
+            'date.date'               => 'يجب أن يكون حقل التاريخ تاريخاً صحيحاً.',
+            'details.integer'         => 'يجب أن يكون حقل التفاصيل قيمة رقمية صحيحة.',
         ];
     }
 
@@ -83,5 +83,4 @@ class FinalResultStoreReportForMembers extends FormRequest
     {
         return $this->weaponId;
     }
-
 }
