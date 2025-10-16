@@ -199,9 +199,8 @@ Route::group(
     function () {
 
 
- Route::get('access_denied', function () {
-           return view('admin.access_denied');
-
+        Route::get('access_denied', function () {
+            return view('admin.access_denied');
         })->name('access_denied');
 
         // Admin routes
@@ -326,7 +325,7 @@ Route::group(
 
 
             );
-            Route::prefix('results')->group(
+            Route::prefix('results/initial-results')->group(
                 function () {
                     Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
@@ -372,11 +371,15 @@ Route::group(
                     })->name('personal-results-download-pdf');
 
                     //print report data
-                    // web.php
                     Route::get('/reports/{rid}/print', [ReportController::class, 'print'])->name('report.print');
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
+                    //search in initial results reports
+                    Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');
+                    //list for initial resports results
+                    Route::get('list-initial-results-reports',[ResultsController::class,'listOfInitialResults'])->name('list-initial-results-reports');
+                    Route::get('search-list-initial-results-reports',[ResultsController::class,'searchInListOfInitialResults'])->name('search-list-initial-results-reports');
                 }
             );
 
@@ -414,7 +417,7 @@ Route::group(
 
                     Route::get('test_test', function (FinalResultsService $n) {
 
-                        return $n-> getOrdersArray();
+                        return $n->getOrdersArray();
 
                         $final = [];
 
@@ -516,7 +519,7 @@ Route::group(
 
 
 
-                     Route::get('test_test_original', function () {
+                    Route::get('test_test_original', function () {
                         $previ = -1;
                         $next = -1;
                         $final = [];
@@ -538,43 +541,35 @@ Route::group(
                             }
 
 
-                            if ($previ === $item1  ) {
-                                $final  [$item1][]= $arr2[$key1];
+                            if ($previ === $item1) {
+                                $final[$item1][] = $arr2[$key1];
                             } elseif ($key1 === 0 && $next === $item1) {
-                                $final   [$item1][]= $arr2[$key1];
+                                $final[$item1][] = $arr2[$key1];
                             } elseif ($key1 == count($arr1) - 1 && $previ === $item1) {
-                                $final  [$item1][] = $arr2[$key1];
+                                $final[$item1][] = $arr2[$key1];
+                            } elseif ($previ !== $item1 && $item1 === $next  && $key1 !== count($arr1) - 1) {
+                                $final[$item1][] = $arr2[$key1];
+                            } else {
+                                $final[$item1][] = $item1;
                             }
-                            elseif($previ !== $item1 && $item1 === $next  && $key1 !== count($arr1) - 1){
-                                $final [$item1][] = $arr2[$key1];
-                            }else{
-                                $final [$item1][] =$item1;
-
-                            }
-
-
-
                         }
 
-                         // Sort the outer array by keys descending (60 > 20 > ...)
+                        // Sort the outer array by keys descending (60 > 20 > ...)
                         krsort($final);
 
-// Optional: sort each inner array descending too
+                        // Optional: sort each inner array descending too
                         foreach ($final as &$arr) {
                             rsort($arr);
                         }
                         unset($arr);
 
-// Convert associative array to numeric-indexed
+                        // Convert associative array to numeric-indexed
                         $finalArr = array_values($final);
 
                         dd($finalArr);
-                     });
-
+                    });
                 }
             );
-
-
         });
         //Public Routes
         Route::prefix('public')->group(function () {

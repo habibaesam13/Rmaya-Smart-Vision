@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SaveMembersReportRequest;
 use App\Models\Sv_member;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
@@ -11,6 +10,8 @@ use App\Services\ResultsService;
 use App\Services\PersonalService;
 use App\Services\CountriesService;
 use App\Http\Requests\StoreReportForMembers;
+use App\Http\Requests\SaveMembersReportRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ResultsController extends Controller
 {
@@ -31,15 +32,15 @@ class ResultsController extends Controller
     //functions for members index page to generate the report
     public function index(Request $request)
     {
-        $validated=$request->validate(
+        $validated = $request->validate(
             [
                 'date_from' => ['nullable', 'date'],
                 'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
             ],
             [
-            'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
-            'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
-            'date_to.after_or_equal'=> 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
+                'date_from.date'        => 'تاريخ البداية يجب أن يكون تاريخاً صالحاً.',
+                'date_to.date'          => 'تاريخ النهاية يجب أن يكون تاريخاً صالحاً.',
+                'date_to.after_or_equal' => 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
             ]
         );
         $Edit_report = null;
@@ -69,14 +70,14 @@ class ResultsController extends Controller
     }
     public function store(StoreReportForMembers $request)
     {
-        
+
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
         $members = $this->resultService->getReportDetails($report->Rid);
 
         if ($report) {
-            return view('personalReports.personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
+            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
@@ -91,7 +92,7 @@ class ResultsController extends Controller
         }
         $members = $this->resultService->getReportDetails($rid);
         $confirmed = $report->confirmed;
-        return view('personalReports.personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
+        return view('personalReports/initial_results/personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
     }
     public function confirmReport($rid)
     {
@@ -116,17 +117,17 @@ class ResultsController extends Controller
 
     public function saveReport(Request $request, $rid)
     {
-        
+
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
-            
+
             if (!$playersData) {
                 return back()->withErrors(['players_data' => 'Invalid players data format']);
             }
 
             $report = $this->resultService->saveReport($request, $playersData, $rid);
             if ($report) {
-                 return redirect()->route('report-members', $rid)->with('success', 'تم حفظ التقرير بنجاح');
+                return redirect()->route('report-members', $rid)->with('success', 'تم حفظ التقرير بنجاح');
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء الحفظ');
@@ -178,9 +179,52 @@ class ResultsController extends Controller
     }
 
     /**Preliminary results reports - clubs - details */
-    public function getResportsDetails(Request $request){
-        $weapons=$this->weaponService->getAllPersonalWeapons();
-        $ReportsDetails=$this->resultService->getReportsDetails($request);
-        return view('personalReports.preliminary_results_reports_clubs_details',compact('ReportsDetails','weapons'));
+    public function getResportsDetails(Request $request)
+    {
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $ReportsDetails = $this->resultService->getReportsDetails($request);
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
+    }
+    //search initial results reports  {{البحث فى النتائج الأولية اليومية}}
+    public function searchInitialResultsReports(Request $request)
+    {
+        $results = $this->resultService->searchInitialResultsReports($request);
+
+
+        if (empty($results)) {
+            $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+
+        return view('personalReports.initial_results.search_reports', compact('results'));
+    }
+
+    //قائمة النتائج الاولية
+    public function listOfInitialResults()
+    {
+
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $results=false;
+
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
+    }
+    public function searchInListOfInitialResults(Request $request) {
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $results=$this->resultService->listOfInitialResults($request);
+        if ($results === 'required') {
+            return redirect()->back()->with('error', 'السلاح مطلوب');
+        }
+
+        if ($results === 'not_found') {
+            return redirect()->back()->with('error', 'السلاح غير موجود');
+        }
+
+        // If empty array, make a dummy paginator
+        if ($results instanceof \Illuminate\Support\Collection && $results->isEmpty()) {
+            $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
     }
 }
