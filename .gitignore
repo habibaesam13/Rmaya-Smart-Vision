@@ -25,3 +25,5 @@ Thumbs.db
 /public/admin_old
 /resources/views_old
 /resources/views.zip
+/public
+/.gitignore

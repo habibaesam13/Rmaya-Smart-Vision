@@ -3,6 +3,7 @@
 use App\Http\Controllers\FinalResultReportController;
 use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
+use App\Services\FinalResultsService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\ResultsService;
@@ -27,7 +28,7 @@ use App\Http\Controllers\ResultsController;
 use App\Exports\GroupsMembersExportProvider;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\Admin\LogsController;
-
+use App\Http\Controllers\Admin\NotiController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
@@ -53,17 +54,9 @@ Route::group([
 });
 
 
-
-
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
-
-
-
-
 
 
 Route::name('admin.')->group(
@@ -80,10 +73,6 @@ Route::name('admin.')->group(
                 });
 
 
-
-
-
-
                 #############################################guest visitor ############################
                 Route::group(
                     [
@@ -96,11 +85,6 @@ Route::name('admin.')->group(
                     }
                 );
                 ############################################# guest visitor ############################
-
-
-
-
-
 
 
                 ############################################# auth   ############################
@@ -161,7 +145,6 @@ Route::name('admin.')->group(
         //                session()->regenerate(true);
 
 
-
         //                Logs::create(
         //                    [
         //                        'admin_id' => $id,
@@ -202,7 +185,8 @@ Route::name('admin.')->group(
 );
 
 
-
+Route::get('logs/', [LogsController::class, 'index'])->name('logs.index');
+Route::get('noti/', [NotiController::class, 'index'])->name('noti.index');
 
 Route::group(
     [
@@ -210,6 +194,10 @@ Route::group(
         'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath', 'auth']
     ],
     function () {
+
+        Route::get('access_denied', function () {
+            return view('admin.access_denied');
+        })->name('access_denied');
 
         // Admin routes
         Route::prefix('admin')->group(function () {
@@ -243,7 +231,6 @@ Route::group(
             });
 
 
-
             //Personal Routes
             Route::prefix('personal')->group(
                 function () {
@@ -255,7 +242,7 @@ Route::group(
                     Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
                     //excel
-                    Route::post('/members/export-excel', function(Request $request){
+                    Route::post('/members/export-excel', function (Request $request) {
                         $provider = new MembersExportProvider($request);
                         $controller = new ExcelController($provider);
                         return $controller->export($request, 'Personal_registered.xlsx');
@@ -298,15 +285,17 @@ Route::group(
                     Route::get('members', [GroupController::class, 'getMembersWithGroups'])->name('groups-members');
                     Route::get('members-search', [GroupController::class, 'membersByGroupSearch'])->name('groups-members-search');
                     //excel
-                    Route::post('export-excel', function(Request $request, GroupService $groupService){
-                        $provider = new GroupsExportProvider($request,$groupService);
+                    Route::post('export-excel', function (Request $request, GroupService $groupService) {
+                        $provider = new GroupsExportProvider($request, $groupService);
                         $controller = new ExcelController($provider);
-                        return $controller->export($request, 'Groups_registered.xlsx');})->name('groups.export.excel');
+                        return $controller->export($request, 'Groups_registered.xlsx');
+                    })->name('groups.export.excel');
 
-                    Route::post('/members/export-excel',function(Request $request){
+                    Route::post('/members/export-excel', function (Request $request) {
                         $provider = new GroupsMembersExportProvider($request);
                         $controller = new ExcelController($provider);
-                        return $controller->export($request, 'Groups_Members_registered.xlsx');})->name('groups.members.export.excel'); //extra
+                        return $controller->export($request, 'Groups_Members_registered.xlsx');
+                    })->name('groups.members.export.excel'); //extra
                     // Groups PDF
                     Route::get('members/view-pdf', function (Request $request, GroupsMembersProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.groups_members', 'Registered_Groups_Members.pdf');
@@ -336,17 +325,17 @@ Route::group(
                 function () {
                     Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
-                    Route::get('registered-members', [ResultsController::class,'index'])->name('results-registered-members');
+                    Route::get('registered-members', [ResultsController::class, 'index'])->name('results-registered-members');
                     Route::get('search-members', [ResultsController::class, 'index'])->name('search-results-registered-members');
 
                     Route::post('generate-report', [ResultsController::class, 'store'])->name('generate-report-registered-members');
                     Route::get('report-members/{rid}', [ResultsController::class, 'show'])->name('report-members');
                     Route::post('confirm-report/{rid}', [ResultsController::class, 'confirmReport'])->name('report-confirmation');
-                    Route::post('members/detailed-repoert/{rid}',[ResultsController::class, 'saveReport'])->name('detailed-members-report-save');
+                    Route::post('members/detailed-repoert/{rid}', [ResultsController::class, 'saveReport'])->name('detailed-members-report-save');
                     //get total for R1->10 in report
                     Route::post('calculate-total', [ResultsController::class, 'calculateTotal'])->name('calculate-total');
                     //add new player to report
-                    Route::get('add-player-to-report/{rid}',[ResultsController::class, 'addPlayer'])->name('add-player-to-report');
+                    Route::get('add-player-to-report/{rid}', [ResultsController::class, 'addPlayer'])->name('add-player-to-report');
                     Route::post('update-report-registered-members/{rid}', [ResultsController::class, 'updateReport'])->name('update-report-registered-members');
                     //report for members with same weapon
                     Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
@@ -361,10 +350,11 @@ Route::group(
                     })->name('personal-results-report-download-pdf');
                     //for index page
                     //excel
-                    Route::post('personal/results/export-excel',function(Request $request,ResultsService $results_service){
-                        $provider = new PersonalResultsExport($request,$results_service);
+                    Route::post('personal/results/export-excel', function (Request $request, ResultsService $results_service) {
+                        $provider = new PersonalResultsExport($request, $results_service);
                         $controller = new ExcelController($provider);
-                        return $controller->export($request, 'Personal_results_report.xlsx');})->name('personal.results.export.excel');
+                        return $controller->export($request, 'Personal_results_report.xlsx');
+                    })->name('personal.results.export.excel');
 
                     //pdf
                     Route::get('personal/results/view-pdf', function (Request $request, PersonalResultsProvider $provider) {
@@ -381,59 +371,216 @@ Route::group(
                     Route::get('/reports/{rid}/print', [ReportController::class, 'print'])->name('report.print');
 
                     /**Preliminary results reports - clubs - details */
-                    Route::get('reports-details',[ResultsController::class,'getResportsDetails'])->name('reports-details');
+                    Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
                 }
             );
 
+
             Route::prefix('final-results')->group(
                 function () {
-                    Route::get('reports' , [ FinalResultsController::class , 'index'])->name('final_results.reports');
+                    Route::get('reports', [FinalResultsController::class, 'index'])->name('final_results.reports');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
-                    Route::post('final-members/detailed-repoert/{rid}',[FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+                    Route::post('final-members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
                     Route::get('final-report-members/{rid}', [FinalResultsController::class, 'show'])->name('report-members_final');
                     Route::post('final-confirm-report/{rid}', [FinalResultsController::class, 'confirmReport'])->name('report-confirmation_final');
-                    Route::get('add-player-to-report/{rid}',[FinalResultsController::class, 'addPlayer'])->name('add-player-to-report_final');
-                    Route::get('registered-members', [FinalResultsController::class,'index'])->name('results-registered-members_final');
-                    Route::post('members/detailed-repoert/{rid}',[FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+                    Route::get('add-player-to-report/{rid}', [FinalResultsController::class, 'addPlayer'])->name('add-player-to-report_final');
+                    Route::get('registered-members', [FinalResultsController::class, 'index'])->name('results-registered-members_final');
+                    Route::post('members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
                     Route::get('/reports/{rid}/print', [FinalResultsController::class, 'printData'])->name('report.print_final');
                     Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->viewPDF($request);
                     })->name('personal-results-report-view-pdf_final');
-
                     Route::get('report-{rid}-members/download-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf_final');
-
-
                     /*********************final results report***********/
                     Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
-
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
+                    Route::get('/final_report_save_second_total/{id}', [FinalResultReportController::class, 'updateSecondTotal'])->name('final_report_save_second_total.update');
+
+
+
+                    Route::get('test_test', function (FinalResultsService $n) {
+
+                        return $n-> getOrdersArray();
+
+                        $final = [];
+
+                        $arr1 = [
+                            20 => 100,
+                            21 => 80,
+                            22 => 60,
+                            23 => 60,
+                            24 => 60,
+                            25 => 40,
+                            26 => 20,
+                            27 => 20,
+                            28 => 3,
+                        ];
+
+                        $arr2 = [
+                            20 => 0,
+                            21 => 0,
+                            22 => 1,
+                            23 => 500,
+                            24 => 10,
+                            25 => 20,
+                            26 => 30,
+                            27 => 100,
+                            28 => 2,
+                        ];
+
+                        // Extract keys and values to allow same foreach structure
+                        $keys = array_keys($arr1);
+                        $values1 = array_values($arr1);
+                        $values2 = array_values($arr2);
+
+                        $count = count($values1);
+                        $previ = -1;
+                        $next = -1;
+
+                        foreach ($values1 as $i => $item1) {
+                            $key1 = $keys[$i];
+
+                            if ($i != 0) {
+                                $previ = $values1[$i - 1];
+                            }
+
+                            if ($i < $count - 1) {
+                                $next = $values1[$i + 1];
+                            }
+
+                            if ($previ === $item1) {
+                                $final[$item1][] = $values2[$i];
+                            } elseif ($i === 0 && $next === $item1) {
+                                $final[$item1][] = $values2[$i];
+                            } elseif ($i == $count - 1 && $previ === $item1) {
+                                $final[$item1][] = $values2[$i];
+                            } elseif ($previ !== $item1 && $item1 === $next && $i !== $count - 1) {
+                                $final[$item1][] = $values2[$i];
+                            } else {
+                                $final[$item1][] = $item1;
+                            }
+                        }
+
+                        // Sort the outer array by key descending (e.g., 60 > 20)
+                        krsort($final);
+
+                        // Sort each inner array descending
+                        foreach ($final as &$arr) {
+                            rsort($arr);
+                        }
+                        unset($arr);
+
+                        // ✅ Flatten while keeping same order and mapping back to arr1 keys
+                        $flattened = [];
+                        $index = 0;
+                        foreach ($arr1 as $key => $val) {
+                            $flattened[$key] = null; // initialize to preserve order
+                        }
+
+                        // Fill the flattened array sequentially (values in order)
+                        $allValues = [];
+                        foreach ($final as $group) {
+                            foreach ($group as $value) {
+                                $allValues[] = $value;
+                            }
+                        }
+
+                        // Map flattened values to original keys in order
+                        $i = 0;
+                        foreach (array_keys($flattened) as $key) {
+                            if (isset($allValues[$i])) {
+                                $flattened[$key] = $allValues[$i];
+                            }
+                            $i++;
+                        }
+
+                        dd($flattened);
+                    });
+
+
+
+
+
+                    Route::get('test_test_original', function () {
+                        $previ = -1;
+                        $next = -1;
+                        $final = [];
+
+
+
+                        $arr1 = [100, 80, 60, 60, 60, 40, 20, 20, 3];
+                        $arr2 = [0, 0, 1, 500, 10, 20, 30, 100, 2];
+                        foreach ($arr1 as $key1 => $item1) {
+
+
+                            if ($key1 != 0) {
+                                $previ = $arr1[$key1 - 1];
+                            }
+
+
+                            if ($key1 < count($arr1) - 1) {
+                                $next = $arr1[$key1 + 1];
+                            }
+
+
+                            if ($previ === $item1  ) {
+                                $final  [$item1][]= $arr2[$key1];
+                            } elseif ($key1 === 0 && $next === $item1) {
+                                $final   [$item1][]= $arr2[$key1];
+                            } elseif ($key1 == count($arr1) - 1 && $previ === $item1) {
+                                $final  [$item1][] = $arr2[$key1];
+                            }
+                            elseif($previ !== $item1 && $item1 === $next  && $key1 !== count($arr1) - 1){
+                                $final [$item1][] = $arr2[$key1];
+                            }else{
+                                $final [$item1][] =$item1;
+
+                            }
+
+
+
+                        }
+
+                        // Sort the outer array by keys descending (60 > 20 > ...)
+                        krsort($final);
+
+// Optional: sort each inner array descending too
+                        foreach ($final as &$arr) {
+                            rsort($arr);
+                        }
+                        unset($arr);
+
+// Convert associative array to numeric-indexed
+                        $finalArr = array_values($final);
+
+                        dd($finalArr);
+                    });
+
                 }
             );
 
 
-
         });
         //Public Routes
-        Route::prefix('public')->group(function(){
+        Route::prefix('public')->group(function () {
             //Personal Registration
-            Route::prefix('personal')->group(function(){
-                    Route::get('registration',[PersonalRegistration::class,'index'])->name('public-personal-registration');
-                    Route::post('register',[PersonalRegistration::class,'store'])->name('store-public-personal-registration');
+            Route::prefix('personal')->group(function () {
+                Route::get('registration', [PersonalRegistration::class, 'index'])->name('public-personal-registration');
+                Route::post('register', [PersonalRegistration::class, 'store'])->name('store-public-personal-registration');
             });
-            Route::prefix('group')->group(function(){
-                Route::get('registration',[GroupRegistration::class,'index'])->name('public-group-registration');
-                Route::post('register',[GroupRegistration::class,'store'])->name('store-public-group-registration');
+            Route::prefix('group')->group(function () {
+                Route::get('registration', [GroupRegistration::class, 'index'])->name('public-group-registration');
+                Route::post('register', [GroupRegistration::class, 'store'])->name('store-public-group-registration');
             });
         });
     }
 );
-
 
 
 require __DIR__ . '/auth.php';

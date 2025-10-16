@@ -13,6 +13,7 @@ class SVFianlResultsPlayer extends Model
         'player_id',
         'goal',
         'total',
+        'second_total',
         'notes',
 
     ];
