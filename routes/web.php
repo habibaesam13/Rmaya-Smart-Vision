@@ -377,6 +377,9 @@ Route::group(
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
                     //search in initial results reports
                     Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');
+                    //list for initial resports results
+                    Route::get('list-initial-results-reports',[ResultsController::class,'listOfInitialResults'])->name('list-initial-results-reports');
+                    Route::get('search-list-initial-results-reports',[ResultsController::class,'searchInListOfInitialResults'])->name('search-list-initial-results-reports');
                 }
             );
 

@@ -185,7 +185,7 @@ class ResultsController extends Controller
         $ReportsDetails = $this->resultService->getReportsDetails($request);
         return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
     }
-    //search initial results reports
+    //search initial results reports  {{البحث فى النتائج الأولية اليومية}}
     public function searchInitialResultsReports(Request $request)
     {
         $results = $this->resultService->searchInitialResultsReports($request);
@@ -196,5 +196,35 @@ class ResultsController extends Controller
         }
 
         return view('personalReports.initial_results.search_reports', compact('results'));
+    }
+
+    //قائمة النتائج الاولية
+    public function listOfInitialResults()
+    {
+
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $results=false;
+
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
+    }
+    public function searchInListOfInitialResults(Request $request) {
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $results=$this->resultService->listOfInitialResults($request);
+        if ($results === 'required') {
+            return redirect()->back()->with('error', 'السلاح مطلوب');
+        }
+
+        if ($results === 'not_found') {
+            return redirect()->back()->with('error', 'السلاح غير موجود');
+        }
+
+        // If empty array, make a dummy paginator
+        if ($results instanceof \Illuminate\Support\Collection && $results->isEmpty()) {
+            $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
     }
 }

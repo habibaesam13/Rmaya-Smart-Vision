@@ -18,9 +18,10 @@ class ResultsService
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    protected WeaponService $weaponService;
+    public function __construct(WeaponService $weaponService)
     {
-        //
+        $this->weaponService = $weaponService;
     }
     public function createReport($data)
     {
@@ -172,26 +173,70 @@ class ResultsService
     //البحث فى النتائج الأولية اليومية
     public function searchInitialResultsReports(Request $request)
     {
-        
-            $query = Sv_initial_results_players::query()
-                ->with(['player.club', 'player.weapon', 'report.weapon']);
-            $query->whereHas('report', function ($sub) use ($request) {
-                $sub->where('confirmed', true);
+
+        $query = Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'report.weapon']);
+        $query->whereHas('report', function ($sub) use ($request) {
+            $sub->where('confirmed', true);
+            if ($request->filled('date')) {
+                $sub->whereDate('date', $request->date);
+            }
+        });
+        if ($request->filled('q')) {
+            $query->whereHas('player', function ($sub) use ($request) {
+                $sub->where('name', 'like', "%{$request->q}%")
+                    ->orWhere('ID', 'like', "%{$request->q}%")
+                    ->orWhere('phone1', 'like', "%{$request->q}%");
+            });
+        }
+        $results = $query->orderBy('Rid')
+            ->cursorPaginate(config('app.admin_pagination_number'));
+
+        return $results;
+    }
+
+    //قائمة النتائج الاولية
+    public function listOfInitialResults(Request $request)
+    {
+        // weapon_id is required
+        if (!$request->weapon_id) {
+            return 'required';
+        }
+
+        $weapon = $this->weaponService->getWeaponById($request->weapon_id);
+        if (!$weapon) {
+            return 'not_found';
+        }
+        $query = Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'report.weapon'])
+            ->whereHas('report', function ($sub) use ($request) {
+                $sub->where('confirmed', true)
+                    ->where('weapon_id', $request->weapon_id);
                 if ($request->filled('date')) {
                     $sub->whereDate('date', $request->date);
                 }
             });
-            if ($request->filled('q')) {
-                $query->whereHas('player', function ($sub) use ($request) {
-                    $sub->where('name', 'like', "%{$request->q}%")
-                        ->orWhere('ID', 'like', "%{$request->q}%")
-                        ->orWhere('phone1', 'like', "%{$request->q}%");
-                });
-            }
-            $results = $query->orderBy('Rid')
-                ->cursorPaginate(config('app.admin_pagination_number'));
 
-            return $results;
-        
+        // Filter by club
+        if ($request->filled('club_id')) {
+            $query->whereHas('player', function ($sub) use ($request) {
+                $sub->where('club_id', $request->club_id);
+            });
+        }
+
+        // Filter by total score
+        if ($request->filled('total')) {
+            $query->where('total', '>=', $request->total);
+        }
+        // Apply ordering
+        $query->orderByDesc('total');
+
+        // Apply limit if selected
+        if ($request->filled('limit')) {
+            $limit = (int) $request->input('limit');
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(config('app.admin_pagination_number'));
+        }
     }
 }

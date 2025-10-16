@@ -137,6 +137,13 @@
                                     {{ __('lang.Search_daily_preliminary_results') }}
                                 </a>
                             </li>
+                            {{-- list of initial results reports List of preliminary results --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('list-initial-results-reports') }}" class="side-nav-link">
+                                    <i class="ri-list-unordered"></i>
+                                    {{ __('lang.list_of_initial_results_reports') }}
+                                </a>
+                            </li>
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">
@@ -151,7 +158,6 @@
                                 <a href="{{ route('final_reports.index') }}" class="side-nav-link">
                                     <i class="fa-solid fa-list me-2"></i>
                                    final reports
-
                                 </a>
                             </li>
 

@@ -280,4 +280,5 @@ return [
     'GroupsMembers' => 'Groups Registered Members',
     'last_test_in_invoice' => 'This is an electronically generated invoice, hence does not require a signature or stamp',
     'Search_daily_preliminary_results'=>'Daily Preliminary Results-Search',
+     'list_of_initial_results_reports'=>'Preliminary Results - List',
 ];
