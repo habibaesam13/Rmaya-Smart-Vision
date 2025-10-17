@@ -6,6 +6,8 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">قائمة النتائج الاولية</h4>
             </div>
+            <span class="badge badge-outline-primary"> عدد الرماة : {{ isset($results)&&$results ? $results->total() : 0 }}
+</span>
             {{-- Success Message --}}
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -143,20 +145,21 @@
                                             }}
                                         </td>
                                         <td>
-                                            <form action="{{ route('update-player-total-for-preliminary-results',$player->id) }}" method="get">
-                                                <input type="number"
+                                            <form action="{{ route('update-player-total-for-preliminary-results', $player->id) }}" method="get" class="d-flex align-items-center gap-2">
+                                                <input
+                                                    type="number"
                                                     name="total"
                                                     data-player="{{ $player->id }}"
                                                     class="form-control form-control-sm bg-light total-input"
                                                     placeholder="0"
                                                     value="{{ old($player->total, $player->total ?? '') }}"
-                                                >
-                                                <button type="submit">
-                                                    <i class="ri-save-line"></i>
+                                                    style="max-width: 80px;">
+                                                <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle">
+                                                    <i class="ri-save-line text-danger"></i>
                                                 </button>
                                             </form>
-
                                         </td>
+
                                         <td>
                                             {{-- If paginated --}}
                                             @if($results instanceof \Illuminate\Pagination\LengthAwarePaginator)

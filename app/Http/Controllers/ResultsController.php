@@ -213,13 +213,12 @@ class ResultsController extends Controller
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $results = $this->resultService->listOfInitialResults($request);
-
         if ($results === 'required') {
-            return redirect()->back()->with('error', 'السلاح مطلوب');
+            return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
         }
 
         if ($results === 'not_found') {
-            return redirect()->back()->with('error', 'السلاح غير موجود');
+            return redirect()->back()->withErrors(['weapon' => 'السلاح غير موجود']);
         }
 
         // If empty array, make a dummy paginator
