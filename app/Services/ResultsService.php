@@ -24,8 +24,9 @@ class ResultsService
         $this->weaponService = $weaponService;
     }
     //check the player found by relation key (primary key for sv_initial_results_players)
-    public function getPlayerByRowId($id){
-        return Sv_initial_results_players::where('id',$id);
+    public function getPlayerByRowId($id)
+    {
+        return Sv_initial_results_players::where('id', $id);
     }
     public function createReport($data)
     {
@@ -125,7 +126,6 @@ class ResultsService
 
     public function getAvailablePlayers($report)
     {
-
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
             ->orderBy('mid')
@@ -201,14 +201,14 @@ class ResultsService
     //قائمة النتائج الاولية
     public function listOfInitialResults(Request $request)
     {
-        
+
         // weapon_id is required
         if (!$request->weapon_id) {
             return 'required';
         }
 
         $weapon = $this->weaponService->getWeaponById($request->weapon_id);
-        
+
         if (!$weapon) {
             return 'not_found';
         }
@@ -244,8 +244,57 @@ class ResultsService
     }
 
     //update players total
-    public function updateTotalForPlayer($player,$total){
+    public function updateTotalForPlayer($player, $total)
+    {
         return $player->update($total);
     }
+    //قائمة الافراد المتغيبين فى النتائج الاولية
+    public function getAbsentPlayersInitialResults($request)
+{
+    return Sv_initial_results_players::query()
+        ->with(['player.club', 'player.weapon', 'report.weapon'])
+        ->whereNull('total') // players with no total
+        ->whereHas('report', fn($q) => $q->where('confirmed', true)) // confirmed reports
+        ->when($request->club_id, function ($q) use ($request) {
+            $q->whereHas('player.club', fn($sub) => 
+                $sub->where('cid', $request->club_id)
+            );
+        })
+        ->when($request->weapon_id, function ($q) use ($request) {
+            $q->whereHas('player.weapon', fn($sub) => 
+                $sub->where('wid', $request->weapon_id)
+            );
+        })
+        ->when($request->nat, function ($q) use ($request) {
+            $q->whereHas('player.nationality', fn($sub) => 
+                $sub->where('id', $request->nat)
+            );
+        })
+        ->when($request->gender, function ($q) use ($request) {
+            $q->whereHas('player', fn($sub) => 
+                $sub->where('gender', $request->gender)
+            );
+        })
+        ->when($request->date_from, fn($q) => 
+            $q->whereHas('report', fn($sub) => 
+                $sub->whereDate('date', '>=', request('date_from'))
+            )
+        )
+        ->when($request->date_to, fn($q) => 
+            $q->whereHas('report', fn($sub) => 
+                $sub->whereDate('date', '<=', request('date_to'))
+            )
+        )
+        ->when($request->q, function ($q) use ($request) {
+            $search = $request->q;
+            $q->whereHas('player', fn($sub) => 
+                $sub->where('name', 'like', "%{$search}%")
+                    ->orWhere('ID', 'like', "%{$search}%")
+                    ->orWhere('phone1', 'like', "%{$search}%")
+                    ->orWhere('phone2', 'like', "%{$search}%")
+            );
+        })
+        ->paginate(config('app.admin_pagination_number'));
+}
 
 }

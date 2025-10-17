@@ -44,16 +44,18 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-12 d-flex justify-content-start gap-2 my-2">
-                                <div class="col-md-1">
-                                    <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
-                                        <i class="fas fa-search me-2"></i>&nbsp;&nbsp;بحث
-                                    </button>
-                                </div>
-                                <div class="col-md-1">
-                                    <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
-                                        اعادة تعيين
-                                    </a>
+                            <div class="col-md-12 col-lg-2 col-12 mb-2" style="padding-top:8px">
+                                <div class="g-1 row justify-content-center">
+                                    <div class="col-12 col-lg-5 col-md-6 ">
+                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
+                                            <i class="ri-search-2-line "></i>&nbsp;&nbsp;بحث
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-lg-7 col-md-6">
+                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
+                                            اعادة ضبط
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </form>

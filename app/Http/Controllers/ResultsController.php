@@ -161,7 +161,6 @@ class ResultsController extends Controller
 
     public function addPlayer($rid)
     {
-
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
     }
     public function updateReport(StoreReportForMembers $request, $rid)
@@ -253,5 +252,16 @@ class ResultsController extends Controller
 
         $player = $this->resultService->updateTotalForPlayer($player, $total);
         return redirect()->back()->with('success', 'تم تحديث بيانات الرامي بنجاح');
+    }
+
+
+    //قائمة الافراد المتغيبين فى النتائج الاولية
+    public function IndividualsAbsentPreliminaryResults(Request $request)
+    {
+        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request);
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $countries=$this->countryService->getAllCountries();
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
     }
 }
