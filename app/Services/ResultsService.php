@@ -23,6 +23,10 @@ class ResultsService
     {
         $this->weaponService = $weaponService;
     }
+    //check the player found by relation key (primary key for sv_initial_results_players)
+    public function getPlayerByRowId($id){
+        return Sv_initial_results_players::where('id',$id);
+    }
     public function createReport($data)
     {
 
@@ -198,12 +202,14 @@ class ResultsService
     //قائمة النتائج الاولية
     public function listOfInitialResults(Request $request)
     {
+        
         // weapon_id is required
         if (!$request->weapon_id) {
             return 'required';
         }
 
         $weapon = $this->weaponService->getWeaponById($request->weapon_id);
+        
         if (!$weapon) {
             return 'not_found';
         }
@@ -216,7 +222,6 @@ class ResultsService
                     $sub->whereDate('date', $request->date);
                 }
             });
-
         // Filter by club
         if ($request->filled('club_id')) {
             $query->whereHas('player', function ($sub) use ($request) {
@@ -230,7 +235,6 @@ class ResultsService
         }
         // Apply ordering
         $query->orderByDesc('total');
-
         // Apply limit if selected
         if ($request->filled('limit')) {
             $limit = (int) $request->input('limit');
@@ -238,5 +242,10 @@ class ResultsService
         } else {
             return $query->paginate(config('app.admin_pagination_number'));
         }
+    }
+
+    //update players total
+    public function updateTotalForPlayer($player,$total){
+        return $player->update($total);
     }
 }

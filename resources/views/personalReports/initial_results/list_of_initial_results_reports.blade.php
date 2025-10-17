@@ -83,7 +83,7 @@
                                     <input type="text" name="total" id="total"
                                         value="{{ request('total') }}"
                                         class="form-control form-control-lg text-center"
-                                        placeholder="العلامة المكتسبة">
+                                        placeholder=" العلامة المكتسبة >=">
                                 </div>
 
                             </div>
@@ -142,7 +142,21 @@
                                                     : '---')
                                             }}
                                         </td>
-                                        <td>{{ $player?->total }}</td>
+                                        <td>
+                                            <form action="{{ route('update-player-total-for-preliminary-results',$player->id) }}" method="get">
+                                                <input type="number"
+                                                    name="total"
+                                                    data-player="{{ $player->id }}"
+                                                    class="form-control form-control-sm bg-light total-input"
+                                                    placeholder="0"
+                                                    value="{{ old($player->total, $player->total ?? '') }}"
+                                                >
+                                                <button type="submit">
+                                                    <i class="ri-save-line"></i>
+                                                </button>
+                                            </form>
+
+                                        </td>
                                         <td>
                                             {{-- If paginated --}}
                                             @if($results instanceof \Illuminate\Pagination\LengthAwarePaginator)

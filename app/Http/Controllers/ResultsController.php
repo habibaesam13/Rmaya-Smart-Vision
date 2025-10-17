@@ -204,14 +204,16 @@ class ResultsController extends Controller
 
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $results=false;
+        $results = false;
 
         return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
     }
-    public function searchInListOfInitialResults(Request $request) {
+    public function searchInListOfInitialResults(Request $request)
+    {
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $results=$this->resultService->listOfInitialResults($request);
+        $results = $this->resultService->listOfInitialResults($request);
+
         if ($results === 'required') {
             return redirect()->back()->with('error', 'السلاح مطلوب');
         }
@@ -226,5 +228,25 @@ class ResultsController extends Controller
         }
 
         return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
+    }
+    public function updateTotalForPlayer(Request $request, $player_id)
+    {
+        $player = $this->resultService->getPlayerByRowId($player_id);
+        if (!$player) {
+            return redirect()->back()->with('error', 'الرامي غير موجود');
+        }
+        $total = $request->validate(
+            [
+                'total' => 'integer|min:0|max:100',
+            ],
+            [
+                'total.min' => 'لا يجب ان يقل المجموع عن 0',
+                'total.max' => 'لا يجب ان يزيد المجموع عن 100',
+                'total.integer' => 'يجب ان يكون المجموع رقم',
+            ]
+        );
+
+        $player = $this->resultService->updateTotalForPlayer($player, $total);
+        return redirect()->back()->with('success', 'تم تحديث بيانات الرامي بنجاح');
     }
 }
