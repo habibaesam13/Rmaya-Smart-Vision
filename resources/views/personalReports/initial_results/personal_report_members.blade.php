@@ -166,7 +166,6 @@
                                     name="R{{ $i }}"
                                     data-player="{{ $member->id }}"
                                     class="form-control form-control-sm score-input"
-                                    placeholder="0"
                                     min="0"
                                     data-row="{{ $index }}"
                                     value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"
@@ -180,7 +179,6 @@
                                         name="total"
                                         data-player="{{ $member->id }}"
                                         class="form-control form-control-sm bg-light total-input"
-                                        placeholder="0"
                                         id="total-{{ $index }}"
                                         value="{{ old('total.'.$member->id, $member->total ?? '') }}">
                                 </td>

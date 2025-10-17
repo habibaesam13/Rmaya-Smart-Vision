@@ -96,24 +96,24 @@ class ResultsService
                 if ($k === 'notes') {
                     return $v === '' ? null : $v;
                 }
-                return ($v === '' || is_null($v)) ? 0 : $v;
+                return ($v === '' || is_null($v)) ? null : $v;
             })->toArray();
 
             $report->players_results()
                 ->where('id', $playerId)
                 ->update([
                     'goal'   => $cleanedValues['goal'] ?? 0,
-                    'R1'     => $cleanedValues['R1'] ?? 0,
-                    'R2'     => $cleanedValues['R2'] ?? 0,
-                    'R3'     => $cleanedValues['R3'] ?? 0,
-                    'R4'     => $cleanedValues['R4'] ?? 0,
-                    'R5'     => $cleanedValues['R5'] ?? 0,
-                    'R6'     => $cleanedValues['R6'] ?? 0,
-                    'R7'     => $cleanedValues['R7'] ?? 0,
-                    'R8'     => $cleanedValues['R8'] ?? 0,
-                    'R9'     => $cleanedValues['R9'] ?? 0,
-                    'R10'    => $cleanedValues['R10'] ?? 0,
-                    'total'  => $cleanedValues['total'] ?? 0,
+                    'R1'     => $cleanedValues['R1'] ?? null,
+                    'R2'     => $cleanedValues['R2'] ?? null,
+                    'R3'     => $cleanedValues['R3'] ?? null,
+                    'R4'     => $cleanedValues['R4'] ?? null,
+                    'R5'     => $cleanedValues['R5'] ?? null,
+                    'R6'     => $cleanedValues['R6'] ?? null,
+                    'R7'     => $cleanedValues['R7'] ?? null,
+                    'R8'     => $cleanedValues['R8'] ?? null,
+                    'R9'     => $cleanedValues['R9'] ?? null,
+                    'R10'    => $cleanedValues['R10'] ?? null,
+                    'total'  => $cleanedValues['total'] ?? null,
                     'notes'  => $cleanedValues['notes'] ?? null,
                 ]);
         }
