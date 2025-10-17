@@ -250,51 +250,81 @@ class ResultsService
     }
     //قائمة الافراد المتغيبين فى النتائج الاولية
     public function getAbsentPlayersInitialResults($request)
-{
-    return Sv_initial_results_players::query()
-        ->with(['player.club', 'player.weapon', 'report.weapon'])
-        ->whereNull('total') // players with no total
-        ->whereHas('report', fn($q) => $q->where('confirmed', true)) // confirmed reports
-        ->when($request->club_id, function ($q) use ($request) {
-            $q->whereHas('player.club', fn($sub) => 
-                $sub->where('cid', $request->club_id)
-            );
-        })
-        ->when($request->weapon_id, function ($q) use ($request) {
-            $q->whereHas('player.weapon', fn($sub) => 
-                $sub->where('wid', $request->weapon_id)
-            );
-        })
-        ->when($request->nat, function ($q) use ($request) {
-            $q->whereHas('player.nationality', fn($sub) => 
-                $sub->where('id', $request->nat)
-            );
-        })
-        ->when($request->gender, function ($q) use ($request) {
-            $q->whereHas('player', fn($sub) => 
-                $sub->where('gender', $request->gender)
-            );
-        })
-        ->when($request->date_from, fn($q) => 
-            $q->whereHas('report', fn($sub) => 
-                $sub->whereDate('date', '>=', request('date_from'))
-            )
-        )
-        ->when($request->date_to, fn($q) => 
-            $q->whereHas('report', fn($sub) => 
-                $sub->whereDate('date', '<=', request('date_to'))
-            )
-        )
-        ->when($request->q, function ($q) use ($request) {
-            $search = $request->q;
-            $q->whereHas('player', fn($sub) => 
-                $sub->where('name', 'like', "%{$search}%")
-                    ->orWhere('ID', 'like', "%{$search}%")
-                    ->orWhere('phone1', 'like', "%{$search}%")
-                    ->orWhere('phone2', 'like', "%{$search}%")
-            );
-        })
-        ->paginate(config('app.admin_pagination_number'));
-}
+    {
+        if (!$request->weapon_id) {
+            return 'required';
+        }
 
+        $weapon = $this->weaponService->getWeaponById($request->weapon_id);
+        if (!$weapon) {
+            return 'not_found';
+        }
+
+        return Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'report.weapon'])
+            ->whereNull('total')
+            ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
+            
+            ->when(
+                $request->club_id,
+                fn($q) =>
+                $q->whereHas(
+                    'player.club',
+                    fn($sub) =>
+                    $sub->where('cid', $request->club_id)
+                )
+            )
+            ->when(
+                $request->nat,
+                fn($q) =>
+                $q->whereHas(
+                    'player.nationality',
+                    fn($sub) =>
+                    $sub->where('id', $request->nat)
+                )
+            )
+            ->when(
+                $request->gender,
+                fn($q) =>
+                $q->whereHas(
+                    'player',
+                    fn($sub) =>
+                    $sub->where('gender', $request->gender)
+                )
+            )
+            ->when(
+                $request->date_from,
+                fn($q) =>
+                $q->whereHas(
+                    'report',
+                    fn($sub) =>
+                    $sub->whereDate('date', '>=', $request->date_from)
+                )
+            )
+            ->when(
+                $request->date_to,
+                fn($q) =>
+                $q->whereHas(
+                    'report',
+                    fn($sub) =>
+                    $sub->whereDate('date', '<=', $request->date_to)
+                )
+            )
+            ->when(
+                $request->q,
+                fn($q) =>
+                $q->whereHas(
+                    'player',
+                    fn($sub) => $sub
+                        ->where(function ($query) use ($request) {
+                            $search = $request->q;
+                            $query->where('name', 'like', "%{$search}%")
+                                ->orWhere('ID', 'like', "%{$search}%")
+                                ->orWhere('phone1', 'like', "%{$search}%")
+                                ->orWhere('phone2', 'like', "%{$search}%");
+                        })
+                )
+            )
+            ->paginate(config('app.admin_pagination_number'));
+    }
 }

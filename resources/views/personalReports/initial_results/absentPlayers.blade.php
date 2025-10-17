@@ -34,7 +34,7 @@
                             </ul>
                         </div>
                         @endif
-                        <form action="{{ route('individuals-absent-preliminary-results') }}" method="get" class="card-body">
+                        <form action="{{ route('search-individuals-absent-preliminary-results') }}" method="get" class="card-body">
                             <div class="row g-3">
                                 {{-- Clubs --}}
                                 <div class="col-md-4">
@@ -51,7 +51,7 @@
                                 {{-- Weapons --}}
                                 <div class="col-md-4">
                                     <!--<label for="weapon_id" class="form-label">السلاح</label>-->
-                                    <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
+                                    <select name="weapon_id" id="weapon_id" class="form-select form-select-lg" required>
                                         <option value="" disabled selected>اختر السلاح </option>
                                         @foreach($weapons as $weapon)
                                         <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
@@ -109,7 +109,7 @@
                                         </button>
                                     </div>
                                     <div class="col-12 col-lg-7 col-md-6">
-                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
+                                        <a href="{{ route('individuals-absent-preliminary-results') }}" class="btn btn-sm btn-warning w-100">
                                             اعادة ضبط
                                         </a>
                                     </div>
@@ -139,7 +139,8 @@
                                 </thead>
                                 {{-- table body --}}
                                 <tbody>
-                                    @forelse ($absentPlayers as $player)
+                                    @if(isset($absentPlayers) && $absentPlayers)
+                                    @foreach ($absentPlayers as $player)
                                     <tr>
                                         <td>{{ $player?->player?->name ?? '---' }}</td>
                                         <td>{{ $player?->player?->ID }}</td>
@@ -150,7 +151,8 @@
                                         <td>{{ $player?->player?->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $player?->notes ?? 'لا يوجد ملاحظات' }}</td>
                                     </tr>
-                                    @empty
+                                    @endforeach
+                                    @else
                                     <tr>
                                         <td colspan="8" class="text-center text-muted py-3">
                                             @if(request()->has('search'))
@@ -160,11 +162,11 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    @endforelse
+                                    @endif
 
                             </table>
                             {{-- Pagination --}}
-                            @if ($absentPlayers->hasPages())
+                            @if ($absentPlayers&&$absentPlayers->hasPages())
                             <div class="d-flex justify-content-center mt-3">
                                 {{ $absentPlayers->links() }}
                             </div>

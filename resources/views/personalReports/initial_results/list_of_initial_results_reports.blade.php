@@ -171,8 +171,6 @@
                                             {{ $loop->iteration }}
                                             @endif
                                         </td>
-
-
                                         <td>{{ $player?->notes ?: 'لا يوجد ملاحظات' }}</td>
                                     </tr>
                                     @endforeach

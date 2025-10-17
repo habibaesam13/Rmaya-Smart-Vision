@@ -384,6 +384,7 @@ Route::group(
                     Route::get('update-player-total-for-preliminary-results/{player_id}',[ResultsController::class,'updateTotalForPlayer'])->name('update-player-total-for-preliminary-results');
                     //Individuals Absent Preliminary Results
                     Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
+                    Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
                 }
             );
 

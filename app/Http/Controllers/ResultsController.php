@@ -256,12 +256,32 @@ class ResultsController extends Controller
 
 
     //قائمة الافراد المتغيبين فى النتائج الاولية
-    public function IndividualsAbsentPreliminaryResults(Request $request)
+    public function IndividualsAbsentPreliminaryResults()
     {
-        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request);
+        $absentPlayers=false;
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $countries=$this->countryService->getAllCountries();
         return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
     }
+    public function searchIndividualsAbsentInitialResults(Request $request){
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $countries=$this->countryService->getAllCountries();
+        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request);
+        if ($absentPlayers === 'required') {
+            return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
+        }
+
+        if ($absentPlayers === 'not_found') {
+            return redirect()->back()->withErrors(['weapon' => 'السلاح غير موجود']);
+        }
+
+        // If empty array, make a dummy paginator
+        if ($absentPlayers instanceof \Illuminate\Support\Collection && $absentPlayers->isEmpty()) {
+            $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
+    }
+    
 }
