@@ -47,7 +47,7 @@
                             <div class="col-md-3">
                                 <div class="info-box bg-light p-3 rounded">
                                     <label class="text-muted small mb-1">التاريخ</label>
-                                    <h5 class="mb-0 text-dark">{{ $report?->date ? $report->date->format('d-m-Y') : '---' }}</h5>
+                                    <h5 class="mb-0 text-dark">{{ $report?->date ? $report?->date : '---' }}</h5>
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@
                 let scores = [];
 
                 row.querySelectorAll('.score-input').forEach(scoreInput => {
-                    scores.push(parseInt(scoreInput.value) || 0);
+                    scores.push(parseInt(scoreInput.value) || '');
                 });
 
                 fetch("{{ route('calculate-total') }}", {

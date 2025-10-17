@@ -138,19 +138,26 @@ class ResultsController extends Controller
 
 
     public function calculateTotal(Request $request)
-    {
-        try {
-            $scores = $request->input('scores', []);
-            $total = array_sum($scores);
+{
+    try {
+        // Get scores and replace null or empty values with 0
+        $scores = $request->input('scores', []);
+        $scores = array_map(function ($value) {
+            return is_numeric($value) ? (int)$value : 0;
+        }, $scores);
 
-            return response()->json(['total' => $total]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ], 500);
-        }
+        // Calculate total safely
+        $total = array_sum($scores);
+
+        return response()->json(['total' => $total]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
     }
+}
+
 
     public function addPlayer($rid)
     {
@@ -169,7 +176,6 @@ class ResultsController extends Controller
             $report->players_results()->create([
                 'player_id' => $mid,
                 'goal'      => 0,
-                'total'     => 0,
                 'notes'     => null,
             ]);
         }

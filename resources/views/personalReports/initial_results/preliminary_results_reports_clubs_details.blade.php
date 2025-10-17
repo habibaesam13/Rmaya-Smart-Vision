@@ -96,7 +96,8 @@
                                 @forelse($ReportsDetails as $report)
                                 <tr>
                                     <!-- <td>{{$report?->Rid}}</td> -->
-                                    <td>{{ $report->date?->format('d-m-Y') }}</td>
+                                    <td>{{ $report?->date ?
+                                    $report?->date: '' }}</td>
                                     <td>{{ $report->weapon?->name ?? '-' }}</td>
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">

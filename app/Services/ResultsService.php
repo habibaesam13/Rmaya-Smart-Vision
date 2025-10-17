@@ -39,7 +39,6 @@ class ResultsService
                 $report->players_results()->create([
                     'player_id' => $mid,
                     'goal'      => 0,
-                    'total'     => 0,
                     'notes'     => null,
                 ]);
             }
@@ -248,4 +247,5 @@ class ResultsService
     public function updateTotalForPlayer($player,$total){
         return $player->update($total);
     }
+
 }
