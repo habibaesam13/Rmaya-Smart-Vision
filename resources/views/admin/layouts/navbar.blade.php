@@ -144,6 +144,12 @@
                                     {{ __('lang.list_of_initial_results_reports') }}
                                 </a>
                             </li>
+                            {{-- الافراد المتخلفين في النتائج الاولية --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
+                                    {{ __('lang.individuals_absent_preliminary_results') }}
+                                </a>
+                            </li>
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">
