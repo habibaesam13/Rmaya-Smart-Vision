@@ -17,6 +17,7 @@ class FinalResultStoreReportForMembers extends FormRequest
 
     protected function prepareForValidation()
     {
+
         if ($this->has('checkedMembers') && is_string($this->checkedMembers)) {
             $this->merge([
                 'checkedMembers' => explode(',', $this->checkedMembers),
@@ -68,9 +69,12 @@ class FinalResultStoreReportForMembers extends FormRequest
 
                     $this->weaponId = $weaponId->first();
                 }
-                $alreadyExists = SVFianlResultsPlayer::whereIn('player_id', $memberIds)->exists();
-                if ($alreadyExists) {
-                    $validator->errors()->add('checkedMembers', 'اللاعب مسجل بالفعل في تقرير آخر');
+
+                if(!($this->addMembertoReportRid > 0)) {
+                    $alreadyExists = SVFianlResultsPlayer::whereIn('player_id', $memberIds)->exists();
+                    if ($alreadyExists) {
+                        $validator->errors()->add('checkedMembers', 'اللاعب مسجل بالفعل في تقرير آخر');
+                    }
                 }
             }
         });

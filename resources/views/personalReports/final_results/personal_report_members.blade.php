@@ -31,6 +31,7 @@
                 </h2>
             </div>
 
+
             {{-- Report Info --}}
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
@@ -179,13 +180,13 @@
 
                                 {{-- total --}}
                                 <td>
-                                    <input type="number"
+                                    <input type="text"
                                         name="total"
                                         data-player="{{ $member->id }}"
                                         class="form-control form-control-sm bg-light total-input"
-                                        placeholder="0"
+
                                         id="total-{{ $index }}"
-                                        value="{{ old('total.'.$member->id, $member->total ?? '') }}">
+                                        value="{{  $member->total ?? '' }}">
                                 </td>
 
                                 {{-- notes --}}

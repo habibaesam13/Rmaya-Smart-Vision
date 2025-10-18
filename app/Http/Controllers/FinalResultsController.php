@@ -126,7 +126,6 @@ class FinalResultsController extends Controller
     public function saveReport(Request $request, $rid)
     {
 
-
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
 
