@@ -1,15 +1,12 @@
 <?php
 
-use App\Http\Controllers\AbsentMembersFinalResultController;
-use App\Http\Controllers\FinalResultReportController;
-use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
-use App\Services\FinalResultsService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\ResultsService;
 use Illuminate\Support\Facades\App;
 use App\Exports\GroupsExportProvider;
+use App\Services\FinalResultsService;
 use Illuminate\Support\Facades\Route;
 use App\Exports\MembersExportProvider;
 use App\Exports\PersonalResultsExport;
@@ -24,6 +21,7 @@ use App\Services\PersonalMembersProvider;
 use App\Services\PersonalResultsProvider;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WeaponController;
+use App\Exports\AbsentInitialResultsExport;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultsController;
 use App\Exports\GroupsMembersExportProvider;
@@ -34,7 +32,10 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
 use App\Http\Controllers\ClubsWeaponsController;
+use App\Http\Controllers\FinalResultsController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\FinalResultReportController;
+use App\Http\Controllers\AbsentMembersFinalResultController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\PublicRegistration\GroupRegistration;
 use App\Http\Controllers\PublicRegistration\PersonalRegistration;
@@ -386,6 +387,11 @@ Route::group(
                     //Individuals Absent Preliminary Results
                     Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
                     Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
+                    Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
+                        $provider = new AbsentInitialResultsExport($request, $results_service);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'absent_Personal_results_report.xlsx');
+                    })->name('absent-personal-results-export-excel');
                 }
             );
 
