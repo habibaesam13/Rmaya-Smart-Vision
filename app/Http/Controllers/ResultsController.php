@@ -140,7 +140,13 @@ class ResultsController extends Controller
     public function calculateTotal(Request $request)
     {
         try {
+            // Get scores and replace null or empty values with 0
             $scores = $request->input('scores', []);
+            $scores = array_map(function ($value) {
+                return is_numeric($value) ? (int)$value : 0;
+            }, $scores);
+
+            // Calculate total safely
             $total = array_sum($scores);
 
             return response()->json(['total' => $total]);
@@ -152,9 +158,9 @@ class ResultsController extends Controller
         }
     }
 
+
     public function addPlayer($rid)
     {
-
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
     }
     public function updateReport(StoreReportForMembers $request, $rid)
@@ -169,7 +175,6 @@ class ResultsController extends Controller
             $report->players_results()->create([
                 'player_id' => $mid,
                 'goal'      => 0,
-                'total'     => 0,
                 'notes'     => null,
             ]);
         }
@@ -204,20 +209,21 @@ class ResultsController extends Controller
 
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $results=false;
+        $results = false;
 
         return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
     }
-    public function searchInListOfInitialResults(Request $request) {
+    public function searchInListOfInitialResults(Request $request)
+    {
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $results=$this->resultService->listOfInitialResults($request);
+        $results = $this->resultService->listOfInitialResults($request);
         if ($results === 'required') {
-            return redirect()->back()->with('error', 'السلاح مطلوب');
+            return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
         }
 
         if ($results === 'not_found') {
-            return redirect()->back()->with('error', 'السلاح غير موجود');
+            return redirect()->back()->withErrors(['weapon' => 'السلاح غير موجود']);
         }
 
         // If empty array, make a dummy paginator
@@ -227,4 +233,55 @@ class ResultsController extends Controller
 
         return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs'));
     }
+    public function updateTotalForPlayer(Request $request, $player_id)
+    {
+        $player = $this->resultService->getPlayerByRowId($player_id);
+        if (!$player) {
+            return redirect()->back()->with('error', 'الرامي غير موجود');
+        }
+        $total = $request->validate(
+            [
+                'total' => 'integer|min:0|max:100',
+            ],
+            [
+                'total.min' => 'لا يجب ان يقل المجموع عن 0',
+                'total.max' => 'لا يجب ان يزيد المجموع عن 100',
+                'total.integer' => 'يجب ان يكون المجموع رقم',
+            ]
+        );
+
+        $player = $this->resultService->updateTotalForPlayer($player, $total);
+        return redirect()->back()->with('success', 'تم تحديث بيانات الرامي بنجاح');
+    }
+
+
+    //قائمة الافراد المتغيبين فى النتائج الاولية
+    public function IndividualsAbsentPreliminaryResults()
+    {
+        $absentPlayers=false;
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $countries=$this->countryService->getAllCountries();
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
+    }
+    public function searchIndividualsAbsentInitialResults(Request $request){
+        $clubs = $this->clubService->getAllClubs();
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $countries=$this->countryService->getAllCountries();
+        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request);
+        if ($absentPlayers === 'required') {
+            return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
+        }
+
+        if ($absentPlayers === 'not_found') {
+            return redirect()->back()->withErrors(['weapon' => 'السلاح غير موجود']);
+        }
+
+        // If empty array, make a dummy paginator
+        if ($absentPlayers instanceof \Illuminate\Support\Collection && $absentPlayers->isEmpty()) {
+            $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
+        }
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
+    }
+    
 }

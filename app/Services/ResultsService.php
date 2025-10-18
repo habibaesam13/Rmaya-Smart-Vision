@@ -23,6 +23,11 @@ class ResultsService
     {
         $this->weaponService = $weaponService;
     }
+    //check the player found by relation key (primary key for sv_initial_results_players)
+    public function getPlayerByRowId($id)
+    {
+        return Sv_initial_results_players::where('id', $id);
+    }
     public function createReport($data)
     {
 
@@ -35,7 +40,6 @@ class ResultsService
                 $report->players_results()->create([
                     'player_id' => $mid,
                     'goal'      => 0,
-                    'total'     => 0,
                     'notes'     => null,
                 ]);
             }
@@ -93,24 +97,24 @@ class ResultsService
                 if ($k === 'notes') {
                     return $v === '' ? null : $v;
                 }
-                return ($v === '' || is_null($v)) ? 0 : $v;
+                return ($v === '' || is_null($v)) ? null : $v;
             })->toArray();
 
             $report->players_results()
                 ->where('id', $playerId)
                 ->update([
                     'goal'   => $cleanedValues['goal'] ?? 0,
-                    'R1'     => $cleanedValues['R1'] ?? 0,
-                    'R2'     => $cleanedValues['R2'] ?? 0,
-                    'R3'     => $cleanedValues['R3'] ?? 0,
-                    'R4'     => $cleanedValues['R4'] ?? 0,
-                    'R5'     => $cleanedValues['R5'] ?? 0,
-                    'R6'     => $cleanedValues['R6'] ?? 0,
-                    'R7'     => $cleanedValues['R7'] ?? 0,
-                    'R8'     => $cleanedValues['R8'] ?? 0,
-                    'R9'     => $cleanedValues['R9'] ?? 0,
-                    'R10'    => $cleanedValues['R10'] ?? 0,
-                    'total'  => $cleanedValues['total'] ?? 0,
+                    'R1'     => $cleanedValues['R1'] ?? null,
+                    'R2'     => $cleanedValues['R2'] ?? null,
+                    'R3'     => $cleanedValues['R3'] ?? null,
+                    'R4'     => $cleanedValues['R4'] ?? null,
+                    'R5'     => $cleanedValues['R5'] ?? null,
+                    'R6'     => $cleanedValues['R6'] ?? null,
+                    'R7'     => $cleanedValues['R7'] ?? null,
+                    'R8'     => $cleanedValues['R8'] ?? null,
+                    'R9'     => $cleanedValues['R9'] ?? null,
+                    'R10'    => $cleanedValues['R10'] ?? null,
+                    'total'  => $cleanedValues['total'] ?? null,
                     'notes'  => $cleanedValues['notes'] ?? null,
                 ]);
         }
@@ -122,7 +126,6 @@ class ResultsService
 
     public function getAvailablePlayers($report)
     {
-
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
             ->orderBy('mid')
@@ -198,12 +201,14 @@ class ResultsService
     //قائمة النتائج الاولية
     public function listOfInitialResults(Request $request)
     {
+
         // weapon_id is required
         if (!$request->weapon_id) {
             return 'required';
         }
 
         $weapon = $this->weaponService->getWeaponById($request->weapon_id);
+
         if (!$weapon) {
             return 'not_found';
         }
@@ -216,7 +221,6 @@ class ResultsService
                     $sub->whereDate('date', $request->date);
                 }
             });
-
         // Filter by club
         if ($request->filled('club_id')) {
             $query->whereHas('player', function ($sub) use ($request) {
@@ -230,7 +234,6 @@ class ResultsService
         }
         // Apply ordering
         $query->orderByDesc('total');
-
         // Apply limit if selected
         if ($request->filled('limit')) {
             $limit = (int) $request->input('limit');
@@ -238,5 +241,90 @@ class ResultsService
         } else {
             return $query->paginate(config('app.admin_pagination_number'));
         }
+    }
+
+    //update players total
+    public function updateTotalForPlayer($player, $total)
+    {
+        return $player->update($total);
+    }
+    //قائمة الافراد المتغيبين فى النتائج الاولية
+    public function getAbsentPlayersInitialResults($request)
+    {
+        if (!$request->weapon_id) {
+            return 'required';
+        }
+
+        $weapon = $this->weaponService->getWeaponById($request->weapon_id);
+        if (!$weapon) {
+            return 'not_found';
+        }
+
+        return Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'report.weapon'])
+            ->whereNull('total')
+            ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
+            
+            ->when(
+                $request->club_id,
+                fn($q) =>
+                $q->whereHas(
+                    'player.club',
+                    fn($sub) =>
+                    $sub->where('cid', $request->club_id)
+                )
+            )
+            ->when(
+                $request->nat,
+                fn($q) =>
+                $q->whereHas(
+                    'player.nationality',
+                    fn($sub) =>
+                    $sub->where('id', $request->nat)
+                )
+            )
+            ->when(
+                $request->gender,
+                fn($q) =>
+                $q->whereHas(
+                    'player',
+                    fn($sub) =>
+                    $sub->where('gender', $request->gender)
+                )
+            )
+            ->when(
+                $request->date_from,
+                fn($q) =>
+                $q->whereHas(
+                    'report',
+                    fn($sub) =>
+                    $sub->whereDate('date', '>=', $request->date_from)
+                )
+            )
+            ->when(
+                $request->date_to,
+                fn($q) =>
+                $q->whereHas(
+                    'report',
+                    fn($sub) =>
+                    $sub->whereDate('date', '<=', $request->date_to)
+                )
+            )
+            ->when(
+                $request->q,
+                fn($q) =>
+                $q->whereHas(
+                    'player',
+                    fn($sub) => $sub
+                        ->where(function ($query) use ($request) {
+                            $search = $request->q;
+                            $query->where('name', 'like', "%{$search}%")
+                                ->orWhere('ID', 'like', "%{$search}%")
+                                ->orWhere('phone1', 'like', "%{$search}%")
+                                ->orWhere('phone2', 'like', "%{$search}%");
+                        })
+                )
+            )
+            ->paginate(config('app.admin_pagination_number'));
     }
 }

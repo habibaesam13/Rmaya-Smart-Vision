@@ -23,10 +23,10 @@ return new class extends Migration
 
             // Scores R1 - R10
             for ($i = 1; $i <= 10; $i++) {
-                $table->decimal("R$i", 8, 2)->default(0);
+                $table->decimal("R$i", 8, 2)->nullable();
             }
 
-            $table->decimal('total', 10, 2)->default(0);
+            $table->decimal('total', 10, 2)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
