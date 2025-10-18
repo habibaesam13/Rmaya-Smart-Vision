@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsentMembersFinalResultController;
 use App\Http\Controllers\FinalResultReportController;
 use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
@@ -392,7 +393,9 @@ Route::group(
             Route::prefix('final-results')->group(
                 function () {
                     Route::get('reports', [FinalResultsController::class, 'index'])->name('final_results.reports');
+//                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
+
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
                     Route::post('final-members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
@@ -410,10 +413,19 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf_final');
-                    /*********************final results report***********/
-                    Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
+                    /*********************final Eliminations results report***********/
+                    Route::get('/final-report-eliminations', [FinalResultReportController::class, 'index'])->name('final_reports.index');
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                     Route::get('/final_report_save_second_total/{id}', [FinalResultReportController::class, 'updateSecondTotal'])->name('final_report_save_second_total.update');
+                    Route::get('/final-reports', [FinalResultReportController::class, 'firstList'])->name('final_reports.first_list');
+                    Route::delete('/delete-report/{id}', [FinalResultReportController::class, 'deleteReport'])->name('final_reports_delete.delete');
+                    Route::get('registered-members-print/{id}', [FinalResultReportController::class, 'showReportMembersByPrint'])->name('results-registered-members_by_print_final');
+                    Route::get('reports-players', [FinalResultReportController::class, 'getResportsAll'])->name('reports-details_players_final');
+
+                    /*********************final absents results report***********/
+                    Route::get('absent-reports', [AbsentMembersFinalResultController::class, 'index'])->name('final_results.absents.reports');
+                    Route::get('generate-report_final-edit/{id}', [AbsentMembersFinalResultController::class, 'editReport'])->name('generate-report-registered-members_final_edit_for_absent');
+                    Route::get('reports-absent-players', [AbsentMembersFinalResultController::class, 'getResportsAll'])->name('reports-details_absent_players_final');
 
 
 

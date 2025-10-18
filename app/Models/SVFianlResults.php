@@ -9,7 +9,7 @@ class SVFianlResults extends Model
     protected $table='sv_fianl_results';
 
     protected $fillable = [
-        'Rid',
+        'id',
         'date',
         'weapon_id',
         'details',
@@ -29,4 +29,8 @@ class SVFianlResults extends Model
         return $this->belongsTo(Sv_weapons::class, 'weapon_id', 'wid');
     }
 
+    public function finalPlayers()
+    {
+        return $this->hasMany(SVFianlResultsPlayer::class , 'Rid');
+    }
 }

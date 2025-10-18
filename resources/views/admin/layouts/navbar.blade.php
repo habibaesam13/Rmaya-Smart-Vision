@@ -17,8 +17,8 @@
                    aria-expanded="false"><i class="ri-user-2-fill"></i><span class="d-flex flex-column gap-1 sidebar-user-name m-1"><h4 class="my-0 fw-bold fs-15">{{auth()->user()->name}} x</h4></span><i class="ri-arrow-down-s-line d-block sidebar-user-arrow align-middle ms-2"></i></a><div class="dropdown-menu dropdown-menu-end"><a href="javascript:void(0);" class="dropdown-item active fw-semibold text-danger"><i class="ri-logout-box-line me-1 fs-16 align-middle"></i><span onclick="window.location.href='{{route('admin.get_admin_logout')}}'" class="align-middle">Sign Out</span></a></div></div></div>-->
     <!--- Sidenav Menu -->
     <ul class="side-nav">
-  
-  
+
+
       <!------------end original nav ----------------->
       <li class="side-nav-item ">
         <a href="{{url(route('admin.main_dashboard.index'))}}" class="side-nav-link ">
@@ -27,10 +27,10 @@
           </span>
           <span class="menu-text">الإحصائيات </span>
         </a>
-      </li> 
-      @if(checkModulePermission('settings', 'view')) 
-      
-      
+      </li>
+      @if(checkModulePermission('settings', 'view'))
+
+
       <li class="side-nav-item ">
         <a href="{{url(route('admin.settings.edit'))}}" class="side-nav-link ">
           <span class="menu-icon">
@@ -38,49 +38,49 @@
           </span>
           <span class="menu-text"> @lang('lang.settings') </span>
         </a>
-      </li> @endif 
-        @if(checkModulePermission('weapons', 'view')) 
+      </li> @endif
+        @if(checkModulePermission('weapons', 'view'))
        <li class="side-nav-item @if (request()->routeIs('weapons.*')) active @endif">
             <a href="{{ route('weapons.index') }}" class="side-nav-link">
                 <span class="menu-icon"><i class="ri-sword-line"></i></span>
                 <span class="menu-text">{{ __('lang.Weapons') }}</span>
             </a>
-        </li> @endif 
-        
-  @if(checkModulePermission('clubs', 'view')) 
+        </li> @endif
+
+  @if(checkModulePermission('clubs', 'view'))
         {{-- Clubs --}}
         <li class="side-nav-item @if (request()->routeIs('clubs.*')) active @endif">
             <a href="{{ route('clubs.index') }}" class="side-nav-link">
                 <span class="menu-icon"><i class="ri-shield-line"></i></span>
                 <span class="menu-text">{{ __('lang.Clubs') }}</span>
             </a>
-        </li> @endif 
-        
-         @if(checkModulePermission('members', 'view'))  
+        </li> @endif
+
+         @if(checkModulePermission('members', 'view'))
              {{-- Personal Registered --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-registration') }}" class="side-nav-link">
                         <span class="menu-icon"><i class="ri-file-user-line"></i></span>
                         <span class="menu-text">{{ __('lang.Personal') }}</span>
                     </a>
-                </li> @endif 
-          @if(checkModulePermission('members', 'add')) 
+                </li> @endif
+          @if(checkModulePermission('members', 'add'))
                 {{-- Personal Registration --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-create') }}" class="side-nav-link">
                         <span class="menu-icon"><i class="ri-folder-add-line"></i></span>
                         <span class="menu-text">{{ __('lang.PersonalCreate') }}</span>
                     </a>
-                </li> @endif 
-          @if(checkModulePermission('members_groups', 'view')) 
+                </li> @endif
+          @if(checkModulePermission('members_groups', 'view'))
                 {{-- Registered Groups --}}
                 <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
                     <a href="{{ route('group-registration') }}" class="side-nav-link">
                         <span class="menu-icon"><i class="ri-team-line"></i></span>
                         <span class="menu-text">{{ __('lang.RegisteredGroups') }}</span>
                     </a>
-                </li> @endif 
-          @if(checkModulePermission('members_groups', 'rpt')) 
+                </li> @endif
+          @if(checkModulePermission('members_groups', 'rpt'))
                 {{-- Memebrs in Groups --}}
                 <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
                     <a href="{{ route('groups-members') }}" class="side-nav-link">
@@ -88,9 +88,9 @@
                         <span class="menu-text">{{ __('lang.GroupsMembers') }}</span>
                     </a>
                 </li>
-            @endif    
-                
-                
+            @endif
+
+
                      {{-- لوحة تحكم الأندية --}}
                 <li
                     class="side-nav-item
@@ -144,6 +144,12 @@
                                     {{ __('lang.list_of_initial_results_reports') }}
                                 </a>
                             </li>
+                            {{-- الافراد المتخلفين في النتائج الاولية --}}
+                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
+                                <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
+                                    {{ __('lang.individuals_absent_preliminary_results') }}
+                                </a>
+                            </li>
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">
@@ -161,13 +167,31 @@
                                 </a>
                             </li>
 
+                            {{-- final_results.reports--}}
+                            <li class="side-nav-item  @if (request()->routeIs('final_results.absents.reports')) active @endif  ">
+                                <a href="{{ route('final_results.absents.reports') }}" class="side-nav-link">
+                                    <i class="fa-solid fa-list me-2"></i>
+                                    absent final players
+                                </a>
+                            </li>
+
+                            {{-- final_results.reports--}}
+                            <li class="side-nav-item  @if (request()->routeIs('reports-details_absent_players_final')) active @endif  ">
+                                <a href="{{route('reports-details_absent_players_final')}}" class="side-nav-link">
+                                    <i class="fa-solid fa-list me-2"></i>
+                                    final reports has absent players
+                                </a>
+                            </li>
+
+
+
        </ul>
                     </div>
                 </li>
-     
-      
-      
-      
+
+
+
+
     </ul>
     <div class="clearfix"></div>
   </div>
@@ -179,7 +203,7 @@
 <header class="app-topbar">
   <div class="page-container topbar-menu">
     <div class="d-flex align-items-center gap-2">
-      
+
       <!-- Sidebar Menu Toggle Button -->
       <button class="sidenav-toggle-button px-2">
         <i class="ri-menu-5-line fs-24"></i>
@@ -190,7 +214,7 @@
       </button>
       <!-- Topbar Page Title -->
       <div class="topbar-item ">
-          
+
            <!-- Brand Logo -->
   <a href="{{url(route('admin.main_dashboard.index'))}}" class="logo">
     <span class="logo-light">
@@ -210,7 +234,7 @@
       </span>
     </span>
   </a>
-          
+
         <div> @if(app()->getLocale() == 'en') <h4 class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name_en') }}</h4> @if(all_settings()->getItem('company_department_name_en')) <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex" >{{ all_settings()->getItem('company_department_name_en') }}</h5> @endif @else <h4 class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name') }}</h4> @if(all_settings()->getItem('company_department_name')) <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex">{{ all_settings()->getItem('company_department_name') }}</h5> @endif @endif </div>
       </div>
     </div>
@@ -221,8 +245,8 @@
       <!--<div class="topbar-search d-none d-xl-flex gap-2 me-2 align-items-center" data-bs-toggle="modal"
                  data-bs-target="#searchModal" type="button"><i class="ri-search-line fs-18"></i><span class="me-2">Search something..</span></div>-->
       <!-------------------------original template languages buttons ------------------->
-     
-     
+
+
       <!-------------------------original template languages buttons ------------------->
     </div>
     <!-- Apps Dropdown -->
@@ -308,7 +332,7 @@
       <!-- Notification Dropdown -->
       <div class="topbar-item">
         <div class="dropdown">
-            @php  $roleIds = auth()->user()->roles->pluck('id'); 
+            @php  $roleIds = auth()->user()->roles->pluck('id');
                 use App\Models\Noti; $noti = Noti::whereIn('roles_id', $roleIds)->where('viewed','no')->get()->count();
             @endphp
           <button class="topbar-link btn btn-soft-success btn-icon btn-sm rounded-circle" onclick="window.location.href='{{route('noti.index')}}'" type="button">
@@ -326,10 +350,10 @@
           </span>
         </div>
         <div class="drop-down__menu-box">
-          <ul class="drop-down__menu"> @foreach(\Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLocales() as $localeCode => $properties) 
+          <ul class="drop-down__menu"> @foreach(\Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
           <!--<li class="{{app()->getLocale() === $localeCode ? 'd-none' : ''}} drop-down__item">
               <a rel="alternate" hreflang="{{ $localeCode }}" href="{{ \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                {{ $properties['native'] }} 
+                {{ $properties['native'] }}
                 <i class="ri-earth-line drop-down__item-icon"></i>
               </a>
             </li> -->@endforeach <li class=" drop-down__item">
