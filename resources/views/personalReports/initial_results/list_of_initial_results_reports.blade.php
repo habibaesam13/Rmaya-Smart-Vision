@@ -6,6 +6,8 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">قائمة النتائج الاولية</h4>
             </div>
+            <span class="badge badge-outline-primary"> عدد الرماة : {{ isset($results)&&$results ? $results->total() : 0 }}
+</span>
             {{-- Success Message --}}
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -83,20 +85,22 @@
                                     <input type="text" name="total" id="total"
                                         value="{{ request('total') }}"
                                         class="form-control form-control-lg text-center"
-                                        placeholder="العلامة المكتسبة">
+                                        placeholder=" العلامة المكتسبة >=">
                                 </div>
 
                             </div>
-                            <div class="col-md-12 d-flex justify-content-start gap-2 my-2">
-                                <div class="col-md-1">
-                                    <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
-                                        <i class="fas fa-search me-2"></i>&nbsp;&nbsp;بحث
-                                    </button>
-                                </div>
-                                <div class="col-md-1">
-                                    <a href="{{route('list-initial-results-reports')}}" class="btn btn-sm btn-warning w-100">
-                                        اعادة تعيين
-                                    </a>
+                            <div class="col-md-12 col-lg-2 col-12 mb-2" style="padding-top:8px">
+                                <div class="g-1 row justify-content-center">
+                                    <div class="col-12 col-lg-5 col-md-6 ">
+                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
+                                            <i class="ri-search-2-line "></i>&nbsp;&nbsp;بحث
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-lg-7 col-md-6">
+                                        <a href="{{ route('list-initial-results-reports') }}" class="btn btn-sm btn-warning w-100">
+                                            اعادة ضبط
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -142,7 +146,22 @@
                                                     : '---')
                                             }}
                                         </td>
-                                        <td>{{ $player?->total }}</td>
+                                        <td>
+                                            <form action="{{ route('update-player-total-for-preliminary-results', $player->id) }}" method="get" class="d-flex align-items-center gap-2">
+                                                <input
+                                                    type="number"
+                                                    name="total"
+                                                    data-player="{{ $player->id }}"
+                                                    class="form-control form-control-sm bg-light total-input"
+                                                    placeholder="0"
+                                                    value="{{ old($player->total, $player->total ?? '') }}"
+                                                    style="max-width: 80px;">
+                                                <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle">
+                                                    <i class="ri-save-line text-danger"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+
                                         <td>
                                             {{-- If paginated --}}
                                             @if($results instanceof \Illuminate\Pagination\LengthAwarePaginator)
@@ -152,8 +171,6 @@
                                             {{ $loop->iteration }}
                                             @endif
                                         </td>
-
-
                                         <td>{{ $player?->notes ?: 'لا يوجد ملاحظات' }}</td>
                                     </tr>
                                     @endforeach

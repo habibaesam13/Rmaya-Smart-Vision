@@ -167,7 +167,7 @@
                                         {{--{{dd($sortedRatings[$index])}}--}}
                                         @forelse($items as $key => $item)
                                             <tr>
-                                                <td class="text-center fw-bold">{{$key+1}} {{$item->id}}</td>
+                                                <td class="text-center fw-bold">{{$key+1}}</td>
                                                 <td class="text-primary">{{date_create($item->date)->format('Y-m-d')}}</td>
                                                 <td>{{optional($item->weapon)->name}}</td>
                                                 <td class="fw_bold total-input">{{$item->details}}</td>
@@ -186,18 +186,17 @@
                                                                 <i class="ri-delete-bin-line fs-16"></i>
                                                             </button>
                                                         </form>
-
                                                         <span class="d-inline">
-                                            <span title="عرض/طباعة"
+                                            <a title="عرض/طباعة" href="{{route('results-registered-members_by_print_final' , $item->id)}}?autoprint=true"
                                                   class="btn btn-soft-success btn-icon btn-sm rounded-circle">
                                                    <i class="ri-printer-fill"></i>
-                                            </span>
+                                            </a>
                                         </span>
 
 
                                                         <div class="d-inline">
                                                             @if($item->file)
-                                                                <a target="_blank" href="{{$item->file}}" download
+                                                                <a target="_blank" href="{{asset($item->file)}}" download
                                                                    class="btn btn-soft-success btn-icon btn-sm rounded-circle"
                                                                    title="الملف المرفق">
                                                                     <i class="ri-file-2-line"></i></a>
@@ -227,7 +226,7 @@
 
                                         </tbody>
                                     </table>
-                                    {{$items->links()}}
+                                    {{count($items) ? $items->links() : ''}}
 
 
                                     <div id="pr" style="display:none">

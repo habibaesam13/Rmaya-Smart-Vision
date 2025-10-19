@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class SV_initial_results extends Model
+class Sv_initial_results extends Model
 {
     protected $table='sv_initial_results';
     protected $primaryKey='Rid';
@@ -29,5 +31,10 @@ class SV_initial_results extends Model
     public function weapon()
     {
         return $this->belongsTo(Sv_weapons::class, 'weapon_id', 'wid');
+    }
+    public function date():Attribute{
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->format('Y-m-d'),
+        );
     }
 }

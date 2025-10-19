@@ -62,7 +62,7 @@
 
         <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
             <div class="col-12 col-md-8 mb-2 mb-md-0">
-                <h4 class="header-title"> قائمة الافراد المتأهلين للتصفيات النهائية </h4>
+                <h4 class="header-title"> قائمة الافراد المتغيبين عن التصفيات النهائية </h4>
             </div>
             <div class="col-12 col-md-4 text-md-end text-center">
 
@@ -70,7 +70,7 @@
                 <div class=" d-flex ">
 
                 <span class="badge badge-outline-primary">
-                           عدد الأفراد المسجلين : {{$count}}  </span>
+                           عدد الأفراد المتغيبين : {{@$membersCount}}  </span>
 
 
                     {{--                    <form title="Excel" action="{{ isset($reportSection) && $reportSection--}}
@@ -96,12 +96,7 @@
                     {{--                            <i class="ri-file-pdf-2-line"></i>--}}
                     {{--                        </button>--}}
                     {{--                    </form>--}}
-
-                    <span class="btn btn-sm btn-primary  ">
-                            <i class="ri-file-excel-line"></i>
-                        </span>
-
-                    <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
+                    <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
                             <i class="ri-file-pdf-2-line"></i>
                         </span>
 
@@ -134,35 +129,51 @@
             <div class="card-body">
 
                 <div class="card bg-search">
-                    {{--                    <form action="{{ isset($reportSection) && $reportSection--}}
+                    <form action="
+{{--                        {{ isset($reportSection)--}}
                     {{--                        ? route('search-results-registered-members')--}}
-                    {{--                        : route('personal-registration') }}" method="get" class="card-body">--}}
-                    <form action="{{ route('final_results.reports')}}" method="get" class="card-body">
-                        @csrf
+                    {{--                        : route('personal-registration') }}--}}
+                    {{route('final_results.absents.reports')}}
+                        " method="get" class="card-body">
                         <div class="row g-3">
 
-
                             <div class="col-md-4">
-                                <label for="reg_club" class="form-label"> اختر النادي </label>
-                                <select name="reg_club" id="reg_club" class="form-select">
-                                    <option value="" {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان
+                                <label for="club_id" class="form-label"> اختر النادي </label>
+                                <select name="club_id" class="form-select">
+                                    <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر مكان
                                         التسجيل
                                     </option>
                                     @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}"
-                                            {{ request('reg_club') == $club->cid ? 'selected' : '' }}>
+                                            {{ request('club_id') == $club->cid ? 'selected' : '' }}>
                                             {{ $club->name }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
+
+                            {{--                            <div class="col-md-4">--}}
+                            {{--                                <label for="reg_club" class="form-label"> اختر النادي </label>--}}
+                            {{--                                <select name="reg_club" id="reg_club" class="form-select">--}}
+                            {{--                                    <option value="" disabled {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان--}}
+                            {{--                                        التسجيل--}}
+                            {{--                                    </option>--}}
+                            {{--                                    @foreach($clubs as $club)--}}
+                            {{--                                        <option value="{{ $club->cid }}"--}}
+                            {{--                                            {{ request('reg_club') == $club->cid ? 'selected' : '' }}>--}}
+                            {{--                                            {{ $club->name }}--}}
+                            {{--                                        </option>--}}
+                            {{--                                    @endforeach--}}
+                            {{--                                </select>--}}
+                            {{--                            </div>--}}
+
                             @if($reportSection)
                                 {{-- Weapons --}}
                                 <div class="col-md-4">
                                     <label for="weapon_id" class="form-label">السلاح</label>
-                                    <select name="weapon_id" required id="weapon_id" class="form-select">
-                                        <option value="" selected>اختر السلاح</option>
+                                    <select name="weapon_id" id="weapon_id" class="form-select">
+                                        <option value="" disabled selected>اختر السلاح</option>
                                         @foreach($weapons as $weapon)
                                             <option
                                                 value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
@@ -176,7 +187,7 @@
                                 <div class="col-md-4">
                                     <label for="club_id" class="form-label">النادي</label>
                                     <select name="club_id" id="club_id" class="form-select">
-                                        <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر
+                                        <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر
                                             النادي
                                         </option>
                                         @foreach($clubs as $club)
@@ -237,7 +248,7 @@
                             <div class="col-md-4">
                                 {{--                        <label for="mgid" class="form-label">المجموعات</label>--}}
                                 <select name="mgid" id="mgid" class="form-select">
-                                    <option value="" selected>اختر المجموعة</option>
+                                    <option value="" disabled selected>اختر المجموعة</option>
                                     @foreach($memberGroups as $memberGroup)
                                         <option value="{{ $memberGroup->mgid }}"
                                             {{ request('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
@@ -246,6 +257,7 @@
                                     @endforeach
                                 </select>
                             </div>
+
 
                             {{-- Dates + Registration Place in same row --}}
                             <div class="row">
@@ -260,6 +272,28 @@
                                            value="{{ request('date_to') }}">
                                 </div>
                             </div>
+
+
+                            {{--                    --}}{{-- Registration Status --}}
+                            {{--                    <div class="col-md-4">--}}
+                            {{--                        <label class="form-label">حالة التسجيل</label>--}}
+                            {{--                        <div class="d-flex align-items-center gap-4 mt-2">--}}
+                            {{--                            <div class="form-check">--}}
+                            {{--                                <input class="form-check-input" type="radio" id="registered" name="reg"--}}
+                            {{--                                    value="registered" {{ request('reg') == 'registered' ? 'checked' : '' }}>--}}
+                            {{--                                <label class="form-check-label" for="registered">--}}
+                            {{--                                    المسجلين المشاركين--}}
+                            {{--                                </label>--}}
+                            {{--                            </div>--}}
+                            {{--                            <div class="form-check">--}}
+                            {{--                                <input class="form-check-input" type="radio" id="not-registered" name="reg"--}}
+                            {{--                                    value="not-registered" {{ request('reg') == 'not-registered' ? 'checked' : '' }}>--}}
+                            {{--                                <label class="form-check-label" for="not-registered">--}}
+                            {{--                                    المسجلين غير المشاركين--}}
+                            {{--                                </label>--}}
+                            {{--                            </div>--}}
+                            {{--                        </div>--}}
+                            {{--                    </div>--}}
 
 
                             {{-- Search + Gender + Active on one row --}}
@@ -310,9 +344,10 @@
         {{-- Filtered Data --}}
         <div class="card shadow-sm border-0">
             <div class="card-body">
-            <!-- @isset($addMembertoReportRid)
-                <p>{{ $addMembertoReportRid}}</p>
-            @endisset -->
+                {{--            <!-- @isset($addMembertoReportRid)--}}
+                {{--                <p>{{ $addMembertoReportRid}}</p>--}}
+                {{--            @endisset -->--}}
+
                 @if($reportSection)
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
                         <div class="card-header bg-success text-white">
@@ -343,8 +378,9 @@
                             {{--                        ? route('update-report-registered-members', $Edit_report->Rid)--}}
                             {{--                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">--}}
                             <form action="{{ isset($Edit_report)
-                        ? route('update-report-registered-members_final', $Edit_report->id)
-                        : route('generate-report-registered-members_final') }}" method="POST" id="reportForm">
+                        ? route('update-report-registered-members_final', $Edit_report->id)."?addMembertoReportRid=" . $Edit_report->id
+                        : route('generate-report-registered-members_final') . '?absents=yes' }}" method="POST"
+                                  id="reportForm">
 
                                 @csrf
 
@@ -359,6 +395,8 @@
                                         <input type="text" name="details" id="detail_number"
                                                class="form-control" placeholder="أدخل رقم الديتيل" required
                                                value="{{isset($Edit_report)?$Edit_report->details:''}}">
+
+
                                     </div>
 
                                     <div id="checkedMembersContainer" style="display:none;"></div>
@@ -366,7 +404,9 @@
                                     <div class="col-md-4">
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="fas fa-save me-2"></i>
-                                            {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
+                                            {{--                                            {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}--}}
+                                            تحديث التقرير
+
                                         </button>
                                     </div>
                                 </div>
@@ -392,11 +432,12 @@
                                         <th>الترتيب</th>
 
                                         <th>تاريخ التسجيل</th>
-                                        {{--                                <th>ادوات تحكم</th>--}}
+                                        <th>ملاحظات</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @forelse($available_players as  $key => $player)
+
                                         <tr>
                                             <td>
 
@@ -406,7 +447,7 @@
                                             <td>{{ $player->name }}</td>
                                             <td>{{ $player->weapon_name }}</td>
 
-                                            <td>{{ $player->mid }}</td>
+                                            <td>{{ $player->ID }}</td>
                                             <td>{{ $player->phone1 ?? $player->phone2 }}</td>
                                             {{--                                <td>{{ $player->age_calculation() }}</td>--}}
                                             <td>{{ $player->club_name ?? '---' }}</td>
@@ -421,45 +462,48 @@
                                             {{--                                </td>--}}
                                             {{--                                <td>{{ $player->member_group?->name ?? '---' }}</td>--}}
                                             <td>  {{  $player->total ?? 0}}</td>
-                                            <td>{{$arranging_arr[$key]}}</td>
-
+                                            <td>{{isset($arranging_arr[$key]) ?  $arranging_arr[$key] : ''}}</td>
                                             <td>{{ $player->registration_date }}</td>
+                                            <td>
+                                                {{ $player->notes }}
+                                                {{--                                                <div class="d-flex justify-content-center gap-3">--}}
+                                                {{--                                                                                     Edit Button--}}
+                                                {{--                                                                                    <form action="{{route('personal.edit')}}" method="GET" class="d-inline">--}}
+                                                {{--                                                                                        @csrf--}}
+                                                {{--                                                                                        <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
+                                                {{--                                                                                        <button type="submit" class="icon-btn text-warning" title="تعديل">--}}
+                                                {{--                                                                                            <i class="fas fa-edit"></i>--}}
+                                                {{--                                                                                        </button>--}}
+                                                {{--                                                                                    </form>--}}
+                                                {{--                                                                                     Delete Button--}}
+                                                {{--                                                    <form action="{{route('personal-registration-delete')}}"--}}
+                                                {{--                                                          method="POST"--}}
+                                                {{--                                                          class="d-inline"--}}
+                                                {{--                                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">--}}
 
-                                            {{--                                <td>--}}
-                                            {{--                                    <div class="d-flex justify-content-center gap-3">--}}
-                                            {{--                                        --}}{{-- Edit Button --}}
-                                            {{--                                        <form action="{{route('personal.edit')}}" method="GET" class="d-inline">--}}
-                                            {{--                                            @csrf--}}
-                                            {{--                                            <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
-                                            {{--                                            <button type="submit" class="icon-btn text-warning" title="تعديل">--}}
-                                            {{--                                                <i class="fas fa-edit"></i>--}}
-                                            {{--                                            </button>--}}
-                                            {{--                                        </form>--}}
-                                            {{--                                        --}}{{-- Delete Button --}}
-                                            {{--                                        <form action="{{route('personal-registration-delete')}}" method="POST"--}}
-                                            {{--                                            class="d-inline"--}}
-                                            {{--                                            onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">--}}
+                                                {{--                                                        @csrf--}}
+                                                {{--                                                        <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
+                                                {{--                                                        @method('DELETE')--}}
+                                                {{--                                                        <button type="submit" class="icon-btn text-danger" title="حذف">--}}
+                                                {{--                                                            <i class="fas fa-trash-alt"></i>--}}
+                                                {{--                                                        </button>--}}
+                                                {{--                                                    </form>--}}
 
-                                            {{--                                            @csrf--}}
-                                            {{--                                            <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
-                                            {{--                                            @method('DELETE')--}}
-                                            {{--                                            <button type="submit" class="icon-btn text-danger" title="حذف">--}}
-                                            {{--                                                <i class="fas fa-trash-alt"></i>--}}
-                                            {{--                                            </button>--}}
-                                            {{--                                        </form>--}}
+                                                {{--                                                                                     Toggle Status Button--}}
+                                                {{--                                                                                    <form action="{{route('personal-registration-toggle')}}" method="POST"--}}
+                                                {{--                                                                                        class="d-inline">--}}
+                                                {{--                                                                                        @csrf--}}
+                                                {{--                                                                                        <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
+                                                {{--                                                                                        <button type="submit" class="icon-btn text-success"--}}
+                                                {{--                                                                                            title="{{ 1 ? 'تعطيل' : 'تفعيل' }}">--}}
+                                                {{--                                                                                            <i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>--}}
+                                                {{--                                                                                            <i class="fas fa-1 ? 'pause' : 'play' }}"></i>--}}
 
-                                            {{--                                        --}}{{-- Toggle Status Button --}}
-                                            {{--                                        <form action="{{route('personal-registration-toggle')}}" method="POST"--}}
-                                            {{--                                            class="d-inline">--}}
-                                            {{--                                            @csrf--}}
-                                            {{--                                            <input type="hidden" name="mid" value="{{ $player->mid }}">--}}
-                                            {{--                                            <button type="submit" class="icon-btn text-success"--}}
-                                            {{--                                                title="{{ $player->active ? 'تعطيل' : 'تفعيل' }}">--}}
-                                            {{--                                                <i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>--}}
-                                            {{--                                            </button>--}}
-                                            {{--                                        </form>--}}
-                                            {{--                                    </div>--}}
-                                            {{--                                </td>--}}
+                                                {{--                                                                                        </button>--}}
+                                                {{--                                                                                    </form>--}}
+                                                {{--                                                </div>--}}
+
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -491,10 +535,9 @@
                                 </table>
                         @endisset
 
-
                         <!---------------start print part ----------------->
                             <div id="pr" style="display:none">
-                                @include('personalReports.final_results.index_print' ,  ['available_players' => @$allavailable_players])
+                                @include('personalReports/final_results/absents/index_print' ,  ['available_players' => @$allAvailable_players])
                             </div>
                             <!--------end print part ------>
 
@@ -516,7 +559,7 @@
                             {{--                        <th>الجنسية</th>--}}
                             <th>المجموعات</th>
                             <th>تاريخ التسجيل</th>
-                            <th>ادوات تحكم</th>
+                            <th>ملاحظات</th>
                         </tr>
                         </thead>
 
@@ -546,37 +589,38 @@
                                 <td>{{ $member->registration_date}}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-3">
-                                        {{-- Edit Button --}}
-                                        <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                            <button type="submit" class="icon-btn text-warning" title="تعديل">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </form>
-                                        {{-- Delete Button --}}
-                                        <form action="{{route('personal-registration-delete')}}" method="POST"
-                                              class="d-inline"
-                                              onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
 
-                                            @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                            @method('DELETE')
-                                            <button type="submit" class="icon-btn text-danger" title="حذف">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                        {{-- Edit Button --}}
+                                        {{--                                        <form action="{{route('personal.edit')}}" method="GET" class="d-inline">--}}
+                                        {{--                                            @csrf--}}
+                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
+                                        {{--                                            <button type="submit" class="icon-btn text-warning" title="تعديل">--}}
+                                        {{--                                                <i class="fas fa-edit"></i>--}}
+                                        {{--                                            </button>--}}
+                                        {{--                                        </form>--}}
+                                        {{-- Delete Button --}}
+                                        {{--                                        <form action="{{route('personal-registration-delete')}}" method="POST"--}}
+                                        {{--                                              class="d-inline"--}}
+                                        {{--                                              onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">--}}
+
+                                        {{--                                            @csrf--}}
+                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
+                                        {{--                                            @method('DELETE')--}}
+                                        {{--                                            <button type="submit" class="icon-btn text-danger" title="حذف">--}}
+                                        {{--                                                <i class="fas fa-trash-alt"></i>--}}
+                                        {{--                                            </button>--}}
+                                        {{--                                        </form>--}}
 
                                         {{-- Toggle Status Button --}}
-                                        <form action="{{route('personal-registration-toggle')}}" method="POST"
-                                              class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                            <button type="submit" class="icon-btn text-success"
-                                                    title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
-                                                <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>
-                                            </button>
-                                        </form>
+                                        {{--                                        <form action="{{route('personal-registration-toggle')}}" method="POST"--}}
+                                        {{--                                              class="d-inline">--}}
+                                        {{--                                            @csrf--}}
+                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
+                                        {{--                                            <button type="submit" class="icon-btn text-success"--}}
+                                        {{--                                                    title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">--}}
+                                        {{--                                                <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>--}}
+                                        {{--                                            </button>--}}
+                                        {{--                                        </form>--}}
                                     </div>
                                 </td>
                             </tr>
@@ -591,7 +635,9 @@
                     </table>
                 @endif
                 <div class="mt-4 d-flex justify-content-center">
-                    {{ $members->appends(request()->query())->links() }}
+                    {{--                    {{ $members->appends(request()->query())->links() }}--}}
+
+
                 </div>
 
             </div>
@@ -718,7 +764,6 @@
         // Set the value of the input field
         document.getElementById('report_date').value = formattedDate;
     </script>
-
     <script>
         function printDiv(divId) {
             const content = document.getElementById(divId).innerHTML;
