@@ -48,14 +48,10 @@ class PersonalController extends Controller
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
         $membersCount=Sv_member::where('reg_type','personal')->count();
-        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
-            ->when(
-                $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
-                fn($q) => $q->filter($request)
-            )
-            ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
-            $reportSection=false;
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection'));
+        $members_without_pag = $this->personalService->getMembers($request,0);
+        $members = $this->personalService->getMembers($request,1);
+        $reportSection=false;
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection','members_without_pag'));
     }
     public function destroy(Request $request)
     {
@@ -74,6 +70,8 @@ class PersonalController extends Controller
             ->with('success', 'تم تحديث حالة الشخص');
     }
 
+    
+        
 
 
     public function edit(Request $request)

@@ -49,7 +49,8 @@ class ResultsController extends Controller
             $available_players = $this->resultService->getAvailablePlayers($Edit_report);
             $reportSection = true;
         } else {
-            $available_players = $this->resultService->GetAllAvailablePlayers($request);
+            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request,0);
+            $available_players = $this->resultService->GetAllAvailablePlayers($request,1);
             $reportSection = false;
         }
 
@@ -66,7 +67,7 @@ class ResultsController extends Controller
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
 
-        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players'));
+        return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players','available_players_without_pag'));
     }
     public function store(StoreReportForMembers $request)
     {
@@ -188,8 +189,7 @@ class ResultsController extends Controller
     {
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $ReportsDetails = $this->resultService->getReportsDetails($request,1);
-        $ReportsDetails_without_pag = $this->resultService->getReportsDetails($request,0);
-        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons','ReportsDetails_without_pag'));
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
     }
 
      public function getResportsDetails_print(Request $request)
@@ -264,19 +264,25 @@ class ResultsController extends Controller
 
 
     //قائمة الافراد المتغيبين فى النتائج الاولية
-    public function IndividualsAbsentPreliminaryResults()
+    public function IndividualsAbsentPreliminaryResults(Request $request)
     {
         $absentPlayers=false;
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $countries=$this->countryService->getAllCountries();
-        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
+        $absentPlayers_without_pag=$this->resultService->getAbsentPlayersInitialResults($request,0);
+         if (!is_array($absentPlayers_without_pag) && !$absentPlayers_without_pag instanceof \Illuminate\Support\Collection) {
+        $absentPlayers_without_pag = collect(); 
+    }
+
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries','absentPlayers_without_pag']));
     }
     public function searchIndividualsAbsentInitialResults(Request $request){
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $countries=$this->countryService->getAllCountries();
-        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request);
+        $absentPlayers = $this->resultService->getAbsentPlayersInitialResults($request,1);
+        $absentPlayers_without_pag=$this->resultService->getAbsentPlayersInitialResults($request,0);
         if ($absentPlayers === 'required') {
             return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
         }
@@ -289,7 +295,11 @@ class ResultsController extends Controller
         if ($absentPlayers instanceof \Illuminate\Support\Collection && $absentPlayers->isEmpty()) {
             $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
         }
-        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
+         if (!is_array($absentPlayers_without_pag) && !$absentPlayers_without_pag instanceof \Illuminate\Support\Collection) {
+        $absentPlayers_without_pag = collect();
+    }
+
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries','absentPlayers_without_pag']));
     }
     
 }

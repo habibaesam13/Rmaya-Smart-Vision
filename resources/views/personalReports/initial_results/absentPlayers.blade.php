@@ -8,22 +8,31 @@
             </div>
             <div class="col-12 col-md-4 text-md-end text-center">
                 <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
-                    <span class="badge badge-outline-primary"> عدد المتغيبين : {{ isset($absentPlayers)&&$absentPlayers ? $absentPlayers->total() : 0 }}</span>
+                    <span class="badge badge-outline-primary">
+                        عدد المتغيبين :
+                        @if(method_exists($absentPlayers, 'total'))
+                        {{ $absentPlayers->total() }}
+                        @else
+                        {{ $absentPlayers->count() }}
+                        @endif
+                    </span>
+
+                    <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
                 </div>
                 <!-- Excel Download Form -->
-                    <form
-                        action="{{ route('absent-personal-results-export-excel') }}"
-                        method="post"
-                        class="mb-0">
-                        @csrf
-                        @foreach(request()->query() as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                        @endforeach
+                <form
+                    action="{{ route('absent-personal-results-export-excel') }}"
+                    method="post"
+                    class="mb-0">
+                    @csrf
+                    @foreach(request()->query() as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
 
-                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
-                            <i class="ri-file-excel-line fs-5"></i>
-                        </button>
-                    </form>
+                    <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
+                        <i class="ri-file-excel-line fs-5"></i>
+                    </button>
+                </form>
             </div>
         </div>
         <div class="col-12">
@@ -179,6 +188,9 @@
                                     @endif
 
                             </table>
+                            <div id="pr" style="display:none">
+                                @include('personalReports/initial_results/absentPlayers_print', ['members'=>@$absentPlayers_without_pag])
+                            </div>
                             {{-- Pagination --}}
                             @if ($absentPlayers&&$absentPlayers->hasPages())
                             <div class="d-flex justify-content-center mt-3">

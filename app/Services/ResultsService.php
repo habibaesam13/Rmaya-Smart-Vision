@@ -131,10 +131,10 @@ class ResultsService
             ->orderBy('mid')
             ->get();
     }
-    public function GetAllAvailablePlayers(Request $request)
+    public function GetAllAvailablePlayers(Request $request,$pag)
     {
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-        return Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+       $results=Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
             ->where('reg_type', 'personal')
             ->whereNotIn('mid', $addedPlayers)
             ->when(
@@ -153,8 +153,9 @@ class ResultsService
                 ]),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')
-            ->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderBy('mid');
+           return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
+
     }
 
 
@@ -170,7 +171,7 @@ class ResultsService
             ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
             ->orderBy('Rid');
         if ($pag == 1) {
-            return $query->cursorPaginate(config('app.admin_pagination_number'));
+            return $query->paginate(config('app.admin_pagination_number'));
         } else {
             return $query->get();
         }
@@ -253,7 +254,7 @@ class ResultsService
         return $player->update($total);
     }
     //قائمة الافراد المتغيبين فى النتائج الاولية
-    public function getAbsentPlayersInitialResults($request)
+    public function getAbsentPlayersInitialResults($request,$pag)
     {
         if (!$request->weapon_id) {
             return 'required';
@@ -264,7 +265,7 @@ class ResultsService
             return 'not_found';
         }
 
-        return Sv_initial_results_players::query()
+        $results= Sv_initial_results_players::query()
             ->with(['player.club', 'player.weapon', 'report.weapon'])
             ->whereNull('total')
             ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
@@ -328,7 +329,7 @@ class ResultsService
                                 ->orWhere('phone2', 'like', "%{$search}%");
                         })
                 )
-            )
-            ->paginate(config('app.admin_pagination_number'));
+            );
+            return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
     }
 }

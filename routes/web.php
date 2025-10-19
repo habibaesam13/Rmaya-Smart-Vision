@@ -247,6 +247,7 @@ Route::group(
                     Route::post('register', [PersonalController::class, 'store'])->name('personal-store');
                     Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
+                    
                     //excel
                     Route::post('/members/export-excel', function (Request $request) {
                         $provider = new MembersExportProvider($request);
