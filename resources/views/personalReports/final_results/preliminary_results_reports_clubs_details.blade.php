@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <div class="card bg-search">
                         {{-- Search Form --}}
-                        <form action="{{route('reports-details')}}" method="get" class="card-body">
+                        <form action="{{route('reports-details_absent_players_final')}}" method="get" class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-3">
                                     <label for="weapons" class="form-label">الأسلحة</label>
@@ -96,12 +96,11 @@
                                 @forelse($ReportsDetails as $report)
                                 <tr>
                                     <!-- <td>{{$report?->Rid}}</td> -->
-                                    <td>{{ $report?->date ?
-                                    $report?->date: '' }}</td>
+                                    <td>{{ date_create($report->date)->format('d-m-Y') }}</td>
                                     <td>{{ $report->weapon?->name ?? '-' }}</td>
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">
-                                        <a href="{{route('report-members',$report->Rid)}}"
+                                        <a href="{{route('report-members_final',$report->id)}}"
                                             class=" me-2"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"

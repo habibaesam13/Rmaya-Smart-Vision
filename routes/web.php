@@ -1,14 +1,12 @@
 <?php
 
-use App\Http\Controllers\FinalResultReportController;
-use App\Http\Controllers\FinalResultsController;
 use App\Models\Logs;
-use App\Services\FinalResultsService;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\ResultsService;
 use Illuminate\Support\Facades\App;
 use App\Exports\GroupsExportProvider;
+use App\Services\FinalResultsService;
 use Illuminate\Support\Facades\Route;
 use App\Exports\MembersExportProvider;
 use App\Exports\PersonalResultsExport;
@@ -23,6 +21,7 @@ use App\Services\PersonalMembersProvider;
 use App\Services\PersonalResultsProvider;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WeaponController;
+use App\Exports\AbsentInitialResultsExport;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultsController;
 use App\Exports\GroupsMembersExportProvider;
@@ -33,7 +32,10 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Services\PersonalWeaponReportProvider;
 use App\Http\Controllers\ClubsWeaponsController;
+use App\Http\Controllers\FinalResultsController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\FinalResultReportController;
+use App\Http\Controllers\AbsentMembersFinalResultController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\PublicRegistration\GroupRegistration;
 use App\Http\Controllers\PublicRegistration\PersonalRegistration;
@@ -380,6 +382,16 @@ Route::group(
                     //list for initial resports results
                     Route::get('list-initial-results-reports',[ResultsController::class,'listOfInitialResults'])->name('list-initial-results-reports');
                     Route::get('search-list-initial-results-reports',[ResultsController::class,'searchInListOfInitialResults'])->name('search-list-initial-results-reports');
+                    //update player total for list of initial reports results
+                    Route::get('update-player-total-for-preliminary-results/{player_id}',[ResultsController::class,'updateTotalForPlayer'])->name('update-player-total-for-preliminary-results');
+                    //Individuals Absent Preliminary Results
+                    Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
+                    Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
+                    Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
+                        $provider = new AbsentInitialResultsExport($request, $results_service);
+                        $controller = new ExcelController($provider);
+                        return $controller->export($request, 'absent_Personal_results_report.xlsx');
+                    })->name('absent-personal-results-export-excel');
                 }
             );
 
@@ -387,7 +399,9 @@ Route::group(
             Route::prefix('final-results')->group(
                 function () {
                     Route::get('reports', [FinalResultsController::class, 'index'])->name('final_results.reports');
+//                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
+
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
                     Route::post('final-members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
@@ -405,10 +419,19 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf_final');
-                    /*********************final results report***********/
-                    Route::get('/final-report', [FinalResultReportController::class, 'index'])->name('final_reports.index');
+                    /*********************final Eliminations results report***********/
+                    Route::get('/final-report-eliminations', [FinalResultReportController::class, 'index'])->name('final_reports.index');
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
                     Route::get('/final_report_save_second_total/{id}', [FinalResultReportController::class, 'updateSecondTotal'])->name('final_report_save_second_total.update');
+                    Route::get('/final-reports', [FinalResultReportController::class, 'firstList'])->name('final_reports.first_list');
+                    Route::delete('/delete-report/{id}', [FinalResultReportController::class, 'deleteReport'])->name('final_reports_delete.delete');
+                    Route::get('registered-members-print/{id}', [FinalResultReportController::class, 'showReportMembersByPrint'])->name('results-registered-members_by_print_final');
+                    Route::get('reports-players', [FinalResultReportController::class, 'getResportsAll'])->name('reports-details_players_final');
+
+                    /*********************final absents results report***********/
+                    Route::get('absent-reports', [AbsentMembersFinalResultController::class, 'index'])->name('final_results.absents.reports');
+                    Route::get('generate-report_final-edit/{id}', [AbsentMembersFinalResultController::class, 'editReport'])->name('generate-report-registered-members_final_edit_for_absent');
+                    Route::get('reports-absent-players', [AbsentMembersFinalResultController::class, 'getResportsAll'])->name('reports-details_absent_players_final');
 
 
 

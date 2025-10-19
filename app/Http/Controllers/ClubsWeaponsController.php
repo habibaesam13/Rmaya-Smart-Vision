@@ -108,6 +108,7 @@ class ClubsWeaponsController extends Controller
      * Update a specific club weapon.
      */
     public function update(Request $request, $cwid)
+    
     {
         try {
             $this->clubsWeaponsService->updateClubWeapon($cwid, $request->all());

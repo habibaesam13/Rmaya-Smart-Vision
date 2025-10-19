@@ -23,8 +23,6 @@
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
 
-
-
                         <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
                             <i class="ri-file-excel-line fs-5"></i>
                         </button>
