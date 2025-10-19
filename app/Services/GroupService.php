@@ -38,10 +38,11 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        $groups = Sv_team::with(['club', 'weapon']);
+        $groups = Sv_team::with(['club', 'weapon'])->orderBy('tid');
         $groupsCount = $groups->count();
-        $groups = $groups->orderBy('tid')->cursorPaginate(config('app.admin_pagination_number'));
-        return ['groups' => $groups, 'groupsCount' => $groupsCount];
+        $groups_without_pag=$groups->get();
+        $groups = $groups->cursorPaginate(config('app.admin_pagination_number'));
+        return ['groups' => $groups, 'groupsCount' => $groupsCount,'groups_without_pag'=>$groups_without_pag];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
@@ -52,10 +53,11 @@ class GroupService
         $members_count = $query->count(); // total count
 
         $members = $query->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
-
+        $members_without_pag=$query->orderBy('mid')->get();
         return [
             'members' => $members,
             'members_count' => $members_count,
+            'members_without_pag'=>$members_without_pag,
         ];
     }
 
@@ -86,17 +88,17 @@ class GroupService
     }
 
 
-    public function search(Request $request)
+    public function search(Request $request,$pag)
     {
-        return $this->searchQuery($request)
+        return $pag? $this->searchQuery($request)
             ->cursorPaginate(config('app.admin_pagination_number'))
-            ->appends($request->query());
+            ->appends($request->query()):$this->searchQuery($request)->get();
     }
 
     //المسجلين فرق
-    public function membersByGroupSearch(Request $request)
+    public function membersByGroupSearch(Request $request,$pag)
     {
-        return Sv_member::query()
+        $query= Sv_member::query()
             ->where('sv_members.reg_type', 'group')
             ->join('sv_teams as t', 'sv_members.team_id', '=', 't.tid')
             ->when(
@@ -110,8 +112,8 @@ class GroupService
                 $q->where('t.name', 'LIKE', "%{$request->team_name}%")
             )
             ->select('sv_members.*', 't.name as team_name')
-            ->orderBy('sv_members.mid')
-            ->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderBy('sv_members.mid');
+            return $pag?$query->cursorPaginate(config('app.admin_pagination_number')):$query->get();
     }
 
 

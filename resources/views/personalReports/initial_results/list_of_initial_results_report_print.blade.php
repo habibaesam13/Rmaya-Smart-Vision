@@ -1,6 +1,6 @@
 <body>
     <div id="pr">
-        @include('print.table_header',['title'=>'تقرير النتائج اليومية'])
+        @include('print.table_header',['title'=>'قائمة النتائج الاولية'])
 
         <table class="table table-bordered mb-3">
 
