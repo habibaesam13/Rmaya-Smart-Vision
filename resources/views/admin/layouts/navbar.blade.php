@@ -55,7 +55,7 @@
                 <span class="menu-text">{{ __('lang.Clubs') }}</span>
             </a>
         </li> @endif
- @if(checkModulePermission('members', 'add'))
+  @if(checkModulePermission('members', 'add'))
                 {{-- Personal Registration --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-create') }}" class="side-nav-link">
@@ -65,7 +65,7 @@
                 </li> @endif
 
                 <li class="side-nav-title mt-2">            وحدة المسجلين                </li>
-         @if(checkModulePermission('members', 'view'))
+          @if(checkModulePermission('members', 'view'))
              {{-- Personal Registered --}}
                 <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
                     <a href="{{ route('personal-registration') }}" class="side-nav-link">
@@ -74,7 +74,7 @@
                     </a>
                 </li> @endif
 
-          @if(checkModulePermission('members_groups', 'view'))
+           @if(checkModulePermission('members_groups', 'view'))
                 {{-- Registered Groups --}}
                 <li class="side-nav-item @if (request()->routeIs('groups.*')) active @endif">
                     <a href="{{ route('group-registration') }}" class="side-nav-link">
@@ -92,7 +92,7 @@
                 </li>
             @endif
 
-           <li class="side-nav-title mt-2">            وحدة النتائج الأولية                 </li>
+            <li class="side-nav-title mt-2">            وحدة النتائج الأولية                 </li>
                          {{-- تقارير النتائج اليومية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('reports-details') }}" class="side-nav-link">
@@ -207,7 +207,7 @@
 
 
 <!--
-                     {{-- لوحة تحكم الأندية --}}
+                      {{-- لوحة تحكم الأندية --}}
                 <li
                     class="side-nav-item
                     @if (request()->routeIs('personal.*') || request()->routeIs('results.*') || request()->routeIs('groups.*')  || request()->routeIs('final_results.*')) active @endif">
@@ -298,7 +298,7 @@
                                     final reports has absent players
                                 </a>
                             </li>
-                            -->
+                             -->
 
 
 

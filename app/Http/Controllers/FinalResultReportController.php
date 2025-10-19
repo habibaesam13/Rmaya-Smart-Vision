@@ -78,7 +78,7 @@ class FinalResultReportController extends Controller
         }
     }
 
-//    public function showReportMembersByPrint($id, Request $request)
+ //    public function showReportMembersByPrint($id, Request $request)
 //    {
 //        $members = $this->resultService->getReportDetails($id);
 //        return view('personalReports/final_results/show_members_of_final_reports_print', compact('members'));
@@ -99,7 +99,7 @@ class FinalResultReportController extends Controller
 
 
 
-    public function getResportsAll(Request $request)
+     public function getResportsAll(Request $request)
 
     {
         $weapons = $this->weaponsService->getAllPersonalWeapons();

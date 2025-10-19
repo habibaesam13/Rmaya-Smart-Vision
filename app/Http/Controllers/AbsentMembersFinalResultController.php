@@ -48,15 +48,16 @@ class AbsentMembersFinalResultController extends Controller
             $Edit_report = SVFianlResults::find($request->addMembertoReportRid);
             $available_players = $this->resultService->getAvailablePlayers($Edit_report , $request);
             $allAvailable_players = $this->resultService->getAvailablePlayers($Edit_report , $request , 'no');
-
 //            $available_players = $this->resultService->getConfirmedPlayers($request);
             $reportSection = true;
             $ids = $available_players ? $available_players->pluck('mid') : null;
             $membersCount = $available_players ?  count($available_players) : 0;
 
         } else {
+
             $available_players = $this->resultService->getConfirmedPlayers($request , 'yes');
             $allAvailable_players =  $this->resultService->getConfirmedPlayers($request , 'no');
+
             $reportSection = false;
             $ids = $available_players ? $available_players->pluck('mid') : null;
             $membersCount = $available_players ? count($available_players) : 0;
@@ -66,6 +67,7 @@ class AbsentMembersFinalResultController extends Controller
         $countries = $this->personalService->get_members_data($ids)['countries'];
         $clubs = $this->personalService->get_members_data($ids)['clubs'];
         $weapons = $this->personalService->get_members_data($ids)['weapons'];
+
 
 
 //        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality' , 'sv_final_results'])->whereHas('sv_initial_results' , function ($q){
@@ -84,8 +86,8 @@ class AbsentMembersFinalResultController extends Controller
 
 
         $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
-        return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
-    }
+         return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
+     }
 
 
 

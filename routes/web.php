@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Models\Logs;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
@@ -387,11 +388,13 @@ Route::group(
                     //Individuals Absent Preliminary Results
                     Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
                     Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
+
                     Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
                         $provider = new AbsentInitialResultsExport($request, $results_service);
                         $controller = new ExcelController($provider);
                         return $controller->export($request, 'absent_Personal_results_report.xlsx');
                     })->name('absent-personal-results-export-excel');
+
                 }
             );
 

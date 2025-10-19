@@ -70,7 +70,8 @@ class FinalResultStoreReportForMembers extends FormRequest
                     $this->weaponId = $weaponId->first();
                 }
 
-//                if(!($this->addMembertoReportRid > 0)) {
+
+                //                if(!($this->addMembertoReportRid > 0)) {
 //                    $alreadyExists = SVFianlResultsPlayer::whereIn('player_id', $memberIds)->exists();
 //                    if ($alreadyExists) {
 //                        $validator->errors()->add('checkedMembers', 'اللاعب مسجل بالفعل في تقرير آخر');

@@ -284,4 +284,5 @@ class ResultsController extends Controller
         return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','clubs','weapons','countries']));
     }
 
+
 }
