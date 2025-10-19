@@ -9,7 +9,6 @@
     </div>
     <div class="card">
         <div class="card-body"> @if (session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif @if (session('warning')) <div class="alert alert-warning">{{ session('warning') }}</div>@endif @if ($errors->any()) @foreach ($errors->all() as $error) <div class="text-danger">{{$error}}</div>@endforeach <br>@endif
-
             <form action="{{ route('personal-store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -233,8 +232,6 @@
         });
     });
 </script>
-
-@endsection
 <!-- UI form validation-->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -286,3 +283,4 @@
         });
     });
 </script>
+@endsection
