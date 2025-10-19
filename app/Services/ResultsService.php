@@ -204,7 +204,7 @@ class ResultsService
     }
 
     //قائمة النتائج الاولية
-    public function listOfInitialResults(Request $request)
+    public function listOfInitialResults(Request $request,$pag)
     {
 
         // weapon_id is required
@@ -243,7 +243,11 @@ class ResultsService
         if ($request->filled('limit')) {
             $limit = (int) $request->input('limit');
             return $query->take($limit)->get();
-        } else {
+        }
+        elseif(!$pag){
+            return $query->get();
+        }
+        else {
             return $query->paginate(config('app.admin_pagination_number'));
         }
     }
