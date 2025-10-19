@@ -42,13 +42,13 @@
                             <div class="mb-1">
                                 <label for="id-num" class=" text-white mb-2">رقم البطاقه</label>
                                 <input type="text" id="id-num" name="ID" class="form-control text-center"
-                                    inputmode="numeric" minlength="15"  maxlength="15" required>
+                                    inputmode="numeric" minlength="15" maxlength="15" required>
                                 @error('ID')
                                 <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <!--تاريخ-->
                     <div class="col-md-6   my-2">
                         <div class="p-1">
@@ -88,24 +88,28 @@
                         </div>
                     </div>
                     <!--الجنسية-->
-                    <div class="col-md-6   my-2">
-                        <div class="p-1">
-                            <div class="mb-1">
-                                <select class="form-select" id="floatingSelect" name="nat" required>
-                                    <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
-                                    @foreach($countries as $country)
-                                    <option value="{{ $country->id }}"
-                                        {{ old('nat') == $country->id ? 'selected' : '' }}>
-                                        {{ $country?->country_name_ar ?: $country->country_name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('nat')
-                                <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <label for="nat" class="form-label">الجنسية</label>
+                        <select name="nat" id="nat" class="form-select form-select-lg" required>
+                            {{-- Placeholder --}}
+                            <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
+
+                            {{-- Default UAE --}}
+                            <option value="222" {{ old('nat', 222) == 222 ? 'selected' : '' }}>الامارات العربية المتحدة</option>
+
+                            {{-- Other countries --}}
+                            @foreach($countries as $country)
+                            <option value="{{ $country->id }}" {{ old('nat') == $country->id ? 'selected' : '' }}>
+                                {{ $country?->country_name_ar ?: $country->country_name }}
+                            </option>
+                            @endforeach
+                        </select>
+
+                        @error('nat')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
+
                     <!--النوع و العمر-->
                     <div class="col-md-6   my-2">
                         <div class="p-1">

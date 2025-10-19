@@ -49,18 +49,26 @@
                     {{-- الجنسية --}}
                     <div class="col-md-6">
                         <label for="nat" class="form-label">الجنسية</label>
-                        <select name="nat" id="nat" class="form-select form-select-lg">
+                        <select name="nat" id="nat" class="form-select form-select-lg" required>
+                            {{-- Placeholder --}}
                             <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
+
+                            {{-- Default UAE --}}
+                            <option value="222" {{ old('nat', 222) == 222 ? 'selected' : '' }}>الامارات العربية المتحدة</option>
+
+                            {{-- Other countries --}}
                             @foreach($countries as $country)
                             <option value="{{ $country->id }}" {{ old('nat') == $country->id ? 'selected' : '' }}>
                                 {{ $country?->country_name_ar ?: $country->country_name }}
                             </option>
                             @endforeach
                         </select>
+
                         @error('nat')
-                        <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     {{-- الجنس --}}
                     <div class="col-md-3 d-flex align-items-center gap-4">
@@ -144,14 +152,14 @@
                     {{-- الصور --}}
                     <div class="col-md-6">
                         <label for="front-id" class="form-label">صورة الهوية الأمامية</label>
-                        <input type="file" class="form-control" id="front-id" name="front_id_pic">
+                        <input type="file" class="form-control" id="front-id" name="front_id_pic" accept=".jpg, .jpeg, .png">
                         @error('front_id_pic')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="back-id" class="form-label">صورة الهوية الخلفية</label>
-                        <input type="file" class="form-control" id="back-id" name="back_id_pic">
+                        <input type="file" class="form-control" id="back-id" name="back_id_pic" accept=".jpg, .jpeg, .png">
                         @error('back_id_pic')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -275,7 +283,7 @@
         setupPhoneValidation('phone2');
 
 
-        const nameInput = document.getElementById('name');
+        const nameInput = document.getElementById('full-name');
         nameInput.addEventListener('input', e => {
             let value = e.target.value.normalize('NFC');
             value = value.replace(/[^\u0600-\u06FF\s]/g, '');
