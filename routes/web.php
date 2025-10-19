@@ -377,6 +377,7 @@ Route::group(
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
+                    Route::get('print-reports-details',[ResultsController::class, 'getResportsDetails_print'])->name('print-reports-details');
                     //search in initial results reports
                     Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');
                     //list for initial resports results

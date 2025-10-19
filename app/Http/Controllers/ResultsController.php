@@ -187,8 +187,16 @@ class ResultsController extends Controller
     public function getResportsDetails(Request $request)
     {
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $ReportsDetails = $this->resultService->getReportsDetails($request);
-        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
+        $ReportsDetails = $this->resultService->getReportsDetails($request,1);
+        $ReportsDetails_without_pag = $this->resultService->getReportsDetails($request,0);
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons','ReportsDetails_without_pag'));
+    }
+
+     public function getResportsDetails_print(Request $request)
+    {
+        $weapons = $this->weaponService->getAllPersonalWeapons();
+        $ReportsDetails_without_pag = $this->resultService->getReportsDetails($request,0);
+        return view('personalReports/initial_results/preliminary_results_reports_clubs_details_print', compact('weapons','ReportsDetails_without_pag'));
     }
     //search initial results reports  {{البحث فى النتائج الأولية اليومية}}
     public function searchInitialResultsReports(Request $request)

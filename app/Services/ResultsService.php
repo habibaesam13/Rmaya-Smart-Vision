@@ -161,15 +161,19 @@ class ResultsService
     /**Preliminary results reports - clubs - details */
 
 
-    public function getReportsDetails(Request $request)
+    public function getReportsDetails(Request $request, $pag)
     {
-        return SV_initial_results::query()->where('confirmed', true)
+        $query = SV_initial_results::query()->where('confirmed', true)
             ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
             ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('Rid')
-            ->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderBy('Rid');
+        if ($pag == 1) {
+            return $query->cursorPaginate(config('app.admin_pagination_number'));
+        } else {
+            return $query->get();
+        }
     }
 
 
@@ -264,7 +268,7 @@ class ResultsService
             ->with(['player.club', 'player.weapon', 'report.weapon'])
             ->whereNull('total')
             ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
-            
+
             ->when(
                 $request->club_id,
                 fn($q) =>
