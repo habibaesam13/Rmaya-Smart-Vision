@@ -6,8 +6,13 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">قائمة النتائج الاولية</h4>
             </div>
-            <span class="badge badge-outline-primary"> عدد الرماة : {{ isset($results)&&$results ? $results->total() : 0 }}
-</span>
+            <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
+                    <span class="badge badge-outline-primary"> عدد الرماة : {{ isset($results)&&$results ? $results->total() : 0 }}</span>
+                    <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
+                </div>
+            </div>
+
             {{-- Success Message --}}
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -153,8 +158,7 @@
                                                     name="total"
                                                     data-player="{{ $player->id }}"
                                                     class="form-control form-control-sm bg-light total-input"
-                                                    placeholder="0"
-                                                    value="{{ old($player->total, $player->total ?? '') }}"
+                                                    value="{{ old('total', $player->total ?? '') }}"
                                                     style="max-width: 80px;">
                                                 <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle">
                                                     <i class="ri-save-line text-danger"></i>
@@ -183,6 +187,9 @@
                                     @endif
                                 </tbody>
                             </table>
+                            <div id="pr" style="display:none">
+                                @include('personalReports/initial_results/list_of_initial_results_report_print', ['results_without_pag'=>@$results_without_pag ])
+                            </div>
                             {{-- Pagination --}}
                             @if($results instanceof \Illuminate\Pagination\LengthAwarePaginator)
                             <div class="mt-4 d-flex justify-content-center">

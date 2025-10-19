@@ -7,11 +7,11 @@
                 <h4 class="header-title">المسجلين فرق تفصيلي</h4>
             </div>
 
-        <div class="col-12 col-md-4 text-md-end text-center">
+            <div class="col-12 col-md-4 text-md-end text-center">
                 <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
 
                     <span class="badge badge-outline-primary"> عدد المسجلين : {{$members_count}}</span>
-
+                    <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
                     <!-- Excel Download Form -->
                     <form
                         action="{{route('groups.members.export.excel')}}"
@@ -28,7 +28,7 @@
 
                     <!-- PDF Download Form -->
                     <form
-                       action="{{ route('groups-download-pdf') }}"
+                        action="{{ route('groups-download-pdf') }}"
                         method="get"
                         class="mb-0">
                         @foreach(request()->query() as $key => $value)
@@ -140,6 +140,10 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                            <div id="pr" style="display:none">
+                                @include('members/registered_members_print', ['members'=>@$members_without_pag])
+                            </div>
+
                             <div class="mt-4 d-flex justify-content-center">
                                 {{ $members->appends(request()->query())->links() }}
                             </div>

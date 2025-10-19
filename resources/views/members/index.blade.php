@@ -10,7 +10,7 @@
                 <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
 
                     <span class="badge badge-outline-primary"> عدد المسجلين : {{$membersCount}}</span>
-
+                    <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  " target="blank"><i class="ri-printer-line"></i> </a>
                     <!-- Excel Download Form -->
                     <form
                         action="{{ isset($reportSection) && $reportSection
@@ -310,6 +310,7 @@
 
                                     <hr>
                                     @isset($available_players)
+
                                     <table class="table table-bordered mb-3">
                                         <thead class="bg-soft-primary">
 
@@ -392,10 +393,12 @@
                                                                 <!--<i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>-->
                                                                 @if($club->active) <i class="ri-pause-line"></i> @else <i class="ri-play-line"></i> @endif
                                                             </button>
-                                                        </form>@endif
+                                                        </form>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>
+
                                             @empty
                                             <tr>
                                                 <td colspan="12" class="text-center text-muted mt-3">
@@ -420,12 +423,16 @@
                                             @endempty
 
                                         </tbody>
+                                       
                                     </table>
+                                       <div id="pr" style="display:none">
+                                            @include('members/registered_members_print', ['members'=>@$available_players])
+                                        </div>
                                     @endisset
                                 </div>
                             </div>
-                            @else
 
+                            @else
                             <table class="table table-bordered mb-3">
                                 <thead class="bg-soft-primary">
 
@@ -524,6 +531,10 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                             <div id="pr" style="display:none">
+                                            @include('members/registered_members_print', ['members'=>@$members_without_pag])
+                                        </div>
+                            
                             @endif
                             <div class="mt-4 d-flex justify-content-center">
                                 {{ $members->appends(request()->query())->links() }}

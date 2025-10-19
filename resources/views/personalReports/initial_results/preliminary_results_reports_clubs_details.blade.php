@@ -6,6 +6,13 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">تقرير النتائج اليومية</h4>
             </div>
+                 <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
+
+                    <span class="badge badge-outline-primary"> عدد التقارير : {{ isset($ReportsDetails)&&$ReportsDetails ? $ReportsDetails->total() : 0 }}</span>
+                    <a title="طباعة" href="{{route('print-reports-details')}}"  class="btn btn-sm btn-primary" target="blank"><i class="ri-printer-line"></i> </a>
+                </div>
+            </div>
             {{-- Success Message --}}
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -134,6 +141,7 @@
                         <div class="mt-4 d-flex justify-content-center">
                             {{ $ReportsDetails->appends(request()->query())->links() }}
                         </div>
+
                     </div>
                 </div>
 
@@ -170,4 +178,5 @@
         </div>
     </div>
 </div>
+
 @endsection
