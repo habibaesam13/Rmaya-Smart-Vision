@@ -16,7 +16,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="ID" class="col-form-label">رقم بطاقة الهوية</label>
-                        <input type="number" class="form-control text-center" name="ID" id="ID" value="{{ old('ID') }}">
+                        <input type="text" class="form-control text-center" name="ID" id="ID" value="{{ old('ID') }}" minlength="15"
+                            maxlength="15">
                         @error('ID')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -232,4 +233,56 @@
         });
     });
 </script>
+
 @endsection
+<!-- UI form validation-->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nationalID = document.getElementById('ID');
+        nationalID.addEventListener('input', e => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 15) value = value.slice(0, 15);
+            e.target.value = value;
+        });
+
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate() + 1).padStart(2, '0');
+        const minDate = `${year}-${month}-${day}`;
+        document.getElementById('expire-date').setAttribute('min', minDate);
+
+
+        const dobInput = document.getElementById('birth-date');
+        const todayStr = new Date().toISOString().split('T')[0];
+        dobInput.setAttribute('max', todayStr);
+
+
+        function setupPhoneValidation(id) {
+            const phoneInput = document.getElementById(id);
+            phoneInput.addEventListener('input', e => {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (!value.startsWith('055')) {
+                    value = '055' + value.replace(/^0+/, '');
+                }
+
+                if (value.length > 10) value = value.slice(0, 10);
+                e.target.value = value;
+            });
+
+            phoneInput.addEventListener('paste', e => e.preventDefault());
+        }
+        setupPhoneValidation('phone1');
+        setupPhoneValidation('phone2');
+
+
+        const nameInput = document.getElementById('name');
+        nameInput.addEventListener('input', e => {
+            let value = e.target.value.normalize('NFC');
+            value = value.replace(/[^\u0600-\u06FF\s]/g, '');
+            e.target.value = value;
+        });
+    });
+</script>

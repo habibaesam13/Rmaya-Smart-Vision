@@ -42,7 +42,7 @@
                             <div class="mb-1">
                                 <label for="id-num" class=" text-white mb-2">رقم البطاقه</label>
                                 <input type="text" id="id-num" name="ID" class="form-control text-center"
-                                    inputmode="numeric" maxlength="15" required>
+                                    inputmode="numeric" minlength="15"  maxlength="15" required>
                                 @error('ID')
                                 <div class="text-danger small">{{ $message }}</div>
                                 @enderror
