@@ -1,5 +1,6 @@
 
                             @isset($available_players)
+                                @include('print.table_header',['title'=> ' قائمة الافراد المتغيبين عن التصفيات النهائية '])
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr>

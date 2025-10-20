@@ -1,4 +1,7 @@
-                     {{-- Results Table Card --}}
+
+@include('print.table_header',['title'=>  "نتيجة التصفيات النهائية"])
+
+{{-- Results Table Card --}}
                     <div class="card shadow-sm border-0"  >
                         <div class="card-body">
                             <div class="table-responsive">

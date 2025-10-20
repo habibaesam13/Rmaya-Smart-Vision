@@ -84,7 +84,7 @@ class AbsentMembersFinalResultController extends Controller
         $reportSection = true;
 
 
-
+request()->session()->put('absents' , 'yes');
         $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
          return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
      }

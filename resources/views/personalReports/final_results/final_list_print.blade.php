@@ -1,3 +1,4 @@
+@include('print.table_header',['title'=> "تقارير النتائج النهائية"])
 <table class="table table-bordered ">
     <thead>
     <tr>

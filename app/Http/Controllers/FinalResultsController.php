@@ -15,6 +15,7 @@ use App\Services\ResultsService;
 use App\Services\WeaponService;
 use Illuminate\Http\Request;
 
+
 class FinalResultsController extends Controller
 {
     protected PersonalService $personalService;
@@ -74,8 +75,7 @@ class FinalResultsController extends Controller
             )
             ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
-
-
+        request()->session()->forget('absents');
         $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
         return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allavailable_players' , 'count'));
     }
@@ -96,9 +96,11 @@ class FinalResultsController extends Controller
     //functions for members for specific report
     public function show($rid)
     {
+//        dd(session()->get('absents'));
         $report = $this->resultService->getReport($rid);
         if (!$report) {
-            return redirect()->route('results-registered-members');
+         return   redirect()->back();
+//            return redirect()->route('results-registered-members');
         }
         $members = $this->resultService->getReportDetails($rid);
         $confirmed = $report->confirmed;
@@ -144,6 +146,9 @@ class FinalResultsController extends Controller
         }
         return redirect()->route('report-members_final', $rid)
             ->with('info', 'تم الرجوع إلى التقرير.');
+
+//        return redirect()->route('report-members_final', $rid)
+//            ->with('info', 'تم الرجوع إلى التقرير.');
     }
 
 
@@ -164,7 +169,7 @@ class FinalResultsController extends Controller
 
     public function addPlayer($rid )
     {
-        if(request()->get('absents')  && request()->get('absents')  == 'yes'){
+        if(request()->session()->get('absents')  && request()->session()->get('absents')  === 'yes'){
             return redirect()->route('final_results.absents.reports', ['addMembertoReportRid' => $rid]);
         }
         return redirect()->route('results-registered-members_final', ['addMembertoReportRid' => $rid]);

@@ -60,7 +60,7 @@
                     @if(!$confirmed)
                         <form action="{{route('add-player-to-report_final',$report?->id)}}" method="get">
                             @csrf
-                            <input type="hidden" name="absents" value="yes">
+                            <input type="text" name="absents" value="{{request()->get('absents')}}">
                             <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                                 <i class="fas fa-user-plus"></i>
                                 <span>إضافة رماة</span>
@@ -129,6 +129,7 @@
             <div class="card-body">
                 @csrf
                 <div class="table-responsive">
+                    <h2>{{session()->get('absents')}}</h2>
                     <table class="table table-bordered ">
                         <thead>
                         <tr>
