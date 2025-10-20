@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Logs;
+
+ use App\Models\Logs;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\ResultsService;
@@ -247,7 +248,7 @@ Route::group(
                     Route::post('register', [PersonalController::class, 'store'])->name('personal-store');
                     Route::delete('registered', [PersonalController::class, 'destroy'])->name('personal-registration-delete');
                     Route::post('registered/toggle', [PersonalController::class, 'toggleAcivationStatus'])->name('personal-registration-toggle');
-                    
+
                     //excel
                     Route::post('/members/export-excel', function (Request $request) {
                         $provider = new MembersExportProvider($request);
@@ -389,12 +390,14 @@ Route::group(
                     //Individuals Absent Preliminary Results
                     Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
                     Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
-                    Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
+
+                     Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
                         $provider = new AbsentInitialResultsExport($request, $results_service);
                         $controller = new ExcelController($provider);
                         return $controller->export($request, 'absent_Personal_results_report.xlsx');
                     })->name('absent-personal-results-export-excel');
-                }
+
+                 }
             );
 
 

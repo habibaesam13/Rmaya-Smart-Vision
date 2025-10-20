@@ -187,7 +187,7 @@
                                                             </button>
                                                         </form>
                                                         <span class="d-inline">
-                                            <a title="عرض/طباعة" href="{{route('results-registered-members_by_print_final' , $item->weapon_id)}}?autoprint=true"
+                                            <a title="عرض/طباعة" href="{{route('results-registered-members_by_print_final' , $item->id)}}?autoprint=true"
                                                   class="btn btn-soft-success btn-icon btn-sm rounded-circle">
                                                    <i class="ri-printer-fill"></i>
                                             </a>

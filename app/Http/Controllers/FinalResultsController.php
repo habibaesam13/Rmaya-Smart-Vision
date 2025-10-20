@@ -31,6 +31,8 @@ class FinalResultsController extends Controller
         $this->resultService = $resultService;
     }
 
+
+
     //functions for members index page to generate the report
     public function index(Request $request)
     {
@@ -51,16 +53,20 @@ class FinalResultsController extends Controller
             $Edit_report = SVFianlResults::find($request->addMembertoReportRid);
             $available_players = $this->resultService->getAvailablePlayers($Edit_report);
             $reportSection = true;
+            $allavailable_players = collect();
+            $count = 0;
          } else {
-            $available_players = $this->resultService->getConfirmedPlayers($request);
+            $available_players = $this->resultService->getConfirmedPlayers($request , 'yes');
+            $allavailable_players =  $this->resultService->getConfirmedPlayers($request , 'no');
+            $count = count($allavailable_players);
             $reportSection = false;
-        }
+         }
 
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        $membersCount = Sv_member::where('reg_type', 'personal')->count();
+//        $membersCount = Sv_member::where('reg_type', 'personal')->count();
         $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality' , 'sv_final_results'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
@@ -70,16 +76,12 @@ class FinalResultsController extends Controller
         $reportSection = true;
 
 
-
         $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
-        return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr'));
+        return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allavailable_players' , 'count'));
     }
 //    public function store(StoreReportForMembers $request)
     public function store(FinalResultStoreReportForMembers $request)
-
     {
-//        dd($request->all());  //here
-
         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
@@ -160,9 +162,11 @@ class FinalResultsController extends Controller
         }
     }
 
-    public function addPlayer($rid)
+    public function addPlayer($rid )
     {
-
+        if(request()->get('absents')  && request()->get('absents')  == 'yes'){
+            return redirect()->route('final_results.absents.reports', ['addMembertoReportRid' => $rid]);
+        }
         return redirect()->route('results-registered-members_final', ['addMembertoReportRid' => $rid]);
     }
     public function updateReport(FinalResultStoreReportForMembers $request, $rid)

@@ -20,6 +20,21 @@
                     <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
                 </div>
                 <!-- Excel Download Form -->
+<<<<<<< HEAD
+                    <form
+                        action="{{ route('absent-personal-results-export-excel') }}"
+                        method="post"
+                        class="mb-0">
+                        @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
+                            <i class="ri-file-excel-line fs-5"></i>
+                        </button>
+                    </form>
+=======
                 <form
                     action="{{ route('absent-personal-results-export-excel') }}"
                     method="post"
@@ -33,6 +48,7 @@
                         <i class="ri-file-excel-line fs-5"></i>
                     </button>
                 </form>
+>>>>>>> 61e98d5a5f5ed15d00cedc1d598a40acc860c14d
             </div>
         </div>
         <div class="col-12">

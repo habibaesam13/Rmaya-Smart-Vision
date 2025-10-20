@@ -78,14 +78,28 @@ class FinalResultReportController extends Controller
         }
     }
 
-    public function showReportMembersByPrint($id, Request $request)
+ //    public function showReportMembersByPrint($id, Request $request)
+//    {
+//        $members = $this->resultService->getReportDetails($id);
+//        return view('personalReports/final_results/show_members_of_final_reports_print', compact('members'));
+//    }
+
+        public function showReportMembersByPrint($rid)
     {
-        $members = $this->resultService->getReportDetails($id);
-        return view('personalReports/final_results/show_members_of_final_reports_print', compact('members'));
+        $report = $this->resultService->getReport($rid);
+        if (!$report) {
+            return redirect()->route('results-registered-members');
+        }
+        $members = $this->resultService->getReportDetails($rid);
+        $confirmed = $report->confirmed;
+        return view('personalReports.final_results.personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
     }
 
 
-    public function getResportsAll(Request $request)
+
+
+
+     public function getResportsAll(Request $request)
 
     {
         $weapons = $this->weaponsService->getAllPersonalWeapons();

@@ -70,32 +70,40 @@
                 <div class=" d-flex ">
 
                 <span class="badge badge-outline-primary">
-                           عدد الأفراد المسجلين : {{$membersCount}}  </span>
+                           عدد الأفراد المسجلين : {{$count}}  </span>
 
 
-                    <form title="Excel" action="{{ isset($reportSection) && $reportSection
-                        ? route('personal.results.export.excel')
-                        : route('members.export.excel') }}" method="post">
+                    {{--                    <form title="Excel" action="{{ isset($reportSection) && $reportSection--}}
+                    {{--                        ? route('personal.results.export.excel')--}}
+                    {{--                        : route('members.export.excel') }}" method="post">--}}
 
-                        @csrf
-                        @foreach(request()->query() as $key => $value)
-                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                        @endforeach
-                        <button type="submit" class="btn btn-sm btn-primary  ">
+                    {{--                        @csrf--}}
+                    {{--                        @foreach(request()->query() as $key => $value)--}}
+                    {{--                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">--}}
+                    {{--                        @endforeach--}}
+                    {{--                        <button type="submit" class="btn btn-sm btn-primary  ">--}}
+                    {{--                            <i class="ri-file-excel-line"></i>--}}
+                    {{--                        </button>--}}
+                    {{--                    </form>--}}
+
+                    {{--                    <form class="" action="{{ isset($reportSection) && $reportSection--}}
+                    {{--                        ? route('personal-results-download-pdf')--}}
+                    {{--                        : route('members-download-pdf') }}" method="get" class="mb-0">--}}
+                    {{--                        @foreach(request()->query() as $key => $value)--}}
+                    {{--                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">--}}
+                    {{--                        @endforeach--}}
+                    {{--                        <button type="submit" class="btn btn-sm btn-primary  ">--}}
+                    {{--                            <i class="ri-file-pdf-2-line"></i>--}}
+                    {{--                        </button>--}}
+                    {{--                    </form>--}}
+
+                    <span class="btn btn-sm btn-primary  ">
                             <i class="ri-file-excel-line"></i>
-                        </button>
-                    </form>
+                        </span>
 
-                    <form class="" action="{{ isset($reportSection) && $reportSection
-                        ? route('personal-results-download-pdf')
-                        : route('members-download-pdf') }}" method="get" class="mb-0">
-                        @foreach(request()->query() as $key => $value)
-                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                        @endforeach
-                        <button type="submit" class="btn btn-sm btn-primary  ">
+                    <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
                             <i class="ri-file-pdf-2-line"></i>
-                        </button>
-                    </form>
+                        </span>
 
                 </div>
                 <!--
@@ -126,16 +134,18 @@
             <div class="card-body">
 
                 <div class="card bg-search">
-                    <form action="{{ isset($reportSection) && $reportSection
-                        ? route('search-results-registered-members')
-                        : route('personal-registration') }}" method="get" class="card-body">
+                    {{--                    <form action="{{ isset($reportSection) && $reportSection--}}
+                    {{--                        ? route('search-results-registered-members')--}}
+                    {{--                        : route('personal-registration') }}" method="get" class="card-body">--}}
+                    <form action="{{ route('final_results.reports')}}" method="get" class="card-body">
+                        @csrf
                         <div class="row g-3">
 
 
                             <div class="col-md-4">
                                 <label for="reg_club" class="form-label"> اختر النادي </label>
                                 <select name="reg_club" id="reg_club" class="form-select">
-                                    <option value="" disabled {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان
+                                    <option value="" {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان
                                         التسجيل
                                     </option>
                                     @foreach($clubs as $club)
@@ -151,8 +161,8 @@
                                 {{-- Weapons --}}
                                 <div class="col-md-4">
                                     <label for="weapon_id" class="form-label">السلاح</label>
-                                    <select name="weapon_id" id="weapon_id" class="form-select">
-                                        <option value="" disabled selected>اختر السلاح</option>
+                                    <select name="weapon_id" required id="weapon_id" class="form-select">
+                                        <option value="" selected>اختر السلاح</option>
                                         @foreach($weapons as $weapon)
                                             <option
                                                 value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
@@ -192,7 +202,7 @@
                             <div class="col-md-4">
                                 <label for="nat" class="form-label">الجنسية</label>
                                 <select name="nat" id="nat" class="form-select">
-                                    <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية
+                                    <option value="" {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية
                                     </option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
@@ -227,7 +237,7 @@
                             <div class="col-md-4">
                                 {{--                        <label for="mgid" class="form-label">المجموعات</label>--}}
                                 <select name="mgid" id="mgid" class="form-select">
-                                    <option value="" disabled selected>اختر المجموعة</option>
+                                    <option value="" selected>اختر المجموعة</option>
                                     @foreach($memberGroups as $memberGroup)
                                         <option value="{{ $memberGroup->mgid }}"
                                             {{ request('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
@@ -236,7 +246,6 @@
                                     @endforeach
                                 </select>
                             </div>
-
 
                             {{-- Dates + Registration Place in same row --}}
                             <div class="row">
@@ -251,28 +260,6 @@
                                            value="{{ request('date_to') }}">
                                 </div>
                             </div>
-
-
-                            {{--                    --}}{{-- Registration Status --}}
-                            {{--                    <div class="col-md-4">--}}
-                            {{--                        <label class="form-label">حالة التسجيل</label>--}}
-                            {{--                        <div class="d-flex align-items-center gap-4 mt-2">--}}
-                            {{--                            <div class="form-check">--}}
-                            {{--                                <input class="form-check-input" type="radio" id="registered" name="reg"--}}
-                            {{--                                    value="registered" {{ request('reg') == 'registered' ? 'checked' : '' }}>--}}
-                            {{--                                <label class="form-check-label" for="registered">--}}
-                            {{--                                    المسجلين المشاركين--}}
-                            {{--                                </label>--}}
-                            {{--                            </div>--}}
-                            {{--                            <div class="form-check">--}}
-                            {{--                                <input class="form-check-input" type="radio" id="not-registered" name="reg"--}}
-                            {{--                                    value="not-registered" {{ request('reg') == 'not-registered' ? 'checked' : '' }}>--}}
-                            {{--                                <label class="form-check-label" for="not-registered">--}}
-                            {{--                                    المسجلين غير المشاركين--}}
-                            {{--                                </label>--}}
-                            {{--                            </div>--}}
-                            {{--                        </div>--}}
-                            {{--                    </div>--}}
 
 
                             {{-- Search + Gender + Active on one row --}}
@@ -502,7 +489,15 @@
 
                                     </tbody>
                                 </table>
-                            @endisset
+                        @endisset
+
+
+                        <!---------------start print part ----------------->
+                            <div id="pr" style="display:none">
+                                @include('personalReports.final_results.index_print' ,  ['available_players' => @$allavailable_players])
+                            </div>
+                            <!--------end print part ------>
+
                         </div>
                     </div>
                 @else
@@ -722,6 +717,21 @@
 
         // Set the value of the input field
         document.getElementById('report_date').value = formattedDate;
+    </script>
+
+    <script>
+        function printDiv(divId) {
+            const content = document.getElementById(divId).innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print</title>');
+            printWindow.document.write("<style> .hide_print{display:none !important;}@page { size: auto;  margin: 5mm; }.hide_print{display:none !important}.show_print{display:block !important}@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:5px;font-size:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}</style><style>@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}.table td th{border: 1px solid #ccc !important;} th{background:#cccccc69 !important; -webkit-print-color-adjust: exact !important;} h4,h3,h2,h1,h5 {text-align:right;}</style>");
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
     </script>
 
 @endsection
