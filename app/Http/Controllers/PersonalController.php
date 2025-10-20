@@ -70,8 +70,8 @@ class PersonalController extends Controller
             ->with('success', 'تم تحديث حالة الشخص');
     }
 
-    
-        
+
+
 
 
     public function edit(Request $request)
@@ -96,7 +96,7 @@ class PersonalController extends Controller
 
 
     public function create(){
-         if(!checkModulePermission('members', 'add')) {   return redirect()->route('access_denied');  }
+        if(!checkModulePermission('members', 'add') and !checkModulePermission('club_panel', 'reg')  ) {   return redirect()->route('access_denied');  }
         $countries = $this->countryService->getAllCountries();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $clubs = $this->clubService->getAllClubs();
@@ -104,7 +104,7 @@ class PersonalController extends Controller
         return view('members.store',compact('countries', 'weapons', 'clubs', 'memberGroups'));
     }
     public function store(StorePersonalRequest $request){
-         if(!checkModulePermission('members', 'add')) {   return redirect()->route('access_denied');  }
+        if(!checkModulePermission('members', 'add') and !checkModulePermission('club_panel', 'reg')  ) {   return redirect()->route('access_denied');  }
         $data=$request->validated();
         $member=$this->personalService->RegisterNewMember($data,$request);
         if (!$member){
