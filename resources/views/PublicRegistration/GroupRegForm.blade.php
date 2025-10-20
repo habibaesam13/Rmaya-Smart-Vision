@@ -178,7 +178,7 @@
           const dob = this.value;
           const ageField = this.closest('tr').querySelector('.age');
           if (dob) {
-            fetch(`{{ route('calculate.age') }}?dob=${dob}`)
+             fetch(`{{ url(LaravelLocalization::getCurrentLocale() . '/admin/calculate-age') }}?dob=${dob}`)
               .then(response => response.json())
               .then(data => {
                 ageField.value = data.age ?? '';
