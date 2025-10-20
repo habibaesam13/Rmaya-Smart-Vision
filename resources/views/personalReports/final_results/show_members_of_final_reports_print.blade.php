@@ -7,18 +7,11 @@
                     <h4 class="header-title"> تقرير النتائج اليومية للأسلحة</h4>
                 </div>
                 {{-- Success Message --}}
-
-
                 <div class="col-12 col-md-4 text-md-end text-center">
                 </div>
             </div>
-
             <div class="col-12" >
-
-
-
                     <a class="btn btn-primary" onclick="printDiv('pr')">print</a>
-
                     {{-- Registered Teams --}}
                     <div class="card shadow-sm border-0"  id="pr">
                         <div class="card-body">

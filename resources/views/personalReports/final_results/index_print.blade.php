@@ -1,3 +1,6 @@
+
+@include('print.table_header',['title'=>   "قائمة الافراد المتأهلين للتصفيات النهائية"])
+
 <table class="table table-bordered">
     <thead>
     <tr>

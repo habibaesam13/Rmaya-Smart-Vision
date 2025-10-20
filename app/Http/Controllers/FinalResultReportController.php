@@ -102,6 +102,10 @@ class FinalResultReportController extends Controller
      public function getResportsAll(Request $request)
 
     {
+      //  dd(request()->session()->has('absent'));
+//        if(request()->session()->has('absent')){
+            session()->forget('absents');
+//        }
         $weapons = $this->weaponsService->getAllPersonalWeapons();
         $ReportsDetails = $this->resultService->getReportsDetails($request);
         return view('personalReports/final_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));

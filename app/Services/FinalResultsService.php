@@ -400,9 +400,10 @@ class FinalResultsService
                 ->orWhere('sv_members.phone1', $request->q)
                 ->orWhere('sv_members.phone2', $request->q);
         }
-        $query = $query->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results_players.total', '>', -1]])->whereNotIn('mid', $occupied_players)
+        $query = $query->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results_players.total', '>', -1]])
+            ->whereNotIn('mid', $occupied_players)
             ->orderBy('sv_initial_results_players.total', 'desc');
-
+//dd($query->get());
         if($with_pagination = 'yes') {
             $data = $query->cursorPaginate(config('app.admin_pagination_number'));
         }else{
