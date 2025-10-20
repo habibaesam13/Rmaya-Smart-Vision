@@ -21,6 +21,6 @@ class ReportController extends Controller
         }
         $siteSettings=SiteSettings::first();
         $members = $this->resultSevice->getReportDetails($rid);
-        return view('personalReports.print', ['report' => $report, 'members' => $members,'siteSettings'=>$siteSettings]);
+        return view('personalReports.initial_results.print', ['report' => $report, 'members' => $members,'siteSettings'=>$siteSettings]);
     }
 }
