@@ -465,7 +465,7 @@
                                             {{--                                </td>--}}
                                             {{--                                <td>{{ $player->member_group?->name ?? '---' }}</td>--}}
                                             <td>  {{  $player->total ?? 0}}</td>
-<<<<<<< HEAD
+
                                             <td>{{isset($arranging_arr[$key]) ?  $arranging_arr[$key] : ''}}</td>
                                             <td>{{ $player->registration_date }}</td>
                                             <td>
