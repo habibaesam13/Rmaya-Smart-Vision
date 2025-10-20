@@ -104,7 +104,21 @@ function getModules()
 
             )
         ),
+ "6" => array(
+            'name' => ' تقرير النتائج الاولية',
+            'code' => 'intial_results',//i put it
+            'single_name' => 'intial_results',
+            'url_module_title' => "intial_results",
+            'fontawesome_icon_class' => "fa-bars",
+            'sub_modules' => "",
+            'mod_do' => array(
+                "0" => array('can_do' => "daily_rpt", 'can_do_label' => "daily rpt - التقارير اليومية للاندية  " , "can_do_label_ar" => 'التقاير اليومية للاندية' , "can_do_label_en" => 'Daily rpt'),
+                "1" => array('can_do' => "srch", 'can_do_label' => "Search in result - البحث في النتائج        " , "can_do_label_ar" => 'اضافة تقرير نتائج اولية '  , "can_do_label_en" => 'intial result list'),
+                "2" => array('can_do' => "res_list", 'can_do_label' => "intail resultlist -  قائمة النتائج الاولية   " , "can_do_label_ar" => 'نتيجة التصفيات النهائية'  , "can_do_label_en" => 'Final results'),
+                "3" => array('can_do' => "absents", 'can_do_label' => "member - المتغيبين  " , "can_do_label_ar" => 'المتغيبين'  , "can_do_label_en" => 'members'),
 
+            )
+        ),
         
         
  "11" => array(

@@ -95,8 +95,11 @@
                     </a>
                 </li>
             @endif
+            
+            @if(checkModulePermission('intial_results', 'view'))
 
            <li class="side-nav-title mt-2">            وحدة النتائج الأولية                 </li>
+                   @if(checkModulePermission('intial_results', 'daily_rpt'))
                          {{-- تقارير النتائج اليومية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('reports-details') }}" class="side-nav-link">
@@ -104,6 +107,8 @@
                                     التقارير اليومية للأندية
                                 </a>
                             </li>
+                            @endif
+                            @if(checkModulePermission('intial_results', 'srch'))
                                {{-- search in intial results reports Search_daily_preliminary_results --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('initial-results-search') }}" class="side-nav-link">
@@ -111,6 +116,8 @@
                                     البحث فى النتائج
                                 </a>
                             </li>
+                              @endif
+                            @if(checkModulePermission('intial_results', 'res_list'))
                              {{-- list of initial results reports List of preliminary results --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('list-initial-results-reports') }}" class="side-nav-link">
@@ -118,15 +125,24 @@
                                     قائمة النتائج الاولية
                                 </a>
                             </li>
+                              @endif 
+                            @if(checkModulePermission('intial_results', 'absents'))
                             {{-- الافراد المتخلفين في النتائج الاولية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
                                     <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
                                    الأفراد المتغيبين - النتائج الاولية
                                 </a>
-                            </li>
+                            </li> 
+                             @endif 
+                            @endif
+                            
+                            
+                                @if(checkModulePermission('final_results', 'view'))
                       <li class="side-nav-title mt-2">            وحدة النتائج النهائية                 </li>
-                       {{-- final_results.reports--}}
+                         
+                                @if(checkModulePermission('final_results', 'mem'))
+                        {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
 
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">
@@ -135,9 +151,8 @@
 
                                 </a>
                             </li>
-
-
-
+                           @endif
+                                @if(checkModulePermission('final_results', 'add_res_rpt'))
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('reports-details_absent_players_final')) active @endif  ">
                                 <a href="{{route('reports-details_absent_players_final')}}" class="side-nav-link">
@@ -145,6 +160,8 @@
                                       تقارير النتائج النهائية
                                 </a>
                             </li>
+                             @endif
+                                @if(checkModulePermission('final_results', 'final_results'))
                     {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_reports.index')) active @endif  ">
                                 <a href="{{ route('final_reports.index') }}" class="side-nav-link">
@@ -152,14 +169,25 @@
                                    نتيجة التصفيات النهائية
                                 </a>
                             </li>
+                             @endif
+                                @if(checkModulePermission('final_results', 'absents'))
                             {{-- final_results.reports--}}
                             <li class="side-nav-item  @if (request()->routeIs('final_results.absents.reports')) active @endif  ">
                                 <a href="{{ route('final_results.absents.reports') }}" class="side-nav-link">
                                  <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
                                  الأفراد المتغيبين - التصفيات النهائية
                                 </a>
-                            </li>
+                            </li>  
+                             @endif
+                           @endif   
+                           
+                           
+                           
+                           
+                           
+                            
                          <li class="side-nav-title mt-2">            لوحة تحكم الاندية                   </li>
+                          @if(checkModulePermission('club_panel', 'reg'))
                             {{-- تسجيل فردي أندية --}}
                             <li class="side-nav-item @if (request()->routeIs('personal-create')) active @endif">
                                 <a href="{{ route('personal-create') }}" class="side-nav-link">
@@ -167,7 +195,8 @@
                                    تسجيل فردي اندية
                                 </a>
                             </li>
-
+                                @endif
+                                @if(checkModulePermission('club_panel', 'club_mem'))
                             {{--  المسجلين أفراد أندية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('results-registered-members') }}" class="side-nav-link">
@@ -175,7 +204,8 @@
                                     {{ __('lang.Personal').' - أندية' }}
                                 </a>
                             </li>
-
+                              @endif
+                                @if(checkModulePermission('club_panel', 'add_res_rpt'))
                             {{-- تقارير النتائج اليومية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('reports-details') }}" class="side-nav-link">
@@ -183,126 +213,20 @@
                                     {{ __('lang.reportsDetails') }}
                                 </a>
                             </li>
+                            @endif
+                                @if(checkModulePermission('club_panel', 'absents'))
                              {{-- الافراد المتخلفين في النتائج الاولية --}}
                             <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
                                 <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
                                      <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
                                    الأفراد المتغيبين - النتائج الاولية
                                 </a>
-                            </li>
+                            </li> @endif
 
 
 
 
 
-
-
-
-
-
-
-            <li class="side-nav-title mt-2">            وحدة النتائج الأولية                 </li>
-                         {{-- تقارير النتائج اليومية --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('reports-details') }}" class="side-nav-link">
-                                     <span class="menu-icon"><i class="ri-file-list-line"></i></span>
-                                    التقارير اليومية للأندية
-                                </a>
-                            </li>
-                               {{-- search in intial results reports Search_daily_preliminary_results --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('initial-results-search') }}" class="side-nav-link">
-                                    <span class="menu-icon"><i class="ri-menu-search-line"></i></span>
-                                    البحث فى النتائج
-                                </a>
-                            </li>
-                             {{-- list of initial results reports List of preliminary results --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('list-initial-results-reports') }}" class="side-nav-link">
-                                   <span class="menu-icon"><i class="ri-layout-grid-2-line"></i></span>
-                                    قائمة النتائج الاولية
-                                </a>
-                            </li>
-                            {{-- الافراد المتخلفين في النتائج الاولية --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
-                                    <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
-                                   الأفراد المتغيبين - النتائج الاولية
-                                </a>
-                            </li>
-                      <li class="side-nav-title mt-2">            وحدة النتائج النهائية                 </li>
-                       {{-- final_results.reports--}}
-                            <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
-
-
-                                <a href="{{ route('final_results.reports') }}" class="side-nav-link">
-                                      <span class="menu-icon"><i class="ri-bookmark-line"></i></span>
-                                   قائمة المتأهليين
-
-                                </a>
-                            </li>
-
-
-        {{-- final_results.reports--}}
-        <li class="side-nav-item  @if (request()->routeIs('final_reports.first_list')) active @endif  ">
-            <a href="{{route('final_reports.first_list')}}" class="side-nav-link">
-                <span class="menu-icon"><i class="ri-git-repository-commits-line"></i></span>
-                تقارير النتائج النهائية
-            </a>
-        </li>
-
-{{--                            --}}{{-- final_results.reports--}}
-{{--                            <li class="side-nav-item  @if (request()->routeIs('reports-details_absent_players_final')) active @endif  ">--}}
-{{--                                <a href="{{route('reports-details_absent_players_final')}}" class="side-nav-link">--}}
-{{--                                  <span class="menu-icon"><i class="ri-git-repository-commits-line"></i></span>--}}
-{{--                                      تقارير النتائج النهائية--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
-                    {{-- final_results.reports--}}
-                            <li class="side-nav-item  @if (request()->routeIs('final_reports.index')) active @endif  ">
-                                <a href="{{ route('final_reports.index') }}" class="side-nav-link">
-                                    <span class="menu-icon"><i class="ri-equal-line"></i></span>
-                                   نتيجة التصفيات النهائية
-                                </a>
-                            </li>
-                            {{-- final_results.reports--}}
-                            <li class="side-nav-item  @if (request()->routeIs('final_results.absents.reports')) active @endif  ">
-                                <a href="{{ route('final_results.absents.reports') }}" class="side-nav-link">
-                                 <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
-                                 الأفراد المتغيبين - التصفيات النهائية
-                                </a>
-                            </li>
-                         <li class="side-nav-title mt-2">            لوحة تحكم الاندية                   </li>
-                            {{-- تسجيل فردي أندية --}}
-                            <li class="side-nav-item @if (request()->routeIs('personal-create')) active @endif">
-                                <a href="{{ route('personal-create') }}" class="side-nav-link">
-                                    <span class="menu-icon"><i class="ri-folder-add-line"></i></span>
-                                   تسجيل فردي اندية
-                                </a>
-                            </li>
-
-                            {{--  المسجلين أفراد أندية --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('results-registered-members') }}" class="side-nav-link">
-                                    <span class="menu-icon"><i class="ri-file-user-line"></i></span>
-                                    {{ __('lang.Personal').' - أندية' }}
-                                </a>
-                            </li>
-
-                            {{-- تقارير النتائج اليومية --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('reports-details') }}" class="side-nav-link">
-                                   <span class="menu-icon"><i class="ri-file-list-line"></i></span>
-                                    {{ __('lang.reportsDetails') }}
-                                </a>
-                            </li>
-                             {{-- الافراد المتخلفين في النتائج الاولية --}}
-                            <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
-                                <a href="{{ route('individuals-absent-preliminary-results') }}" class="side-nav-link">
-                                     <span class="menu-icon"><i class="ri-user-minus-line"></i></span>
-                                   الأفراد المتغيبين - النتائج الاولية
-                                </a>
-                            </li>
 
 
 

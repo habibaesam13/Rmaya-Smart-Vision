@@ -203,7 +203,6 @@ class ResultsController extends Controller
     {
         $results = $this->resultService->searchInitialResultsReports($request);
 
-
         if (empty($results)) {
             $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
         }
@@ -227,6 +226,7 @@ class ResultsController extends Controller
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $results = $this->resultService->listOfInitialResults($request, 1);
         $results_without_pag = $this->resultService->listOfInitialResults($request, 0);
+        
         if ($results === 'required') {
             return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
         }
