@@ -312,7 +312,7 @@
         dobInput.addEventListener('change', function() {
             const dob = this.value;
             if (dob) {
-                fetch(`{{ route('calculate.age') }}?dob=${dob}`)
+                fetch(`{{ url(LaravelLocalization::getCurrentLocale().'/admin/calculate-age') }}?dob=${dob}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.age !== null) {

@@ -191,7 +191,7 @@
             if (clubId && dob && gender) {
                 weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-                fetch(`/admin/clubs/${clubId}/weapons-by-age?dob=${dob}&gender=${gender}`)
+                fetch(`{{url(LaravelLocalization::getCurrentLocale().'/admin/clubs/${clubId}/weapons-by-age')}}?dob=${dob}&gender=${gender}`)
                     .then(response => response.json())
                     .then(data => {
                         weaponSelect.innerHTML = '<option value="" disabled selected>اختر السلاح</option>';
@@ -221,7 +221,7 @@
         dobInput.addEventListener('change', function() {
             const dob = this.value;
             if (dob) {
-                fetch(`{{ route('calculate.age') }}?dob=${dob}`)
+               fetch(`{{ url(LaravelLocalization::getCurrentLocale().'/admin/calculate-age') }}?dob=${dob}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.age !== null) {
