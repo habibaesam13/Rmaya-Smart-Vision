@@ -6,7 +6,7 @@ use Carbon\Carbon;
 <div class="page-container">
     <div class="col-12 d-flex justify-content-between align-items-center my-3">
         <div class="col-md-12">
-            <h4 class="header-title"> تعديل بيانات {{$member->name}} 
+            <h4 class="header-title"> تعديل بيانات {{$member->name}}
             </h4>
         </div>
     </div>
@@ -33,7 +33,7 @@ use Carbon\Carbon;
                     </div>
                     <div class="col-md-6">
                         <label for="full-name" class="col-form-label">الاسم بالكامل</label>
-                        <input type="text" class="form-control" id="full-name" name="name"  value="{{ old('name', $member->name) }}">
+                        <input type="text" class="form-control" id="full-name" name="name" value="{{ old('name', $member->name) }}">
                         @error('name')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -56,9 +56,9 @@ use Carbon\Carbon;
                             <option value="" disabled {{ old('nat') ? '' : 'selected' }}>اختر الجنسية</option>
                             @foreach($countries as $country)
                             <option value="{{ $country->id }}"
-                                    {{ old('nat', $member->nat) == $country->id ? 'selected' : '' }}>
-                                    {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
-                                </option>
+                                {{ old('nat', $member->nat) == $country->id ? 'selected' : '' }}>
+                                {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
+                            </option>
                             @endforeach
                         </select>
                         @error('nat')
@@ -93,7 +93,7 @@ use Carbon\Carbon;
                         <select name="club_id" id="club_id" class="form-select form-select-lg">
                             <option value="" disabled {{ old('club_id') ? '' : 'selected' }}>اختر النادي</option>
                             @foreach($clubs as $club)
-                            <option value="{{ $club->cid }}"  {{ old('club_id', $member->club_id) == $club->cid ? 'selected' : '' }}>
+                            <option value="{{ $club->cid }}" {{ old('club_id', $member->club_id) == $club->cid ? 'selected' : '' }}>
                                 {{ $club->name }}
                             </option>
                             @endforeach
@@ -109,7 +109,7 @@ use Carbon\Carbon;
                         <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
                             <option value="" disabled selected>اختر النادي أولاً</option>
                             @if($member->weapon_id && $member->weapon)
-                                <option value="{{ $member->weapon_id }}" selected>{{ $member->weapon->name }}</option>
+                            <option value="{{ $member->weapon_id }}" selected>{{ $member->weapon->name }}</option>
                             @endif
                         </select>
                         @error('weapon_id')
@@ -122,9 +122,9 @@ use Carbon\Carbon;
                             <option value="" disabled>اختر المجموعة</option>
                             @foreach($memberGroups as $memberGroup)
                             <option value="{{ $memberGroup->mgid }}"
-                                    {{ old('mgid', $member->mgid) == $memberGroup->mgid ? 'selected' : '' }}>
-                                    {{ $memberGroup->name }}
-                                </option>
+                                {{ old('mgid', $member->mgid) == $memberGroup->mgid ? 'selected' : '' }}>
+                                {{ $memberGroup->name }}
+                            </option>
                             @endforeach
                         </select>
                         @error('mgid')
@@ -150,20 +150,46 @@ use Carbon\Carbon;
                     </div>
 
                     {{-- الصور --}}
-                    <div class="col-md-6">
-                        <label for="front-id" class="form-label">صورة الهوية الأمامية</label>
-                        <input type="file" class="form-control" id="front-id" name="front_id_pic">
+                    <div class="col-md-6 position-relative">
+                        <label for="front-id" class="form-label d-flex align-items-center justify-content-between">
+                            <span>صورة الهوية الأمامية</span>
+
+                            @if(!empty($member?->front_id_pic))
+                            <a href="{{ asset('storage/' . $member->front_id_pic) }}"
+                                target="_blank"
+                                class="eye-icon"
+                                title="عرض الصورة">
+                                <i class="ri-eye-line"></i>
+                            </a>
+                            @endif
+                        </label>
+
+                        <input type="file" class="form-control" id="front-id" name="front_id_pic" accept=".jpg, .jpeg, .png">
                         @error('front_id_pic')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-6">
-                        <label for="back-id" class="form-label">صورة الهوية الخلفية</label>
-                        <input type="file" class="form-control" id="back-id" name="back_id_pic">
+
+                    <div class="col-md-6 position-relative">
+                        <label for="back-id" class="form-label d-flex align-items-center justify-content-between">
+                            <span>صورة الهوية الخلفية</span>
+
+                            @if(!empty($member?->back_id_pic))
+                            <a href="{{ asset('storage/' . $member->back_id_pic) }}"
+                                target="_blank"
+                                class="eye-icon"
+                                title="عرض الصورة">
+                                <i class="ri-eye-line"></i>
+                            </a>
+                            @endif
+                        </label>
+
+                        <input type="file" class="form-control" id="back-id" name="back_id_pic" accept=".jpg, .jpeg, .png">
                         @error('back_id_pic')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
+
                     <div class="col-12 col-md-3 offset-md-9 d-flex justify-content-center justify-content-md-end mb-3">
                         <button type="submit" class="btn btn-primary rounded-pill px-3">
                             <i class="ri-save-line"></i> &nbsp;&nbsp;تعديل </button>
@@ -175,6 +201,19 @@ use Carbon\Carbon;
         </div>
     </div>
 </div>
+<style>
+    .eye-icon {
+        color: #bf1e2f;
+        font-size: 1.3rem;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+
+    .eye-icon:hover {
+        color: #888;
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const clubSelect = document.getElementById('club_id');

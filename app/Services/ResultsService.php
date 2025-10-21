@@ -129,7 +129,7 @@ class ResultsService
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         if ($club_id != null) {
             return Sv_member::where('reg_type', 'personal')->where('club_id', $club_id)->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-                ->orderBy('mid')
+                ->orderByDesc('mid')
                 ->get();
         }
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
@@ -159,7 +159,7 @@ class ResultsService
                 ]),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid');
+            ->orderByDesc('mid');
         if ($club_id !== null) {
             $results->where('club_id', $club_id);
         }
@@ -175,12 +175,12 @@ class ResultsService
 
     public function getReportsDetails(Request $request, $pag)
     {
-        $query = SV_initial_results::query()->where('confirmed', true)
+        $query = SV_initial_results::query()
             ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
             ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('Rid');
+            ->orderByDesc('Rid');
         if ($pag == 1) {
             return $query->paginate(config('app.admin_pagination_number'));
         } else {
@@ -208,7 +208,7 @@ class ResultsService
                     ->orWhere('phone1', 'like', "%{$request->q}%");
             });
         }
-        $results = $query->orderBy('Rid')
+        $results = $query->orderByDesc('Rid')
             ->cursorPaginate(config('app.admin_pagination_number'));
 
         return $results;
@@ -344,5 +344,76 @@ class ResultsService
                 )
             );
         return $pag ? $results->cursorPaginate(config('app.admin_pagination_number')) : $results->get();
+    }
+    //get all available absent players for the club with the same weapon
+    public function getAvailableAbsentPlayers($request, $report, $club_id, $pag)
+    {
+        // Get player IDs already added in initial results (total >= 0)
+        $addedPlayersWithTotal = sv_initial_results_players::where('total', '>=', 0)
+            ->pluck('player_id')
+            ->toArray();
+
+        $query = Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'player.nationality', 'report.weapon'])
+            ->whereHas(
+                'player',
+                fn($q) =>
+                $q->where('reg_type', 'personal')
+                    ->where('weapon_id', $report->weapon_id)
+                    ->whereNotIn('mid', $addedPlayersWithTotal)
+            );
+
+        // Filter by club if provided
+        if ($club_id) {
+            $query->whereHas('player.club', fn($q) => $q->where('cid', $club_id));
+        }
+
+        // Apply dynamic filters like in getAbsentPlayersInitialResults
+        $query
+            ->when(
+                $request->club_id,
+                fn($q) =>
+                $q->whereHas('player.club', fn($sub) => $sub->where('cid', $request->club_id))
+            )
+            ->when(
+                $request->nat,
+                fn($q) =>
+                $q->whereHas('player.nationality', fn($sub) => $sub->where('id', $request->nat))
+            )
+            ->when(
+                $request->gender,
+                fn($q) =>
+                $q->whereHas('player', fn($sub) => $sub->where('gender', $request->gender))
+            )
+            ->when(
+                $request->date_from,
+                fn($q) =>
+                $q->whereHas('report', fn($sub) => $sub->whereDate('date', '>=', $request->date_from))
+            )
+            ->when(
+                $request->date_to,
+                fn($q) =>
+                $q->whereHas('report', fn($sub) => $sub->whereDate('date', '<=', $request->date_to))
+            )
+            ->when(
+                $request->q,
+                fn($q) =>
+                $q->whereHas(
+                    'player',
+                    fn($sub) => $sub
+                        ->where(function ($query) use ($request) {
+                            $search = $request->q;
+                            $query->where('name', 'like', "%{$search}%")
+                                ->orWhere('ID', 'like', "%{$search}%")
+                                ->orWhere('phone1', 'like', "%{$search}%")
+                                ->orWhere('phone2', 'like', "%{$search}%");
+                        })
+                )
+            );
+
+        // Return results with pagination if requested
+        return $pag
+            ? $query->orderByDesc('id')->cursorPaginate(config('app.admin_pagination_number'))
+            : $query->orderByDesc('id')->get();
     }
 }

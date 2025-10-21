@@ -175,6 +175,7 @@
         </div>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const clubSelect = document.getElementById('club_id');

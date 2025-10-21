@@ -12,6 +12,7 @@ class StoreReportForMembers extends FormRequest
 
     public function authorize(): bool
     {
+        //dd($_REQUEST);
         return true;
     }
 
@@ -52,29 +53,40 @@ class StoreReportForMembers extends FormRequest
 
 
     public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $memberIds = $this->input('checkedMembers', []);
+{
+    $validator->after(function ($validator) {
+        $memberIds = $this->input('checkedMembers', []);
 
-            if (!empty($memberIds)) {
-                $weaponId = Sv_member::where('reg_type', 'personal')
-                    ->whereIn('mid', $memberIds)
-                    ->distinct('weapon_id')
-                    ->pluck('weapon_id');
+        if (!empty($memberIds)) {
+            // Check weapon consistency
+            $weaponId = Sv_member::where('reg_type', 'personal')
+                ->whereIn('mid', $memberIds)
+                ->distinct('weapon_id')
+                ->pluck('weapon_id');
 
-                if ($weaponId->count() > 1) {
-                    $validator->errors()->add('checkedMembers', 'يجب أن يكون نفس السلاح لجميع الأفراد');
-                } elseif ($weaponId->count() === 1) {
-                    
-                    $this->weaponId = $weaponId->first();
-                }
-                $alreadyExists = Sv_initial_results_players::whereIn('player_id', $memberIds)->exists();
-                if ($alreadyExists) {
-                    $validator->errors()->add('checkedMembers', 'اللاعب مسجل بالفعل في تقرير آخر');
-                }
+            if ($weaponId->count() > 1) {
+                $validator->errors()->add('checkedMembers', 'يجب أن يكون نفس السلاح لجميع الأفراد');
+            } elseif ($weaponId->count() === 1) {
+                $this->weaponId = $weaponId->first();
             }
-        });
-    }
+
+            // Check if any player already registered with total >= 0
+            $alreadyRegistered = Sv_initial_results_players::whereIn('player_id', $memberIds)
+                ->where('total', '>=', 0)
+                ->pluck('player_id')
+                ->toArray();
+
+            if (!empty($alreadyRegistered)) {
+                // Get player names for clearer message
+                $players = Sv_member::whereIn('mid', $alreadyRegistered)->pluck('name')->toArray();
+                $names = implode(', ', $players);
+
+                $validator->errors()->add('checkedMembers', "اللاعب/اللاعبين التاليين مسجلين بالفعل في تقرير آخر: $names");
+            }
+        }
+    });
+}
+
 
     /**
      * Get weapon id after validation passes
