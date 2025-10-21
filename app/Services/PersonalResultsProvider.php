@@ -26,7 +26,7 @@ class PersonalResultsProvider implements PDFProviderInterface
                 ]),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')
+            ->orderByDesc('mid')
             ->get();
     }
 }
