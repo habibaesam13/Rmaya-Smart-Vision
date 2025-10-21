@@ -137,16 +137,67 @@
                             </div>
                         </form>
                     </div>
-
-
-
                     {{-- Filtered Data --}}
-
-                    <div class="card shadow-sm border-0">
+                    <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                        <div class="card-header  text-white" style="background-color: #bf1e2f;">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-alt me-2"></i>
+                                إضافة تقرير يومي
+                            </h5>
+                        </div>
                         <div class="card-body">
+
+                            {{-- Success Message --}}
+                            @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            @endif
+                            @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+                            <form action="{{ isset($Edit_report) 
+                                        ? route('update-report-registered-members', $Edit_report->Rid)
+                                        : route('generate-report-registered-members') }}" method="POST" id="reportForm">
+
+                                @csrf
+                                <input type="text" hidden name='absent_report' value="1">
+                                <div class="row g-3 align-items-end mb-3">
+                                    <div class="col-md-4">
+                                        <label for="date" class="form-label">التاريخ</label>
+                                        <input type="date" name="date" id="report_date" class="form-control form-control-lg"
+                                            required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="detail_number" class="form-label">رقم الديتيل</label>
+                                        <input type="text" name="details" id="detail_number"
+                                            class="form-control form-control-lg" placeholder="أدخل رقم الديتيل" required
+                                            value="{{isset($Edit_report)?$Edit_report->details:''}}">
+                                    </div>
+
+                                    <div id="checkedMembersContainer" style="display:none;"></div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                            <i class="fas fa-save me-2"></i>
+                                            {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <hr>
                             <table class="table table-bordered mb-3">
-                                <thead>
+                                <thead class="bg-soft-primary">
+
                                     <tr>
+                                        <th></th>
                                         <th>الاسم</th>
                                         <th>رقم الهوية</th>
                                         <th>الهاتف</th>
@@ -157,11 +208,14 @@
                                         <th>ملاحظات</th>
                                     </tr>
                                 </thead>
-                                {{-- table body --}}
                                 <tbody>
                                     @if(isset($absentPlayers) && $absentPlayers)
                                     @foreach ($absentPlayers as $player)
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" class="member-checkbox" name="checkedMembers[]"
+                                                value="{{ $player?->player?->mid }}">
+                                        </td>
                                         <td>{{ $player?->player?->name ?? '---' }}</td>
                                         <td>{{ $player?->player?->ID }}</td>
                                         <td>{{ $player?->player?->phone1 }}</td>
@@ -174,7 +228,7 @@
                                     @endforeach
                                     @else
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted py-3">
+                                        <td colspan="9" class="text-center text-muted py-3">
                                             @if(request()->has('search'))
                                             لا يوجد نتائج مطابقة للبحث
                                             @else
@@ -182,7 +236,17 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @if(isset($Edit_report))
+                                    <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}" method="POST" class="mt-3">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-lg px-5">
+                                            الرجوع للتقرير
+                                        </button>
+                                    </form>
                                     @endif
+                                    @endif
+
+                                </tbody>
 
                             </table>
                             <div id="pr" style="display:none">
@@ -202,4 +266,34 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("reportForm").addEventListener("submit", function(e) {
+        const container = document.getElementById("checkedMembersContainer");
+        container.innerHTML = "";
+
+        document.querySelectorAll(".member-checkbox:checked").forEach(cb => {
+            let hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "checkedMembers[]";
+            hidden.value = cb.value;
+            container.appendChild(hidden);
+        });
+    });
+</script>
+
+<script>
+    //date
+    // Get the current date
+    const today = new Date();
+
+    // Format the date to 'YYYY-MM-DD' for the input type="date"
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = today.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the value of the input field
+    document.getElementById('report_date').value = formattedDate;
+</script>
 @endsection

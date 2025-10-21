@@ -47,7 +47,8 @@ class ResultsController extends Controller
         $club_id=auth()->user()->clubid ?? null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-            $available_players = $this->resultService->getAvailablePlayers($Edit_report,$club_id);
+             $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0,$club_id);
+             $available_players = $this->resultService->getAvailablePlayers($Edit_report,$club_id);
             $reportSection = true;
         } else {
             $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0,$club_id);
@@ -81,9 +82,10 @@ class ResultsController extends Controller
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
         $members = $this->resultService->getReportDetails($report->Rid);
+        $absent_report=$request->input('absent_report')??0;
 
         if ($report) {
-            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false]);
+            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false,'absent_report'=>$absent_report]);
         }
 
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
@@ -165,8 +167,12 @@ class ResultsController extends Controller
     }
 
 
-    public function addPlayer($rid)
+    public function addPlayer(Request $request,$rid)
     {
+
+        if($request->input('absent_report')){
+            return redirect()->route('individuals-absent-preliminary-results',['addMembertoReportRid' => $rid]);
+        }
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
     }
     public function updateReport(StoreReportForMembers $request, $rid)
@@ -177,6 +183,7 @@ class ResultsController extends Controller
             return redirect()->back()->with('error', 'لم يتم العثور على التقرير');
         }
         $validated = $request->validated();
+
         foreach ($validated['checkedMembers'] as $mid) {
             $report->players_results()->create([
                 'player_id' => $mid,
@@ -184,6 +191,7 @@ class ResultsController extends Controller
                 'notes'     => null,
             ]);
         }
+
         return redirect()
             ->route('report-members', $report->Rid)
             ->with('success', 'تم تحديث بيانات التقرير بنجاح');
@@ -255,11 +263,10 @@ class ResultsController extends Controller
         }
         $total = $request->validate(
             [
-                'total' => 'integer|min:0|max:100',
+                'total' => 'integer|min:0|nullable',
             ],
             [
                 'total.min' => 'لا يجب ان يقل المجموع عن 0',
-                'total.max' => 'لا يجب ان يزيد المجموع عن 100',
                 'total.integer' => 'يجب ان يكون المجموع رقم',
             ]
         );
@@ -280,11 +287,19 @@ class ResultsController extends Controller
         if (!is_array($absentPlayers_without_pag) && !$absentPlayers_without_pag instanceof \Illuminate\Support\Collection) {
             $absentPlayers_without_pag = collect();
         }
+        $Edit_report=null;
+        if ($request->filled('addMembertoReportRid')) {
+            $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
+            $absentPlayers=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,1);
+            $absentPlayers_without_pag=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,0);
+        }
 
-        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
+
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','Edit_report', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
     }
     public function searchIndividualsAbsentInitialResults(Request $request)
     {
+        //dd($request);
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $countries = $this->countryService->getAllCountries();

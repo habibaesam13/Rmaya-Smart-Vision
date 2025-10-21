@@ -6,11 +6,11 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title">تقرير النتائج اليومية</h4>
             </div>
-                 <div class="col-12 col-md-4 text-md-end text-center">
+            <div class="col-12 col-md-4 text-md-end text-center">
                 <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
 
                     <span class="badge badge-outline-primary"> عدد التقارير : {{ isset($ReportsDetails)&&$ReportsDetails ? $ReportsDetails->total() : 0 }}</span>
-                    <a title="طباعة" href="{{route('print-reports-details')}}"  class="btn btn-sm btn-primary" target="blank"><i class="ri-printer-line"></i> </a>
+                    <a title="طباعة" href="{{route('print-reports-details')}}" class="btn btn-sm btn-primary" target="blank"><i class="ri-printer-line"></i> </a>
                 </div>
             </div>
             {{-- Success Message --}}
@@ -109,23 +109,24 @@
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">
                                         <a href="{{route('report-members',$report->Rid)}}"
-                                            class=" me-2"
+                                            class="me-2"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             title="طباعة التقرير">
                                             <i class="ri-printer-line icon-btn"></i>
                                         </a>
 
-                                        {{-- Attached File Icon (shown only if exists) --}}
+                                        
                                         <a href="{{ $report->attached_file ? asset('storage/' . $report->attached_file) : '#' }}"
                                             target="_blank"
-                                            class="dis {{ $report->attached_file ? '' : 'disabled' }}"
+                                            class="dis {{ $report->attached_file ? '' : 'invisible' }}"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
-                                            title="عرض الملف المرفق">
+                                            title="{{ $report->attached_file ? 'عرض الملف المرفق' : '' }}">
                                             <i class="ri-attachment-line icon-btn"></i>
                                         </a>
                                     </td>
+
 
                                 </tr>
                                 @empty
@@ -172,6 +173,10 @@
                     .dis.disabled {
                         opacity: 0.4;
                         pointer-events: none;
+                    }
+
+                    .invisible {
+                        visibility: hidden !important;
                     }
                 </style>
             </div>
