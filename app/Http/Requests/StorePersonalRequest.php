@@ -21,8 +21,15 @@ class StorePersonalRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    
     protected function prepareForValidation()
     {
+        if(auth()->user()->clubid){
+            $this->merge([
+                'reg_club'=>auth()->user()->clubid,
+            ]
+            );
+        }
         $this->merge([
             'reg_type' => $this->input('reg_type', 'personal'),
             'registration_date' => $this->input('registration_date', now()->toDateString()),

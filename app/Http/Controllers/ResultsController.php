@@ -44,13 +44,14 @@ class ResultsController extends Controller
             ]
         );
         $Edit_report = null;
+        $club_id=auth()->user()->clubid ?? null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-            $available_players = $this->resultService->getAvailablePlayers($Edit_report);
+            $available_players = $this->resultService->getAvailablePlayers($Edit_report,$club_id);
             $reportSection = true;
         } else {
-            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0);
-            $available_players = $this->resultService->GetAllAvailablePlayers($request, 1);
+            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0,$club_id);
+            $available_players = $this->resultService->GetAllAvailablePlayers($request, 1,$club_id);
             $reportSection = false;
         }
 
@@ -59,12 +60,16 @@ class ResultsController extends Controller
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
         $membersCount = Sv_member::where('reg_type', 'personal')->count();
-        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+            ->where('reg_type', 'personal')
+            ->when($club_id, fn($q) => $q->where('club_id', $club_id))
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderByDesc('mid')
+            ->cursorPaginate(config('app.admin_pagination_number'));
+
         $reportSection = true;
 
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players', 'available_players_without_pag'));
@@ -226,7 +231,7 @@ class ResultsController extends Controller
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $results = $this->resultService->listOfInitialResults($request, 1);
         $results_without_pag = $this->resultService->listOfInitialResults($request, 0);
-        
+
         if ($results === 'required') {
             return redirect()->back()->withErrors(['weapon' => 'السلاح مطلوب']);
         }
@@ -303,8 +308,4 @@ class ResultsController extends Controller
 
         return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
     }
-
-
-
-
 }

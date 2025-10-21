@@ -38,7 +38,7 @@ class GroupsMembersExportProvider implements FromCollection, ExcelProviderInterf
                 $t->where('name', 'LIKE', "%{$this->request->team_name}%")
             )
         )
-        ->orderBy('mid')
+        ->orderByDesc('mid')
         ->get()
             ->map(function($member){
                 return [

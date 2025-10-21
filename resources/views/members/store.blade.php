@@ -269,8 +269,8 @@
             phoneInput.addEventListener('input', e => {
                 let value = e.target.value.replace(/\D/g, '');
 
-                if (!value.startsWith('055')) {
-                    value = '055' + value.replace(/^0+/, '');
+                if (!value.startsWith('05')) {
+                    value = '05' + value.replace(/^0+/, '');
                 }
 
                 if (value.length > 10) value = value.slice(0, 10);

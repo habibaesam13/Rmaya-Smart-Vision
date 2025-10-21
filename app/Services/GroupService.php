@@ -52,8 +52,8 @@ class GroupService
 
         $members_count = $query->count(); // total count
 
-        $members = $query->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
-        $members_without_pag=$query->orderBy('mid')->get();
+        $members = $query->orderByDesc('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
+        $members_without_pag=$query->orderByDesc('mid')->get();
         return [
             'members' => $members,
             'members_count' => $members_count,

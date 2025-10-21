@@ -36,7 +36,7 @@ class PersonalResultsExport implements FromCollection, ExcelProviderInterface
                 ]),
                 fn($q) => $q->filter($this->request)
             )
-            ->orderBy('mid')
+            ->orderByDesc('mid')
             ->get()
             ->map(function ($player) {
                 return [

@@ -31,6 +31,7 @@ class PersonalController extends Controller
     }
     public function index(Request $request)
     {
+        
         if(!checkModulePermission('members', 'view')) {   return redirect()->route('access_denied');  }
          $validated=$request->validate(
             [
@@ -43,13 +44,14 @@ class PersonalController extends Controller
             'date_to.after_or_equal'=> 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية.',
             ]
         );
+        $club_id=auth()->user()->clubid ?? null;
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
         $membersCount=Sv_member::where('reg_type','personal')->count();
-        $members_without_pag = $this->personalService->getMembers($request,0);
-        $members = $this->personalService->getMembers($request,1);
+        $members_without_pag = $this->personalService->getMembers($request,0,$club_id);
+        $members = $this->personalService->getMembers($request,1,$club_id);
         $reportSection=false;
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection','members_without_pag'));
     }
