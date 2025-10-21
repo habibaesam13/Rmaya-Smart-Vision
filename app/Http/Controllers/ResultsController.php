@@ -287,17 +287,19 @@ class ResultsController extends Controller
         if (!is_array($absentPlayers_without_pag) && !$absentPlayers_without_pag instanceof \Illuminate\Support\Collection) {
             $absentPlayers_without_pag = collect();
         }
-        
+        $Edit_report=null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
             $absentPlayers=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,1);
             $absentPlayers_without_pag=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,0);
         }
 
+
         return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','Edit_report', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
     }
     public function searchIndividualsAbsentInitialResults(Request $request)
     {
+        //dd($request);
         $clubs = $this->clubService->getAllClubs();
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $countries = $this->countryService->getAllCountries();

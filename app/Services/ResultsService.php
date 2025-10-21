@@ -269,6 +269,7 @@ class ResultsService
     //قائمة الافراد المتغيبين فى النتائج الاولية
     public function getAbsentPlayersInitialResults($request, $pag)
     {
+        
         if (!$request->weapon_id) {
             return 'required';
         }
@@ -349,7 +350,7 @@ class ResultsService
     public function getAvailableAbsentPlayers($request, $report, $club_id, $pag)
     {
         // Get player IDs already added in initial results (total >= 0)
-        $addedPlayersWithTotal = sv_initial_results_players::where('total', '>=', 0)
+        $addedPlayersWithTotal = sv_initial_results_players::where('total', '>=', 0)->where('Rid','<>',$report->Rid)
             ->pluck('player_id')
             ->toArray();
 

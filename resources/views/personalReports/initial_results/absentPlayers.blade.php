@@ -54,7 +54,6 @@
                             </ul>
                         </div>
                         @endif
-                        
                         <form action="{{ route('search-individuals-absent-preliminary-results') }}" method="get" class="card-body">
                             <div class="row g-3">
                                 {{-- Clubs --}}
@@ -75,11 +74,7 @@
                                     <select name="weapon_id" id="weapon_id" class="form-select form-select-lg" required>
                                         <option value="" disabled selected>اختر السلاح </option>
                                         @foreach($weapons as $weapon)
-                                        <option value="{{ $weapon->id }}"
-                                            @if(isset($Edit_report) && $Edit_report->weapon_id == $weapon->id)
-                                            selected
-                                            @endif
-                                            >
+                                        <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
                                             {{ $weapon->name }}
                                         </option>
                                         @endforeach
