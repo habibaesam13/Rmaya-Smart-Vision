@@ -414,7 +414,7 @@ Route::group(
                     Route::post('final-confirm-report/{rid}', [FinalResultsController::class, 'confirmReport'])->name('report-confirmation_final');
                     Route::get('add-player-to-report/{rid}', [FinalResultsController::class, 'addPlayer'])->name('add-player-to-report_final');
                     Route::get('registered-members', [FinalResultsController::class, 'index'])->name('results-registered-members_final');
-                    Route::post('members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+//                    Route::post('members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
                     Route::get('/reports/{rid}/print', [FinalResultsController::class, 'printData'])->name('report.print_final');
                     Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');

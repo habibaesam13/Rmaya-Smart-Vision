@@ -50,7 +50,7 @@ class FinalResultsService
 
     public function getReportDetails($reportId)
     {
-        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->get();
+        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->orderBy('id' , 'desc')->get();
         return $Players;
     }
 
@@ -101,10 +101,11 @@ class FinalResultsService
         // Update player results
         foreach ($playersData as $playerId => $values) {
             $cleanedValues = collect($values)->map(function ($v, $k) {
-                if ($k === 'notes' || $k === 'total') {
-                    return $v === '' ? null : $v;
+//                if ($k === 'notes' || $k === 'total') {
+                if ($k === 'goal'  ) {
+                    return ($v === '' || is_null($v)) ? 0 : $v;
                 }
-                return ($v === '' || is_null($v)) ? 0 : $v;
+                return $v === '' ? null : $v;
             })->toArray();
 
             if (is_numeric($cleanedValues['total'])) {
@@ -112,16 +113,16 @@ class FinalResultsService
                     ->where('id', $playerId)
                     ->update([
                         'goal' => $cleanedValues['goal'] ?? 0,
-                        'R1' => $cleanedValues['R1'] ?? 0,
-                        'R2' => $cleanedValues['R2'] ?? 0,
-                        'R3' => $cleanedValues['R3'] ?? 0,
-                        'R4' => $cleanedValues['R4'] ?? 0,
-                        'R5' => $cleanedValues['R5'] ?? 0,
-                        'R6' => $cleanedValues['R6'] ?? 0,
-                        'R7' => $cleanedValues['R7'] ?? 0,
-                        'R8' => $cleanedValues['R8'] ?? 0,
-                        'R9' => $cleanedValues['R9'] ?? 0,
-                        'R10' => $cleanedValues['R10'] ?? 0,
+                        'R1' => $cleanedValues['R1'] ?? null,
+                        'R2' => $cleanedValues['R2'] ?? null,
+                        'R3' => $cleanedValues['R3'] ?? null,
+                        'R4' => $cleanedValues['R4'] ?? null,
+                        'R5' => $cleanedValues['R5'] ?? null,
+                        'R6' => $cleanedValues['R6'] ?? null,
+                        'R7' => $cleanedValues['R7'] ?? null,
+                        'R8' => $cleanedValues['R8'] ?? null,
+                        'R9' => $cleanedValues['R9'] ?? null,
+                        'R10' => $cleanedValues['R10'] ?? null,
                         'total' => $cleanedValues['total'],
                         'notes' => $cleanedValues['notes'] ?? null,
                     ]);
@@ -130,16 +131,16 @@ class FinalResultsService
                     ->where('id', $playerId)
                     ->update([
                         'goal' => $cleanedValues['goal'] ?? 0,
-                        'R1' => $cleanedValues['R1'] ?? 0,
-                        'R2' => $cleanedValues['R2'] ?? 0,
-                        'R3' => $cleanedValues['R3'] ?? 0,
-                        'R4' => $cleanedValues['R4'] ?? 0,
-                        'R5' => $cleanedValues['R5'] ?? 0,
-                        'R6' => $cleanedValues['R6'] ?? 0,
-                        'R7' => $cleanedValues['R7'] ?? 0,
-                        'R8' => $cleanedValues['R8'] ?? 0,
-                        'R9' => $cleanedValues['R9'] ?? 0,
-                        'R10' => $cleanedValues['R10'] ?? 0,
+                        'R1' => $cleanedValues['R1'] ?? null,
+                        'R2' => $cleanedValues['R2'] ?? null,
+                        'R3' => $cleanedValues['R3'] ?? null,
+                        'R4' => $cleanedValues['R4'] ?? null,
+                        'R5' => $cleanedValues['R5'] ?? null,
+                        'R6' => $cleanedValues['R6'] ?? null,
+                        'R7' => $cleanedValues['R7'] ?? null,
+                        'R8' => $cleanedValues['R8'] ?? null,
+                        'R9' => $cleanedValues['R9'] ?? null,
+                        'R10' => $cleanedValues['R10'] ?? null,
                         'total' => null,
                         'notes' => $cleanedValues['notes'] ?? null,
                     ]);
@@ -171,7 +172,8 @@ class FinalResultsService
                     'sv_members.mid',
                     'sv_weapons.name as weapon_name',
                     'sv_members.registration_date',
-                    'sv_clubs.name as club_name'
+                    'sv_clubs.name as club_name',
+                    'sv_initial_results.attached_file'
                 )
                 ->where('sv_members.weapon_id', $report->weapon_id)
                 ->whereNotIn('mid', $addedPlayers)
@@ -220,7 +222,7 @@ class FinalResultsService
                 ]),
                 fn ($q) => $q->filter($request)
             )
-            ->orderBy('mid')
+            ->orderBy('mid' , 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
     }
 
@@ -236,7 +238,7 @@ class FinalResultsService
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id')
+            ->orderBy('id' , 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
 
     }
@@ -249,7 +251,7 @@ class FinalResultsService
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id');
+            ->orderBy('id' , 'desc');
         if ($withPaging == 'yes') {
             return $query->cursorPaginate(config('app.admin_pagination_number'));
         }

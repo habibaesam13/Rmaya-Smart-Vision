@@ -57,7 +57,7 @@ class AbsentFinalResultsService
 
     public function getReportDetails($reportId)
     {
-        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->get();
+        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->orderBy('id' , 'desc')->get();
         return $Players;
     }
 
@@ -213,7 +213,7 @@ class AbsentFinalResultsService
                 ]),
                 fn ($q) => $q->filter($request)
             )
-            ->orderBy('mid')
+            ->orderBy('mid' , 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
     }
 
@@ -232,7 +232,7 @@ class AbsentFinalResultsService
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id')
+            ->orderBy('id' , 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
 
     }
@@ -244,7 +244,7 @@ class AbsentFinalResultsService
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id');
+            ->orderBy('id' , 'desc');
         if ($withPaging == 'yes') {
             return $query->cursorPaginate(config('app.admin_pagination_number'));
         }
@@ -340,7 +340,7 @@ class AbsentFinalResultsService
 
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderBy('mid')
+            ->orderBy('mid' , 'desc')
             ->get();
     }
 

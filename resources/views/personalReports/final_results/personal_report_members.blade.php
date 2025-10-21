@@ -3,7 +3,15 @@
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
 
-    <div class="page-container my-4" id="pr">
+    <div class="page-container my-4">
+
+
+        <!---------------start print part ----------------->
+        <div id="pr" style="display:none">
+            @include('personalReports.final_results.personal_report_members_print' ,  ['members' => @$members , ''])
+        </div>
+        <!--------end print part ------>
+        </h2>
         {{-- Success Message --}}
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -12,6 +20,7 @@
             </div>
 
         @endif
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -60,7 +69,7 @@
                     @if(!$confirmed)
                         <form action="{{route('add-player-to-report_final',$report?->id)}}" method="get">
                             @csrf
-                            <input type="text" name="absents" value="{{request()->get('absents')}}">
+                            <input type="text" class="d-none" name="absents" value="{{request()->get('absents')}}">
                             <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
                                 <i class="fas fa-user-plus"></i>
                                 <span>إضافة رماة</span>
@@ -97,13 +106,12 @@
                         {{--                    <span>طباعة</span>--}}
                         {{--                </a>--}}
 
- {{--                  //here--}}
+                        {{--                  //here--}}
                         <span onclick="printDiv('pr')"
                               class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
                         <span>طباعة</span>
                     </span>
-
                         @if(!$confirmed)
                             {{-- زر الحفظ --}}
                             <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
@@ -112,24 +120,23 @@
                             </button>
                         @endif
                     </form>
-{{--                    <form action="{{route('personal-results-report-download-pdf_final',$report->id)}}" method="GET">--}}
-{{--                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">--}}
-{{--                            <i class="fas fa-print"></i>--}}
-{{--                            <span>PDF</span>--}}
-{{--                        </button>--}}
-{{--                    </form>--}}
+                    {{--                    <form action="{{route('personal-results-report-download-pdf_final',$report->id)}}" method="GET">--}}
+                    {{--                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">--}}
+                    {{--                            <i class="fas fa-print"></i>--}}
+                    {{--                            <span>PDF</span>--}}
+                    {{--                        </button>--}}
+                    {{--                    </form>--}}
 
 
                 </div>
             </div>
         </div>
-
         {{-- Results Table Card --}}
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 @csrf
                 <div class="table-responsive">
-                    <h2>{{session()->get('absents')}}</h2>
+                    <h2 class="d-none">{{session()->get('absents')}}</h2>
                     <table class="table table-bordered ">
                         <thead>
                         <tr>
@@ -170,7 +177,9 @@
                                            data-player="{{ $member->id }}"
                                            class="form-control form-control-sm"
                                            min="1"
-                                           value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"
+                                           {{--                                           value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"--}}
+                                            value="{{  $member->goal ?? ''  }}"
+                                           value=""
                                            @if($confirmed) readonly @endif>
                                 </td>
 
@@ -181,10 +190,13 @@
                                                name="R{{ $i }}"
                                                data-player="{{ $member->id }}"
                                                class="form-control form-control-sm score-input"
-                                               placeholder="0"
+                                               {{--                                               placeholder="0"--}}
                                                min="0"
                                                data-row="{{ $index }}"
-                                               value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"
+                                               {{--                                               value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"--}}
+                                               value="{{   $member->{'R'.$i} ?? '' }}"
+
+                                               value=""
                                                @if($confirmed) readonly @endif>
                                     </td>
                                 @endfor

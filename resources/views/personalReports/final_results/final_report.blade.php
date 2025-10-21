@@ -185,6 +185,7 @@
                             </form>
                         </div>
                     </div>
+
                     {{-- Results Table Card --}}
                     <div class="card shadow-sm border-0" id="printArea">
                         <div class="card-body">
@@ -221,6 +222,7 @@
                                     $g = rand(0, 255);
                                     $b = rand(0, 255);
                                     $currentColor = "rgb($r, $g, $b , 0.2)";
+                                    $prevColor = $currentColor;
                                 }
                                         @endphp
 
@@ -237,11 +239,15 @@
                                                       action="{{route('final_report_save_second_total.update' , $item->result_player_id)}}"
                                                       method="get">
                                                     @csrf
-                                                    <input type="number" name="second_total" onfocus=" this.value='';"
-                                                           onblur="if(this.value == '') this.value='{{$item->second_total ?? 0}}';"
-                                                           {{--                                               onkeydown="this.value='';"--}}
+{{--                                                    <input type="number" name="second_total" onfocus=" this.value='';"--}}
+{{--                                                           onblur="if(this.value == '') this.value='{{$item->second_total ?? 0}}';"--}}
+{{--                                                           --}}{{--                                               onkeydown="this.value='';"--}}
+{{--                                                           value="{{$item->second_total ?? 0}}" class="second_total"--}}
+{{--                                                           min="0"/>--}}
+                                                    <input type="number" name="second_total"
                                                            value="{{$item->second_total ?? 0}}" class="second_total"
                                                            min="0"/>
+
                                                     <label class="col">
                                                         <input type="submit" class="btn btn-sm btn-primary" value="حفظ">
                                                     </label>

@@ -124,17 +124,23 @@ class ResultsService
 
 
 
-    public function getAvailablePlayers($report)
+    public function getAvailablePlayers($report, $club_id)
     {
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
+        if ($club_id != null) {
+            return Sv_member::where('reg_type', 'personal')->where('club_id', $club_id)->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
+                ->orderBy('mid')
+                ->get();
+        }
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderBy('mid')
+            ->orderByDesc('mid')
             ->get();
     }
-    public function GetAllAvailablePlayers(Request $request,$pag)
+    public function GetAllAvailablePlayers(Request $request, $pag, $club_id)
     {
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-       $results=Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+
+        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
             ->where('reg_type', 'personal')
             ->whereNotIn('mid', $addedPlayers)
             ->when(
@@ -154,9 +160,14 @@ class ResultsService
                 fn($q) => $q->filter($request)
             )
             ->orderBy('mid');
-           return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
-
+        if ($club_id !== null) {
+            $results->where('club_id', $club_id);
+        }
+        return $pag
+            ? $results->cursorPaginate(config('app.admin_pagination_number'))
+            : $results->get();
     }
+
 
 
     /**Preliminary results reports - clubs - details */
@@ -204,7 +215,7 @@ class ResultsService
     }
 
     //قائمة النتائج الاولية
-    public function listOfInitialResults(Request $request,$pag)
+    public function listOfInitialResults(Request $request, $pag)
     {
 
         // weapon_id is required
@@ -243,11 +254,9 @@ class ResultsService
         if ($request->filled('limit')) {
             $limit = (int) $request->input('limit');
             return $query->take($limit)->get();
-        }
-        elseif(!$pag){
+        } elseif (!$pag) {
             return $query->get();
-        }
-        else {
+        } else {
             return $query->paginate(config('app.admin_pagination_number'));
         }
     }
@@ -258,7 +267,7 @@ class ResultsService
         return $player->update($total);
     }
     //قائمة الافراد المتغيبين فى النتائج الاولية
-    public function getAbsentPlayersInitialResults($request,$pag)
+    public function getAbsentPlayersInitialResults($request, $pag)
     {
         if (!$request->weapon_id) {
             return 'required';
@@ -269,7 +278,7 @@ class ResultsService
             return 'not_found';
         }
 
-        $results= Sv_initial_results_players::query()
+        $results = Sv_initial_results_players::query()
             ->with(['player.club', 'player.weapon', 'report.weapon'])
             ->whereNull('total')
             ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
@@ -334,6 +343,6 @@ class ResultsService
                         })
                 )
             );
-            return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
+        return $pag ? $results->cursorPaginate(config('app.admin_pagination_number')) : $results->get();
     }
 }

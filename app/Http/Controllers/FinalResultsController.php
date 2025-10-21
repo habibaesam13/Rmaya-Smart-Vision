@@ -63,6 +63,11 @@ class FinalResultsController extends Controller
             $reportSection = false;
          }
 
+        if(empty($request->weapon_id) && !$request->filled('addMembertoReportRid')){
+            $available_players = collect();
+            $allavailable_players=collect();
+        }
+
         $memberGroups = $this->personalService->get_members_data()['Membergroups'];
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
@@ -73,10 +78,10 @@ class FinalResultsController extends Controller
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid')->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderBy('mid' , 'desc')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
         request()->session()->forget('absents');
-        $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
+        $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن' , 9=>'التاسع' , 10=>'العاشر' , 11=>'الاحدي عشر' , 12=>'الاثنا عشر' , 13=>'الثالث عشر'];
         return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allavailable_players' , 'count'));
     }
 //    public function store(StoreReportForMembers $request)
@@ -96,7 +101,6 @@ class FinalResultsController extends Controller
     //functions for members for specific report
     public function show($rid)
     {
-//        dd(session()->get('absents'));
         $report = $this->resultService->getReport($rid);
         if (!$report) {
          return   redirect()->back();

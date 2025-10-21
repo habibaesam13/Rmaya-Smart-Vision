@@ -52,40 +52,24 @@ class AbsentMembersFinalResultController extends Controller
             $reportSection = true;
             $ids = $available_players ? $available_players->pluck('mid') : null;
             $membersCount = $available_players ?  count($available_players) : 0;
-
         } else {
-
             $available_players = $this->resultService->getConfirmedPlayers($request , 'yes');
             $allAvailable_players =  $this->resultService->getConfirmedPlayers($request , 'no');
-
             $reportSection = false;
             $ids = $available_players ? $available_players->pluck('mid') : null;
             $membersCount = $available_players ? count($available_players) : 0;
-
+        }
+        if(empty($request->weapon_id) && !$request->filled('addMembertoReportRid')){
+            $available_players = collect();
+            $allAvailable_players=collect();
         }
         $memberGroups = $this->personalService->get_members_data($ids)['Membergroups'];
         $countries = $this->personalService->get_members_data($ids)['countries'];
         $clubs = $this->personalService->get_members_data($ids)['clubs'];
         $weapons = $this->personalService->get_members_data($ids)['weapons'];
-
-
-
-//        $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality' , 'sv_final_results'])->whereHas('sv_initial_results' , function ($q){
-//            $q->where('total' , null);
-//        })->where('reg_type', 'personal')
-//            ->when(
-//                $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
-//                fn($q) => $q->filter($request)
-//            )
-//            ->orderBy('mid')
-//            ->cursorPaginate(config('app.admin_pagination_number'));
-
-
         $reportSection = true;
-
-
-request()->session()->put('absents' , 'yes');
-        $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن'];
+        request()->session()->put('absents' , 'yes');
+        $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن' , 9=>'التاسع' , 10=>'العاشر' , 11=>'الاحدي عشر' , 12=>'الاثنا عشر' , 13=>'الثالث عشر'];
          return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
      }
 

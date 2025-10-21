@@ -408,7 +408,7 @@
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="fas fa-save me-2"></i>
                                             {{--                                            {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}--}}
-                                            تحديث التقرير
+                                            حفظ التقرير
 
                                         </button>
                                     </div>
@@ -785,6 +785,5 @@
         }
 
     </script>
-
 
 @endsection

@@ -55,13 +55,23 @@ class PersonalService
         $member->save();
         return $member;
     }
-    public function getMembers(Request $request,$pag){
+    public function getMembers(Request $request,$pag,$club_id){
         $results= Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderBy('mid');
+            ->orderByDesc('mid');
+        if($club_id !=null){
+            $results= Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+            ->where('club_id',$club_id)
+            ->when(
+                $request->hasAny(['mgid', 'reg', 'nat', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
+                fn($q) => $q->filter($request)
+            )
+            ->orderByDesc('mid');
+        }
+        
         return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
     }
     public function updatePersonalData($data, $mid, Request $request)
