@@ -77,22 +77,33 @@ class ResultsService
         $report = $this->getReport($rid);
 
 
+        // if ($request->hasFile('attached_file')) {
+        //     $validated = $request->validate([
+        //         'attached_file' => 'mimes:pdf,doc,docx,xlsx,xls|max:2048',
+        //     ]);
+
+        //     // Get the validated file
+        //     $file = $validated['attached_file'];
+
+        //     // Delete the old file if exists
+        //     if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
+        //         Storage::disk('public')->delete($report->attached_file);
+        //     }
+
+        //     // Store new file
+        //     $path = $file->store('reports_attachments', 'public');
+        //     $report->update(['attached_file' => $path]);
+        // }
         if ($request->hasFile('attached_file')) {
-            $validated = $request->validate([
-                'attached_file' => 'mimes:pdf,doc,docx,xlsx,xls|max:2048',
-            ]);
 
-            // Get the validated file
-            $file = $validated['attached_file'];
 
-            // Delete the old file if exists
-            if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
-                Storage::disk('public')->delete($report->attached_file);
-            }
+            $file = $request->attached_file;
+            $newfile = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/storage/reports_attachments/', $newfile);
+            $path =  '/reports_attachments/' . $newfile;
 
-            // Store new file
-            $path = $file->store('reports_attachments', 'public');
-            $report->update(['attached_file' => $path]);
+            $report->attached_file = $path;
+            $report->save();
         }
 
         // Update player results
@@ -133,8 +144,8 @@ class ResultsService
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         if ($club_id != null) {
             return Sv_member::where('reg_type', 'personal')->where('club_id', $club_id)->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-                 ->orderByDesc('mid')
-                 ->get();
+                ->orderByDesc('mid')
+                ->get();
         }
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
             ->orderByDesc('mid')
@@ -163,8 +174,8 @@ class ResultsService
                 ]),
                 fn($q) => $q->filter($request)
             )
-             ->orderByDesc('mid');
-         if ($club_id !== null) {
+            ->orderByDesc('mid');
+        if ($club_id !== null) {
             $results->where('club_id', $club_id);
         }
         return $pag
@@ -409,5 +420,5 @@ class ResultsService
         return $pag
             ? $query->orderByDesc('id')->cursorPaginate(config('app.admin_pagination_number'))
             : $query->orderByDesc('id')->get();
-     }
+    }
 }
