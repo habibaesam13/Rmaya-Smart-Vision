@@ -131,18 +131,23 @@
 
                 <div class="card bg-search">
                     <form action="
-{{--                        {{ isset($reportSection)--}}
-                    {{--                        ? route('search-results-registered-members')--}}
-                    {{--                        : route('personal-registration') }}--}}
                     {{route('final_results.absents.reports')}}
                         " method="get" class="card-body">
                         <div class="row g-3">
 
+
+                            <!-------------start -->
+                            @if( request()->addMembertoReportRid  > 0)   <input type='number'
+                                                                                name='addMembertoReportRid'
+                                                                                value='{{(int)request()->addMembertoReportRid}}'/> @endif
+                            <!---end -->
+
+
                             <div class="col-md-4">
                                 <label for="club_id" class="form-label"> اختر النادي </label>
                                 <select name="club_id" class="form-select">
-                                    <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر مكان
-                                        التسجيل
+                                    <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
+
                                     </option>
                                     @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}"
@@ -168,6 +173,7 @@
                             {{--                                    @endforeach--}}
                             {{--                                </select>--}}
                             {{--                            </div>--}}
+
 
                             @if($reportSection)
                                 {{-- Weapons --}}
@@ -325,13 +331,12 @@
                             </div>
 
                         </div>
-
                         {{-- Action Buttons --}}
                         <div class="d-flex gap-2 mb-4">
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-search me-2"></i>بحث
                             </button>
-                            <a href="{{ url()->current() }}"
+                            <a href="{{ (request()->addMembertoReportRid  && request()->addMembertoReportRid > 0 ) ?  url()->current() . '?addMembertoReportRid=' . request()->addMembertoReportRid :   url()->current()  }}"
                                class="btn btn-danger"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
                         </div>
                     </form>

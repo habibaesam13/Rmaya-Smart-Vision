@@ -141,12 +141,18 @@
                         @csrf
                         <div class="row g-3">
 
+                            <!-------------start -->
+                            @if( request()->addMembertoReportRid  > 0)   <input type='number'
+                                                                                name='addMembertoReportRid'
+                                                                                value='{{(int)request()->addMembertoReportRid}}'/> @endif
+                        <!---end -->
+
 
                             <div class="col-md-4">
-                                <label for="reg_club" class="form-label"> اختر النادي </label>
-                                <select name="reg_club" id="reg_club" class="form-select">
-                                    <option value="" {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان
-                                        التسجيل
+                                <label for="club_id" class="form-label"> اختر النادي </label>
+                                <select name="club_id" id="club_id" class="form-select">
+                                    <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
+
                                     </option>
                                     @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}"
@@ -296,8 +302,9 @@
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-search me-2"></i>بحث
                             </button>
-                            <a href="{{ url()->current() }}"
+                            <a href="{{ (request()->addMembertoReportRid  && request()->addMembertoReportRid > 0 ) ?  url()->current() . '?addMembertoReportRid=' . request()->addMembertoReportRid :   url()->current()  }}"
                                class="btn btn-danger"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
+
                         </div>
                     </form>
                 </div>
@@ -396,8 +403,9 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($available_players as  $key => $player)
-                                        <tr>
+
+                                    @forelse($available_players  as  $key => $player)
+                                         <tr>
                                             <td>
 
                                                 <input type="checkbox" class="member-checkbox" name="checkedMembers[]"
@@ -406,7 +414,7 @@
                                             <td>{{ $player->name }}</td>
                                             <td>{{ $player->weapon_name }}</td>
 
-                                            <td>{{ $player->mid }}</td>
+                                            <td>{{ $player->ID }}</td>
                                             <td>{{ $player->phone1 ?? $player->phone2 }}</td>
                                             {{--                                <td>{{ $player->age_calculation() }}</td>--}}
                                             <td>{{ $player->club_name ?? '---' }}</td>

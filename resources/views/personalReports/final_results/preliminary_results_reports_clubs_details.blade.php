@@ -114,7 +114,7 @@
                                             {{-- Attached File Icon (shown only if exists) --}}
                                             {{--                                        <a href="{{ $report->file ? asset('storage/' . $report->file) : '#' }}"--}}
                                             @if($report->file)
-                                                <a href="{{ asset('storage/' . $report->file)  }}"
+                                                <a href="{{ asset(  $report->file)  }}"
                                                    target="_blank"
                                                    class="dis"
                                                    data-bs-toggle="tooltip"

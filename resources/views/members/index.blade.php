@@ -278,7 +278,7 @@
                                     @endif
 
 
-                                    <form action="{{ isset($Edit_report) 
+                                    <form action="{{ isset($Edit_report)
                                         ? route('update-report-registered-members', $Edit_report->Rid)
                                         : route('generate-report-registered-members') }}" method="POST" id="reportForm">
 
@@ -423,7 +423,7 @@
                                             @endempty
 
                                         </tbody>
-                                       
+
                                     </table>
                                        <div id="pr" style="display:none">
                                             @include('members/registered_members_print', ['members'=>@$available_players])
@@ -534,7 +534,7 @@
                              <div id="pr" style="display:none">
                                             @include('members/registered_members_print', ['members'=>@$members_without_pag])
                                         </div>
-                            
+
                             @endif
                             <div class="mt-4 d-flex justify-content-center">
                                 {{ $members->appends(request()->query())->links() }}
