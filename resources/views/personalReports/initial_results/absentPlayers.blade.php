@@ -191,7 +191,14 @@
                                     </div>
                                 </div>
                             </form>
-
+                            @if(isset($Edit_report))
+                            <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}" method="POST" class="mt-3">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-lg px-5">
+                                    الرجوع للتقرير
+                                </button>
+                            </form>
+                            @endif
                             <hr>
                             <table class="table table-bordered mb-3">
                                 <thead class="bg-soft-primary">
@@ -211,6 +218,7 @@
                                 <tbody>
                                     @if(isset($absentPlayers) && $absentPlayers)
                                     @foreach ($absentPlayers as $player)
+
                                     <tr>
                                         <td>
                                             <input type="checkbox" class="member-checkbox" name="checkedMembers[]"
