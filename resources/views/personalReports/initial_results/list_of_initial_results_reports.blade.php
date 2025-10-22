@@ -8,7 +8,7 @@
             </div>
             <div class="col-12 col-md-4 text-md-end text-center">
                 <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
-                    <span class="badge badge-outline-primary"> عدد الرماة : {{ isset($results)&&$results ? $results->total() : 0 }}</span>
+                    <span class="badge badge-outline-primary"> عدد الرماة : {{$total ?? 0 }}</span>
                     <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
                 </div>
             </div>
