@@ -77,17 +77,16 @@ class ResultsController extends Controller
     }
     public function store(StoreReportForMembers $request)
     {
-
         $data = $request->validated();
+        $data['absents']=$request->input('absent_report')??0;
+        //dd($data);
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
         $members = $this->resultService->getReportDetails($report->Rid);
         $absent_report=$request->input('absent_report')??0;
-        
         if ($report) {
             return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false,'absent_report'=>$absent_report]);
         }
-
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
     }
 
@@ -169,8 +168,8 @@ class ResultsController extends Controller
 
     public function addPlayer(Request $request,$rid)
     {
-       
-        if($request->input('absent_report')){
+        $report=$this->resultService->getReport($rid);
+        if($report->absents){
             return redirect()->route('individuals-absent-preliminary-results',['addMembertoReportRid' => $rid]);
         }
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);

@@ -30,11 +30,15 @@ class ResultsService
     }
     public function createReport($data)
     {
-
+        //dd($data);
         return DB::transaction(function () use ($data) {
 
             $report = SV_initial_results::create($data);
 
+            $report->absents = $data['absents'] == "1" ? 1 : 0;
+            $report->save();
+            //dd($report);
+            //dd($report);
 
             foreach ($data['checkedMembers'] as $mid) {
                 $report->players_results()->create([
@@ -269,7 +273,6 @@ class ResultsService
     //قائمة الافراد المتغيبين فى النتائج الاولية
     public function getAbsentPlayersInitialResults($request, $pag)
     {
-        
         if (!$request->weapon_id) {
             return 'required';
         }
@@ -281,95 +284,88 @@ class ResultsService
 
         $results = Sv_initial_results_players::query()
             ->with(['player.club', 'player.weapon', 'report.weapon'])
-            ->whereNull('total')
-            ->whereHas('report', fn($q) => $q->where('confirmed', true)->where('weapon_id', $request->weapon_id))
-
+            ->whereNull('total') // only players not yet scored
+            ->whereNotIn('player_id', function ($sub) {
+                $sub->select('player_id')
+                    ->from('sv_initial_results_players')
+                    ->whereNotNull('total'); // exclude players who already have total in another report
+            })
+            ->whereHas('report', function ($q) use ($request) {
+                $q->where('weapon_id', $request->weapon_id)
+                    ->where(function ($q2) {
+                        // include confirmed or not-confirmed reports
+                        $q2->where('confirmed', true)
+                            ->orWhereNull('confirmed');
+                    });
+            })
             ->when(
                 $request->club_id,
-                fn($q) =>
-                $q->whereHas(
-                    'player.club',
-                    fn($sub) =>
-                    $sub->where('cid', $request->club_id)
-                )
+                fn($q) => $q->whereHas('player.club', fn($sub) => $sub->where('cid', $request->club_id))
             )
             ->when(
                 $request->nat,
-                fn($q) =>
-                $q->whereHas(
-                    'player.nationality',
-                    fn($sub) =>
-                    $sub->where('id', $request->nat)
-                )
+                fn($q) => $q->whereHas('player.nationality', fn($sub) => $sub->where('id', $request->nat))
             )
             ->when(
                 $request->gender,
-                fn($q) =>
-                $q->whereHas(
-                    'player',
-                    fn($sub) =>
-                    $sub->where('gender', $request->gender)
-                )
+                fn($q) => $q->whereHas('player', fn($sub) => $sub->where('gender', $request->gender))
             )
             ->when(
                 $request->date_from,
-                fn($q) =>
-                $q->whereHas(
-                    'report',
-                    fn($sub) =>
-                    $sub->whereDate('date', '>=', $request->date_from)
-                )
+                fn($q) => $q->whereHas('report', fn($sub) => $sub->whereDate('date', '>=', $request->date_from))
             )
             ->when(
                 $request->date_to,
-                fn($q) =>
-                $q->whereHas(
-                    'report',
-                    fn($sub) =>
-                    $sub->whereDate('date', '<=', $request->date_to)
-                )
+                fn($q) => $q->whereHas('report', fn($sub) => $sub->whereDate('date', '<=', $request->date_to))
             )
             ->when(
                 $request->q,
-                fn($q) =>
-                $q->whereHas(
-                    'player',
-                    fn($sub) => $sub
-                        ->where(function ($query) use ($request) {
-                            $search = $request->q;
-                            $query->where('name', 'like', "%{$search}%")
-                                ->orWhere('ID', 'like', "%{$search}%")
-                                ->orWhere('phone1', 'like', "%{$search}%")
-                                ->orWhere('phone2', 'like', "%{$search}%");
-                        })
-                )
-            );
-        return $pag ? $results->cursorPaginate(config('app.admin_pagination_number')) : $results->get();
+                fn($q) => $q->whereHas('player', fn($sub) => $sub->where(function ($query) use ($request) {
+                    $search = $request->q;
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('ID', 'like', "%{$search}%")
+                        ->orWhere('phone1', 'like', "%{$search}%")
+                        ->orWhere('phone2', 'like', "%{$search}%");
+                }))
+            )
+            ->groupBy('player_id')
+            ->selectRaw('MIN(id) as id, player_id, MAX(Rid) as Rid');
+
+        //dd($results->get());
+        return $pag
+            ? $results->orderByDesc('id')->cursorPaginate(config('app.admin_pagination_number'))
+            : $results->orderByDesc('id')->get();
     }
+
     //get all available absent players for the club with the same weapon
     public function getAvailableAbsentPlayers($request, $report, $club_id, $pag)
     {
-        // Get player IDs already added in initial results (total >= 0)
-        $addedPlayersWithTotal = sv_initial_results_players::where('total', '>=', 0)->where('Rid','<>',$report->Rid)
+        // Exclude players who already have a non-null total in any report except current one
+        $addedPlayersWithTotal = Sv_initial_results_players::whereNotNull('total')
+            ->where('Rid', '<>', $report->Rid)
             ->pluck('player_id')
             ->toArray();
 
         $query = Sv_initial_results_players::query()
             ->with(['player.club', 'player.weapon', 'player.nationality', 'report.weapon'])
-            ->whereHas(
-                'player',
-                fn($q) =>
+            ->whereNull('total') // only players without total
+            ->whereNotIn('player_id', $addedPlayersWithTotal)
+            ->whereHas('report', function ($q) use ($report) {
+                $q->where('weapon_id', $report->weapon_id)
+                    ->where(function ($sub) {
+                        $sub->where('confirmed', true)
+                            ->orWhereNull('confirmed'); // include confirmed or unconfirmed
+                    });
+            })
+            ->whereHas('player', function ($q) use ($report) {
                 $q->where('reg_type', 'personal')
-                    ->where('weapon_id', $report->weapon_id)
-                    ->whereNotIn('mid', $addedPlayersWithTotal)
-            );
+                    ->where('weapon_id', $report->weapon_id);
+            });
 
-        // Filter by club if provided
         if ($club_id) {
             $query->whereHas('player.club', fn($q) => $q->where('cid', $club_id));
         }
 
-        // Apply dynamic filters like in getAbsentPlayersInitialResults
         $query
             ->when(
                 $request->club_id,
@@ -399,20 +395,17 @@ class ResultsService
             ->when(
                 $request->q,
                 fn($q) =>
-                $q->whereHas(
-                    'player',
-                    fn($sub) => $sub
-                        ->where(function ($query) use ($request) {
-                            $search = $request->q;
-                            $query->where('name', 'like', "%{$search}%")
-                                ->orWhere('ID', 'like', "%{$search}%")
-                                ->orWhere('phone1', 'like', "%{$search}%")
-                                ->orWhere('phone2', 'like', "%{$search}%");
-                        })
-                )
-            );
+                $q->whereHas('player', fn($sub) => $sub->where(function ($query) use ($request) {
+                    $search = $request->q;
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('ID', 'like', "%{$search}%")
+                        ->orWhere('phone1', 'like', "%{$search}%")
+                        ->orWhere('phone2', 'like', "%{$search}%");
+                }))
+            )
+            ->groupBy('player_id')
+            ->selectRaw('MIN(id) as id, player_id, MAX(Rid) as Rid');
 
-        // Return results with pagination if requested
         return $pag
             ? $query->orderByDesc('id')->cursorPaginate(config('app.admin_pagination_number'))
             : $query->orderByDesc('id')->get();

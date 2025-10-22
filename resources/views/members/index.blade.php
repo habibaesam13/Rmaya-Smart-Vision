@@ -305,8 +305,17 @@
                                                     {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
                                                 </button>
                                             </div>
+
                                         </div>
                                     </form>
+                                    @if(isset($Edit_report))
+                                    <form action="{{ route('detailed-members-report-save', $Edit_report->Rid) }}" method="POST" class="mt-3">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-lg px-5">
+                                            الرجوع للتقرير
+                                        </button>
+                                    </form>
+                                    @endif
 
                                     <hr>
                                     @isset($available_players)
@@ -423,11 +432,11 @@
                                             @endempty
 
                                         </tbody>
-                                       
+
                                     </table>
-                                       <div id="pr" style="display:none">
-                                            @include('members/registered_members_print', ['members'=>@$available_players])
-                                        </div>
+                                    <div id="pr" style="display:none">
+                                        @include('members/registered_members_print', ['members'=>@$available_players])
+                                    </div>
                                     @endisset
                                 </div>
                             </div>
@@ -531,10 +540,10 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                             <div id="pr" style="display:none">
-                                            @include('members/registered_members_print', ['members'=>@$members_without_pag])
-                                        </div>
-                            
+                            <div id="pr" style="display:none">
+                                @include('members/registered_members_print', ['members'=>@$members_without_pag])
+                            </div>
+
                             @endif
                             <div class="mt-4 d-flex justify-content-center">
                                 {{ $members->appends(request()->query())->links() }}
