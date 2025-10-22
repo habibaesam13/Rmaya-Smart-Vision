@@ -27,7 +27,8 @@ class PersonalService
         $this->clubsService = $clubsService;
         $this->weaponsService = $weaponsService;
     }
-    public function getMemberByID($mid){
+    public function getMemberByID($mid)
+    {
         return Sv_member::findorfail($mid);
     }
     public function get_members_data()
@@ -55,24 +56,25 @@ class PersonalService
         $member->save();
         return $member;
     }
-    public function getMembers(Request $request,$pag,$club_id){
-        $results= Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+    public function getMembers(Request $request, $pag, $club_id)
+    {
+        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
             ->orderByDesc('mid');
-        if($club_id !=null){
-            $results= Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
-            ->where('club_id',$club_id)
-            ->when(
-                $request->hasAny(['mgid', 'reg', 'nat', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
-                fn($q) => $q->filter($request)
-            )
-            ->orderByDesc('mid');
+        if ($club_id != null) {
+            $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+                ->where('club_id', $club_id)
+                ->when(
+                    $request->hasAny(['mgid', 'reg', 'nat', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
+                    fn($q) => $q->filter($request)
+                )
+                ->orderByDesc('mid');
         }
-        
-        return $pag?$results->cursorPaginate(config('app.admin_pagination_number')):$results->get();
+
+        return $pag ? $results->cursorPaginate(config('app.admin_pagination_number')) : $results->get();
     }
     public function updatePersonalData($data, $mid, Request $request)
     {
@@ -80,41 +82,76 @@ class PersonalService
 
         $member = $this->getMemberByID($mid);
 
+
         if ($request->hasFile('front_id_pic')) {
-            Log::info('Updating front_id_pic');
-            if ($member->front_id_pic && Storage::disk('public')->exists($member->front_id_pic)) {
-                Storage::disk('public')->delete($member->front_id_pic);
-            }
 
-            $data['front_id_pic'] = $request->file('front_id_pic')->store('national_ids', 'public');
+
+            $file = $request->front_id_pic;
+            $newfile = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/storage/national_ids/', $newfile);
+            $path_front =  '/national_ids/' . $newfile;
+            $data['front_id_pic']=$path_front;
+
         }
-
         if ($request->hasFile('back_id_pic')) {
-            Log::info('Updating back_id_pic');
-            if ($member->back_id_pic && Storage::disk('public')->exists($member->back_id_pic)) {
-                Storage::disk('public')->delete($member->back_id_pic);
-            }
 
-            $data['back_id_pic'] = $request->file('back_id_pic')->store('national_ids', 'public');
+
+            $file = $request->back_id_pic;
+            $newfile = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/storage/national_ids/', $newfile);
+            $path_back =  '/national_ids/' . $newfile;
+            $data['back_id_pic']=$path_back;
+
         }
+
+        // if ($request->hasFile('front_id_pic')) {
+        //     Log::info('Updating front_id_pic');
+        //     if ($member->front_id_pic && Storage::disk('public')->exists($member->front_id_pic)) {
+        //         Storage::disk('public')->delete($member->front_id_pic);
+        //     }
+
+        //     $data['front_id_pic'] = $request->file('front_id_pic')->store('national_ids', 'public');
+        // }
+
+        // if ($request->hasFile('back_id_pic')) {
+        //     Log::info('Updating back_id_pic');
+        //     if ($member->back_id_pic && Storage::disk('public')->exists($member->back_id_pic)) {
+        //         Storage::disk('public')->delete($member->back_id_pic);
+        //     }
+
+        //     $data['back_id_pic'] = $request->file('back_id_pic')->store('national_ids', 'public');
+        // }
 
         $member->update($data);
 
-        Log::info('Update finished', ['member' => $member->id]);
+        //Log::info('Update finished', ['member' => $member->id]);
 
         return $member;
     }
-    public function RegisterNewMember($data,$request){
-         if ($request->hasFile('front_id_pic')) {
-            $data['front_id_pic'] = $request->file('front_id_pic')->store('national_ids', 'public');
-        }
+    public function RegisterNewMember($data, $request)
+    {
 
+        if ($request->hasFile('front_id_pic')) {
+
+
+            $file = $request->front_id_pic;
+            $newfile = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/storage/national_ids/', $newfile);
+            $path_front =  '/national_ids/' . $newfile;
+            $data['front_id_pic']=$path_front;
+
+        }
         if ($request->hasFile('back_id_pic')) {
-            Log::info('Updating back_id_pic');
-            $data['back_id_pic'] = $request->file('back_id_pic')->store('national_ids', 'public');
-        }
 
-        return Sv_member::create($data);
+
+            $file = $request->back_id_pic;
+            $newfile = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path() . '/storage/national_ids/', $newfile);
+            $path_back =  '/national_ids/' . $newfile;
+            $data['back_id_pic']=$path_back;
+
+        }
         
+        return Sv_member::create($data);
     }
 }
