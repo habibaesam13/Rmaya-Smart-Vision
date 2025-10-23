@@ -67,7 +67,7 @@
             <div class="col-12 col-md-4 text-md-end text-center">
 
 
-                <div class=" d-flex ">
+                <div class="">
 
                 <span class="badge badge-outline-primary">
 
@@ -230,20 +230,6 @@
                                 </select>
                             </div>
 
-                            {{-- Gender --}}
-                            <div class="col-md-4 d-flex align-items-center justify-content-center gap-3">
-                                <div>
-                                    <input id="male" type="radio" name="gender" value="male"
-                                        {{ request('gender') == 'male' ? 'checked' : '' }}>
-                                    <label for="male">ذكر</label>
-                                </div>
-                                <div>
-                                    <input id="female" type="radio" name="gender" value="female"
-                                        {{ request('gender') == 'female' ? 'checked' : '' }}>
-                                    <label for="female">أنثى</label>
-                                </div>
-                            </div>
-
                             {{-- Search Input --}}
                             <div class="col-md-4">
                                 <input class="form-control" type="text" name="q"
@@ -265,7 +251,19 @@
                                 </select>
                             </div>
 
-
+                             {{-- Gender --}}
+                            <div class="col-md-4 d-flex align-items-center justify-content-center gap-3">
+                                <div>
+                                    <input id="male" type="radio" name="gender" value="male"
+                                        {{ request('gender') == 'male' ? 'checked' : '' }}>
+                                    <label for="male">ذكر</label>
+                                </div>
+                                <div>
+                                    <input id="female" type="radio" name="gender" value="female"
+                                        {{ request('gender') == 'female' ? 'checked' : '' }}>
+                                    <label for="female">أنثى</label>
+                                </div>
+                            </div>
                             {{-- Dates + Registration Place in same row --}}
                             <div class="row">
                                 <div class="col-md-4">
@@ -356,8 +354,8 @@
 
                 @if($reportSection)
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">
+                        <div class="card-header ">
+                            <h5 class="mb-0 header-title"">
                                 <i class="fas fa-file-alt me-2"></i>
                                 اضافة المتأهلين من التصفيات الاولية الى التصفيات النهائية
                             </h5>
@@ -410,7 +408,7 @@
                                     <div id="checkedMembersContainer" style="display:none;"></div>
 
                                     <div class="col-md-4">
-                                        <button type="submit" class="btn btn-success w-100">
+                                        <button type="submit" class="btn btn-success w-100" style="margin-bottom:20px;">
                                             <i class="fas fa-save me-2"></i>
                                             {{--                                            {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}--}}
                                             حفظ التقرير
