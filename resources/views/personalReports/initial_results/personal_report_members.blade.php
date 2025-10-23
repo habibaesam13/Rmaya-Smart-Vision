@@ -104,11 +104,11 @@
                                 </button>
                                 @endif
                             </form>
-                            <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
+                            <!-- <form action="{{route('personal-results-report-download-pdf',$report->Rid)}}" method="GET">
                                 <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">
                                     <i class="ri-file-pdf-2-line"></i>
                                 </button>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
                     </form>
