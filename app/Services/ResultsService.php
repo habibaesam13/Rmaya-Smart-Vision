@@ -206,41 +206,31 @@ class ResultsService
 
     //البحث فى النتائج الأولية اليومية
     public function searchInitialResultsReports(Request $request)
-{
-    $query = Sv_initial_results_players::query()
-        ->with(['player.club', 'player.weapon', 'report.weapon']);
-
-    $query->whereHas('report', function ($sub) use ($request) {
-        $sub->where('confirmed', true);
-        if ($request->filled('date')) {
-            $sub->whereDate('date', $request->date);
-        }
-    });
-
-    if ($request->filled('q')) {
-        $query->whereHas('player', function ($sub) use ($request) {
-            $sub->where('name', 'like', "%{$request->q}%")
-                ->orWhere('ID', 'like', "%{$request->q}%")
-                ->orWhere('phone1', 'like', "%{$request->q}%");
-        });
-    }
-
-    // Always get total
-    $total = (clone $query)->count();
-    //dd($total);
-    if ($request->filled('limit')) {
-        $limit = (int) $request->input('limit');
-        $results = $query->take($limit)->get(); // Collection
+    {
+        $query = Sv_initial_results_players::query()
+            ->with(['player.club', 'player.weapon', 'report.weapon']);
         
-    } else {
-        $results = $query->cursorPaginate(config('app.admin_pagination_number'));
-    }
+        $query->whereHas('report', function ($sub) use ($request) {
+            $sub->where('confirmed', true);
+            if ($request->filled('date')) {
+                $sub->whereDate('date', $request->date);
+            }
+        });
 
-    return [
-        'results' => $results,
-        'total' => $total,
-    ];
-}
+        if ($request->filled('q')) {
+            $query->whereHas('player', function ($sub) use ($request) {
+                $sub->where('name', 'like', "%{$request->q}%")
+                    ->orWhere('ID', 'like', "%{$request->q}%")
+                    ->orWhere('phone1', 'like', "%{$request->q}%");
+            });
+        }
+        
+        // Always get total
+        $query->orderByDesc('total');
+        //dd($query->orderByDesc('total')->get());
+        return $query->paginate(config('app.admin_pagination_number'));
+        
+    }
 
 
     //قائمة النتائج الاولية
