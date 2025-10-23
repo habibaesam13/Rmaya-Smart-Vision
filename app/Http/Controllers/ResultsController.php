@@ -213,8 +213,8 @@ class ResultsController extends Controller
     //search initial results reports  {{البحث فى النتائج الأولية اليومية}}
     public function searchInitialResultsReports(Request $request)
     {
-        $results = $this->resultService->searchInitialResultsReports($request);
-
+        $results = $this->resultService->searchInitialResultsReports($request)['results'];
+        
         if (empty($results)) {
             $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
         }

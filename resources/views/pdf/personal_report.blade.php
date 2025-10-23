@@ -96,7 +96,7 @@
                     <h4> تقرير {{$report?->weapon?->name}}  </h4>
                     <br>
                     <h6> رقم الديتيل - {{$report?->details}} </h6> <br>
-                    <h6> {{ $report?->date ? $report->date->format('d-m-Y') : '---'}} </h6>
+                    <h6> {{ $report?->date ? $report->date : '---'}} </h6>
 
                 </td>
                 <td class="header-left">
