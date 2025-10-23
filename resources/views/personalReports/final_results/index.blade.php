@@ -97,9 +97,13 @@
                     {{--                        </button>--}}
                     {{--                    </form>--}}
 
-                    <span class="btn btn-sm btn-primary  ">
-                            <i class="ri-file-excel-line"></i>
-                        </span>
+                     {{--/**********excel btn**********/--}}
+                    <span title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')"
+                       target="_blank"
+                       class="btn btn-sm btn-primary  ">
+                        <i class="ri-file-excel-line"></i>
+                    </span>
+                    {{--/*********excel brn**********/--}}
 
                     <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
                             <i class="ri-file-pdf-2-line"></i>

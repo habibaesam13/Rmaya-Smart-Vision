@@ -97,6 +97,14 @@
                     {{--                            <i class="ri-file-pdf-2-line"></i>--}}
                     {{--                        </button>--}}
                     {{--                    </form>--}}
+                    {{--/**********excel btn**********/--}}
+                    <a title="اكسيل" onclick="exportDivToExcel('pr', 'absent_players_report.xlsx')"
+                       target="_blank"
+                       class="btn btn-sm btn-primary  ">
+                        <i class="ri-file-excel-line"></i>
+                    </a>
+                    {{--/*********excel brn**********/--}}
+
                     <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
                             <i class="ri-file-pdf-2-line"></i>
                         </span>

@@ -96,6 +96,28 @@
     printWindow.document.close();
     printWindow.print();
 }
+
+
+    // Export div content to Excel
+    function exportDivToExcel(divId, filename = 'report.xlsx') {
+        const div = document.getElementById(divId);
+        if (!div) return alert("Div not found!");
+
+        // If div contains a table — convert it directly
+        const table = div.querySelector("table");
+        if (!table) return alert("No table found inside the div!");
+
+        // Convert the HTML table into a worksheet
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Create a new workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Report");
+
+        // Download as .xlsx
+        XLSX.writeFile(wb, filename);
+    }
+
 </script>
 @livewireScripts
 

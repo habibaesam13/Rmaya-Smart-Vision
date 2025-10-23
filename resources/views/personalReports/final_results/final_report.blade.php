@@ -5,7 +5,6 @@
 {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">--}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <div class="page-container">
         <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
@@ -19,10 +18,15 @@
                     <span class="badge badge-outline-primary"> عدد التقارير : {{count($res)}}</span>
 
 
+                    {{--/**********excel btn**********/--}}
+                    <a title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')"
+                       target="_blank"
+                       class="btn btn-sm btn-primary  ">
+                        <i class="ri-file-excel-line"></i>
+                    </a>
+                    {{--/*********excel brn**********/--}}
                     <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i
                             class="ri-printer-line"></i> </a>
-
-
                 </div>
             </div>
 
@@ -139,7 +143,10 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <div class="d-flex">
-                                                    <label>مجموع العلامة المكتسبة</label>
+                                                    <label>
+                                                    <span class="fs-10" >مجموع العلامة المكتسبة</span>
+                                                    <span class="fw-bolder fs-20" style="color:#bf1e2f"> => </span>
+                                                    </label>
                                                     <input name="total" value="{{ request('total')}}" type="number"
                                                            min="0"
                                                            class="form-control form-control-sm">
@@ -159,12 +166,6 @@
                                         {{--                            </div>--}}
                                         <div class="col-8 ">
                                             <div class="file-upload-wrapper p-1 d-flex">
-                                                {{--                                    <a onclick="exportDivToExcel('printArea', 'final_report.xlsx')"--}}
-                                                {{--                                       target="_blank"--}}
-                                                {{--                                       class="btn btn-outline-dark btn-sm  d-flex align-items-center gap-2 ml">--}}
-                                                {{--                                        <i class="fas fa-print"></i>--}}
-                                                {{--                                        <span>طباعة</span>--}}
-                                                {{--                                    </a>--}}
 
                                                 <button type="submit" value="submit" class="btn btn-sm btn-warning ml">
                                                     بحث
@@ -352,25 +353,6 @@
         //     printWindow.print();
         // }
 
-        // Export div content to Excel
-        function exportDivToExcel(divId, filename = 'report.xlsx') {
-            const div = document.getElementById(divId);
-            if (!div) return alert("Div not found!");
-
-            // If div contains a table — convert it directly
-            const table = div.querySelector("table");
-            if (!table) return alert("No table found inside the div!");
-
-            // Convert the HTML table into a worksheet
-            const ws = XLSX.utils.table_to_sheet(table);
-
-            // Create a new workbook
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Report");
-
-            // Download as .xlsx
-            XLSX.writeFile(wb, filename);
-        }
 
     </script>
 

@@ -4,8 +4,14 @@
         <div class="row">
             <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
                 <div class="col-12 col-md-8 mb-2 mb-md-0">
-                    <h4 class="header-title">تقرير النتائج اليومية</h4>
+                    <h4 class="header-title">تقارير النتائح النهائية - الديتيل</h4>
                 </div>
+                <div class="col-12 col-md-4 text-md-end text-center">
+                        <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
+                            <i class="ri-file-pdf-2-line"></i>
+                        </span>
+                </div>
+
                 {{-- Success Message --}}
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -83,7 +89,7 @@
                     </div>
 
                     {{-- Registered Teams --}}
-                    <div class="card shadow-sm border-0">
+                    <div class="card shadow-sm border-0" >
                         <div class="card-body">
                             <table class="table table-bordered mb-3">
                                 <thead>
@@ -141,7 +147,6 @@
                             </div>
                         </div>
                     </div>
-
                     <style>
                         .icon-btn {
                             display: inline-flex;
@@ -171,7 +176,18 @@
                             pointer-events: none;
                         }
                     </style>
-                </div>
+
+
+
+
+                    <!---------------start print part ----------------->
+                    <div id="pr" style="display:none">
+                        @include('personalReports/final_results/preliminary_results_reports_clubs_details_print' ,  ['ReportsDetails' => @$reportsDetailsWithoutPagination])
+                    </div>
+                    <!--------end print part ------>
+
+
+                 </div>
             </div>
         </div>
     </div>
