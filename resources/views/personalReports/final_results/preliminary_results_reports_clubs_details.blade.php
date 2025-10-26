@@ -4,8 +4,14 @@
         <div class="row">
             <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
                 <div class="col-12 col-md-8 mb-2 mb-md-0">
-                    <h4 class="header-title">تقرير النتائج اليومية</h4>
+                    <h4 class="header-title">تقارير النتائح النهائية - الديتيل</h4>
                 </div>
+                <div class="col-12 col-md-4 text-md-end text-center">
+                        <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-danger  ">
+                            <i class="ri-printer-line"></i>
+                        </span>
+                </div>
+
                 {{-- Success Message --}}
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -29,11 +35,12 @@
                     <div class="card-body">
                         <div class="card bg-search">
                             {{-- Search Form --}}
-                            <form action="{{route('reports-details_absent_players_final')}}" method="get"
+                            <!--<form action="{{route('reports-details_absent_players_final')}}" method="get"-->
+                                <form action="{{route('reports-details_players_final')}}" method="get"
                                   class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-3">
-                                        <label for="weapons" class="form-label">الأسلحة</label>
+                                        <!--<label for="weapons" class="form-label">الأسلحة</label>-->
                                         <select name="weapon_id" id="weapons" class="form-select form-select-lg">
                                             <option value="">اختر السلاح</option>
                                             @foreach($weapons as $weapon)
@@ -45,20 +52,20 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="detail" class="form-label">رقم الديتيل</label>
+                                            <!--<label for="detail" class="form-label">رقم الديتيل</label>-->
                                         <input type="number" name="details" id="detail"
                                                value="{{ request('details') }}"
                                                class="form-control form-control-lg text-center"
                                                placeholder="أدخل رقم الديتيل">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="date-from" class="form-label">من</label>
+                                        <!--<label for="date-from" class="form-label">من</label>-->
                                         <input id="date-from" type="date" name="date_from"
                                                class="form-control form-control-lg"
                                                value="{{ request('date_from') }}">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="date-to" class="form-label">إلى</label>
+                                        <!--<label for="date-to" class="form-label">إلى</label>-->
                                         <input id="date-to" type="date" name="date_to"
                                                class="form-control form-control-lg"
                                                value="{{ request('date_to') }}">
@@ -67,13 +74,14 @@
                                 </div>
                                 <div class="col-md-12 d-flex justify-content-start gap-2 my-2">
                                     <div class="col-md-1">
-                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100"
+                                        <button type="submit" class="btn btn-sm btn-success mt-1 mt-md-0 mt-lg-0 w-100"
                                                 name="search" value="بحث">
-                                            <i class="fas fa-search me-2"></i>&nbsp;&nbsp;بحث
+                                            <i class="ri-search-2-line"></i>&nbsp;&nbsp;بحث
                                         </button>
                                     </div>
                                     <div class="col-md-1">
-                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
+                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-primary w-100">
+                                            
                                             اعادة تعيين
                                         </a>
                                     </div>
@@ -83,7 +91,7 @@
                     </div>
 
                     {{-- Registered Teams --}}
-                    <div class="card shadow-sm border-0">
+                    <div class="card shadow-sm border-0" >
                         <div class="card-body">
                             <table class="table table-bordered mb-3">
                                 <thead>
@@ -114,7 +122,7 @@
                                             {{-- Attached File Icon (shown only if exists) --}}
                                             {{--                                        <a href="{{ $report->file ? asset('storage/' . $report->file) : '#' }}"--}}
                                             @if($report->file)
-                                                <a href="{{ asset('storage/' . $report->file)  }}"
+                                                <a href="{{ asset(  $report->file)  }}"
                                                    target="_blank"
                                                    class="dis"
                                                    data-bs-toggle="tooltip"
@@ -141,7 +149,6 @@
                             </div>
                         </div>
                     </div>
-
                     <style>
                         .icon-btn {
                             display: inline-flex;
@@ -171,7 +178,18 @@
                             pointer-events: none;
                         }
                     </style>
-                </div>
+
+
+
+
+                    <!---------------start print part ----------------->
+                    <div id="pr" style="display:none">
+                        @include('personalReports/final_results/preliminary_results_reports_clubs_details_print' ,  ['ReportsDetails' => @$reportsDetailsWithoutPagination])
+                    </div>
+                    <!--------end print part ------>
+
+
+                 </div>
             </div>
         </div>
     </div>

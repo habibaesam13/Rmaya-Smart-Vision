@@ -50,6 +50,7 @@
               <label for="inputPassword5" class="col-12 col-form-label">النادي</label>
               <div class="col-md-12">
                 <select class="form-control"  name="clubid" >
+                                        <option value="">اخنر نادي </option>
                      @foreach($clubs as $club => $cid) <option @if($cid==$user->clubid) selected="" @endif value="{{$cid}}">{{$club}}</option> @endforeach </select>
               </div>
             </div>

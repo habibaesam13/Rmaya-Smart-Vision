@@ -15,8 +15,7 @@
                     </span>
 
                     <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
-                </div>
-                <!-- Excel Download Form -->
+                    <!-- Excel Download Form -->
                 <form
                     action="{{ route('absent-personal-results-export-excel') }}"
                     method="post"
@@ -30,6 +29,8 @@
                         <i class="ri-file-excel-line fs-5"></i>
                     </button>
                 </form>
+                </div>
+                
             </div>
         </div>
         <div class="col-12">
@@ -124,13 +125,14 @@
                             <div class="col-md-12 col-lg-2 col-12 mb-2" style="padding-top:8px">
                                 <div class="g-1 row justify-content-center">
                                     <div class="col-12 col-lg-5 col-md-6 ">
-                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
+                                        <button type="submit" class="btn btn-sm btn-success mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
                                             <i class="ri-search-2-line "></i>&nbsp;&nbsp;بحث
                                         </button>
                                     </div>
                                     <div class="col-12 col-lg-7 col-md-6">
-                                        <a href="{{ route('individuals-absent-preliminary-results') }}" class="btn btn-sm btn-warning w-100">
-                                            اعادة ضبط
+                                        <a href="{{ route('individuals-absent-preliminary-results') }}" class="btn btn-sm btn-primary w-100">
+                                            <i class="ri-arrow-go-back-line me-1"></i>
+                                            اعادة تعيين
                                         </a>
                                     </div>
                                 </div>
@@ -139,9 +141,9 @@
                     </div>
                     {{-- Filtered Data --}}
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
-                        <div class="card-header  text-white" style="background-color: #bf1e2f;">
-                            <h5 class="mb-0">
-                                <i class="fas fa-file-alt me-2"></i>
+                        <div class="card-header">
+                            <h5 class="mb-0 header-title">
+                                <i class="ri-file-line me-2"></i>
                                 إضافة تقرير يومي
                             </h5>
                         </div>
@@ -184,7 +186,7 @@
 
                                     <div id="checkedMembersContainer" style="display:none;"></div>
                                     <div class="col-md-4">
-                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                        <button type="submit" class="btn btn-success btn-lg w-100" style="margin-bottom:20px">
                                             <i class="fas fa-save me-2"></i>
                                             {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
                                         </button>

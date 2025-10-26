@@ -278,7 +278,7 @@
                                     @endif
 
 
-                                    <form action="{{ isset($Edit_report) 
+                                    <form action="{{ isset($Edit_report)
                                         ? route('update-report-registered-members', $Edit_report->Rid)
                                         : route('generate-report-registered-members') }}" method="POST" id="reportForm">
 
@@ -398,8 +398,8 @@
                                                             @csrf
                                                             <input type="hidden" name="mid" value="{{ $player->mid }}">
                                                             <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
-                                                                title="{{ $player->active ? 'تعطيل' : 'تفعيل' }}">
-                                                                <!--<i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>-->
+                                                              title="{{ $player->active ? 'الغاء التفعيل' : 'تفعيل' }}">
+                                                                                                                                <!--<i class="fas fa-{{ $player->active ? 'pause' : 'play' }}"></i>-->
                                                                 @if($club->active) <i class="ri-pause-line"></i> @else <i class="ri-play-line"></i> @endif
                                                             </button>
                                                         </form>

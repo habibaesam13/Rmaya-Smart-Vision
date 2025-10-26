@@ -41,11 +41,11 @@ class StorePersonalRequest extends FormRequest
             'weapon_id' => 'required|exists:sv_weapons,wid',
             'phone1' => [
                 'required',
-                'regex:/^055\d{7}$/',
+                'regex:/^05\d{8}$/',
             ],
             'phone2' => [
                 'nullable',
-                'regex:/^055\d{7}$/',
+                'regex:/^05\d{8}$/',
             ],
 
             'front_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -94,9 +94,9 @@ class StorePersonalRequest extends FormRequest
             'weapon_id.exists' => 'السلاح المحدد غير موجود.',
 
             'phone1.required' => 'رقم الهاتف الأول مطلوب.',
-            'phone1.regex' => 'رقم الهاتف الأول يجب أن يبدأ بـ 055 ويتكون من 10 أرقام فقط.',
+            'phone1.regex' => 'رقم الهاتف الأول يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
+  'phone2.regex' => 'رقم الهاتف الثاني يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
 
-            'phone2.regex' => 'رقم الهاتف الثاني يجب أن يبدأ بـ 055 ويتكون من 10 أرقام فقط.',
 
             'front_id_pic.required' => 'صورة البطاقة الأمامية مطلوبة.',
             'front_id_pic.mimes' => 'الصورة الأمامية يجب أن تكون بصيغة jpg أو jpeg أو png أو pdf.',
@@ -111,7 +111,7 @@ class StorePersonalRequest extends FormRequest
 
             'ID.required' => 'رقم الهوية مطلوب.',
             'ID.regex' => 'رقم الهوية يجب أن يحتوي على 15 رقم فقط دون حروف أو رموز.',
-            'ID.unique' => 'هذا الرقم مسجل بالفعل.',
+            'ID.unique' => 'قد تم تسجيلكم مسبقا برقم الهوية',
         ];
     }
 }

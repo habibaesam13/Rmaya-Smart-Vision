@@ -213,7 +213,8 @@ class ResultsController extends Controller
     //search initial results reports  {{البحث فى النتائج الأولية اليومية}}
     public function searchInitialResultsReports(Request $request)
     {
-        $results = $this->resultService->searchInitialResultsReports($request)['results'];
+
+        $results = $this->resultService->searchInitialResultsReports($request);
         
         if (empty($results)) {
             $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
@@ -251,8 +252,9 @@ class ResultsController extends Controller
         if ($results instanceof \Illuminate\Support\Collection && $results->isEmpty()) {
             $results = new \Illuminate\Pagination\LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
         }
-
-        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs', 'results_without_pag'));
+        //dd($results);
+        $totalCount = $results_without_pag ? $results_without_pag->count() : 0;
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs', 'results_without_pag','totalCount'));
     }
     public function updateTotalForPlayer(Request $request, $player_id)
     {

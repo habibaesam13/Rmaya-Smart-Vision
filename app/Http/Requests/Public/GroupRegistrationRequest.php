@@ -24,7 +24,9 @@ class GroupRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_name' => ['required', 'string', 'max:255'],
+            'team_name' => ['required', 'string', 'max:255',
+              Rule::unique('sv_teams', 'name'),
+            ],
 
             'weapon_id' => [
                 'required',
@@ -38,18 +40,19 @@ class GroupRegistrationRequest extends FormRequest
 
             'members.*.ID' => [
                 'required',
+                'size:15',
                 'regex:/^\d{15}$/',
                 'distinct', // prevents duplicates within same request (team)
             ],
             'members.*.Id_expire_date' => ['required', 'date', 'after:today'],
             'members.*.name' => ['required', 'string', 'regex:/^[\p{Arabic}\s]+$/u'],
-            'members.*.phone1' => ['required', 'regex:/^055\d{7}$/'],
+            'members.*.phone1' => ['required', 'regex:/^05\d{8}$/'],
             'members.*.dob' => [
                 'required',
                 'date',
-                'before_or_equal:' . now()->subYears(3)->toDateString(),
+                'before_or_equal:' . now()->subYears(16)->toDateString(),
             ],
-            'members.*.age' => ['nullable', 'numeric', 'min:3'],
+            'members.*.age' => ['nullable', 'numeric', 'min:16'],
             'members.*.front_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
             'members.*.back_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ];
@@ -76,6 +79,7 @@ class GroupRegistrationRequest extends FormRequest
     {
         return [
             'team_name.required' => 'اسم الفريق مطلوب.',
+            'team_name.unique' => 'يوجد اسم فريق اخر بنفس الأسم',
             'weapon_id.required' => 'السلاح مطلوب.',
             'weapon_id.exists' => 'السلاح المحدد غير موجود.',
             'registration_date.required' => 'تاريخ التسجيل مطلوب.',
@@ -86,6 +90,7 @@ class GroupRegistrationRequest extends FormRequest
             // Member-specific
             'members.*.ID.required' => 'رقم الهوية مطلوب.',
             'members.*.ID.regex' => 'رقم الهوية يجب أن يحتوي على 15 رقم فقط دون حروف أو رموز.',
+            'members.*.ID.size' => 'رقم الهوية يجب أن يحتوي على 15 رقم فقط دون حروف أو رموز.',
             'members.*.ID.distinct' => 'لا يمكن تكرار رقم الهوية داخل نفس الفريق.',
 
             'members.*.Id_expire_date.required' => 'تاريخ انتهاء الهوية مطلوب.',
@@ -95,11 +100,11 @@ class GroupRegistrationRequest extends FormRequest
             'members.*.name.regex' => 'الاسم يجب أن يحتوي على أحرف عربية ومسافات فقط.',
 
             'members.*.phone1.required' => 'رقم الهاتف مطلوب.',
-            'members.*.phone1.regex' => 'رقم الهاتف يجب أن يبدأ بـ 055 ويتكون من 10 أرقام فقط.',
+            'members.*.phone1.regex' => 'رقم الهاتف يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
 
             'members.*.dob.required' => 'تاريخ الميلاد مطلوب.',
             'members.*.dob.date' => 'تاريخ الميلاد غير صحيح.',
-            'members.*.dob.before_or_equal' => 'العمر يجب أن يكون أكثر من 3 سنوات.',
+            'members.*.dob.before_or_equal' =>'العمر يجب ان يكون 16 سنة على الاقل',
 
             'members.*.front_id_pic.mimes' => 'الملف يجب أن يكون بصيغة jpg أو jpeg أو png أو pdf.',
             'members.*.front_id_pic.max' => 'حجم الملف لا يجب أن يزيد عن 2 ميجا.',

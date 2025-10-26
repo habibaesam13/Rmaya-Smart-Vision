@@ -10,7 +10,7 @@
 
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{url('admin/assets/images/favicon.ico')}}">
+     <!--<link rel="shortcut icon" href="{{url('admin/assets/images/favicon.ico')}}">-->
 
     <!-- Vendor css -->
     <link href="{{url('admin/assets/css/vendor.min.css')}}" rel="stylesheet" type="text/css"/>
@@ -47,13 +47,14 @@
     <!-- Icons css -->
     <link href="{{url('admin/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css"/>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <!----------test-------->
 {{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
 <!----------test-------->
 
 
-    
+
     @yield('styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>

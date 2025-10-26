@@ -31,7 +31,7 @@
 
 
             {{-- Report Info --}}
-            <div class="row g-3 mb-4">
+         <!--   <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="info-box bg-light p-3 rounded">
                         <label class="text-muted small mb-1">السلاح</label>
@@ -50,7 +50,7 @@
                         <h5 class="mb-0 text-dark">{{ $report?->date ? date_create($report->date)->format('d-m-Y') : '---' }}</h5>
                     </div>
                 </div>
-            </div>
+            </div>-->
          </div>
     </div>
 
@@ -59,7 +59,9 @@
         <div class="card-body">
             @csrf
             <div class="table-responsive">
-                {{--                    <h2>{{session()->get('absents')}}</h2>--}}
+                <center>
+                تقرير سلاح : {{ $report?->weapon?->name ?? '---' }} - رقم الديتيل : {{ $report?->details ?? '---' }} - التاريخ : {{ $report?->date ? date_create($report->date)->format('d-m-Y') : '---' }}
+              </center>  {{--                    <h2>{{session()->get('absents')}}</h2>--}}
                 <table class="table table-bordered ">
                     <thead>
                     <tr>

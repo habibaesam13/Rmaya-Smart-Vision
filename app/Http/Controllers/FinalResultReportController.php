@@ -78,6 +78,22 @@ class FinalResultReportController extends Controller
         }
     }
 
+
+
+
+    public function deletePlayer($rid , $playerId )
+    {
+        $action = $this->finalResultsService->deletePlayer($rid , $playerId);
+        if ($action) {
+            return redirect()->back()->with('success', 'لقد تم الغاء اللاعب من التقرير بنجاح');
+        } else {
+            return redirect()->back()->with('error', 'لم تتم عملية الالغاء بنجاح حاول مرة اخري');
+        }
+    }
+
+
+
+
  //    public function showReportMembersByPrint($id, Request $request)
 //    {
 //        $members = $this->resultService->getReportDetails($id);
@@ -104,7 +120,8 @@ class FinalResultReportController extends Controller
         session()->forget('absents');
         $weapons = $this->weaponsService->getAllPersonalWeapons();
         $ReportsDetails = $this->resultService->getReportsDetails($request);
-        return view('personalReports/final_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
+        $reportsDetailsWithoutPagination = $this->resultService->getReportsDetails($request , 'no');
+        return view('personalReports/final_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons' , 'reportsDetailsWithoutPagination'));
     }
 
 }

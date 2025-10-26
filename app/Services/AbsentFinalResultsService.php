@@ -51,13 +51,13 @@ class AbsentFinalResultsService
 
     public function findReport($id)
     {
-         return SVFianlResults::with('players_results')->find($id);
-     }
+        return SVFianlResults::with('players_results')->find($id);
+    }
 
 
     public function getReportDetails($reportId)
     {
-        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->orderBy('id' , 'desc')->get();
+        $Players = SVFianlResultsPlayer::where('Rid', $reportId)->orderBy('id', 'desc')->get();
         return $Players;
     }
 
@@ -82,54 +82,46 @@ class AbsentFinalResultsService
     public function saveReport(Request $request, $playersData, $rid)
     {
         $report = $this->getReport($rid);
-
-
+        /*****************************new image part**********/
         if ($request->hasFile('attached_file')) {
             $validated = $request->validate([
                 'attached_file' => 'mimes:pdf,doc,docx,xlsx,xls|max:2048',
             ]);
-
-            // Get the validated file
             $file = $validated['attached_file'];
-
-            // Delete the old file if exists
-            if ($report->attached_file && Storage::disk('public')->exists($report->attached_file)) {
-                Storage::disk('public')->delete($report->attached_file);
-            }
-
-            // Store new file
-            $path = $file->store('reports_attachments', 'public');
-
+            $path = $this->storeImage($request, '/final_reports/reports_attachments', $file, 'attached_file');
             $report->file = $path;
             $report->save();
-
         }
-
+        /******************************end new image part ***************/
 
         // Update player results
         foreach ($playersData as $playerId => $values) {
             $cleanedValues = collect($values)->map(function ($v, $k) {
-                if ($k === 'notes') {
-                    return $v === '' ? null : $v;
+//                if ($k === 'notes') {
+//                    return $v === '' ? null : $v;
+//                }
+//                return ($v === '' || is_null($v)) ? 0 : $v;
+                if ($k === 'goal') {
+                    return ($v === '' || is_null($v)) ? 0 : $v;
                 }
-                return ($v === '' || is_null($v)) ? 0 : $v;
+                return $v === '' ? null : $v;
             })->toArray();
 
             $report->players_results()
                 ->where('id', $playerId)
                 ->update([
                     'goal' => $cleanedValues['goal'] ?? 0,
-                    'R1' => $cleanedValues['R1'] ?? 0,
-                    'R2' => $cleanedValues['R2'] ?? 0,
-                    'R3' => $cleanedValues['R3'] ?? 0,
-                    'R4' => $cleanedValues['R4'] ?? 0,
-                    'R5' => $cleanedValues['R5'] ?? 0,
-                    'R6' => $cleanedValues['R6'] ?? 0,
-                    'R7' => $cleanedValues['R7'] ?? 0,
-                    'R8' => $cleanedValues['R8'] ?? 0,
-                    'R9' => $cleanedValues['R9'] ?? 0,
-                    'R10' => $cleanedValues['R10'] ?? 0,
-                    'total' => $cleanedValues['total'] ?? 0,
+                    'R1' => $cleanedValues['R1'] ?? null,
+                    'R2' => $cleanedValues['R2'] ?? null,
+                    'R3' => $cleanedValues['R3'] ?? null,
+                    'R4' => $cleanedValues['R4'] ?? null,
+                    'R5' => $cleanedValues['R5'] ?? null,
+                    'R6' => $cleanedValues['R6'] ?? null,
+                    'R7' => $cleanedValues['R7'] ?? null,
+                    'R8' => $cleanedValues['R8'] ?? null,
+                    'R9' => $cleanedValues['R9'] ?? null,
+                    'R10' => $cleanedValues['R10'] ?? null,
+                    'total' => $cleanedValues['total'] ?? null,
                     'notes' => $cleanedValues['notes'] ?? null,
                 ]);
         }
@@ -138,22 +130,22 @@ class AbsentFinalResultsService
     }
 
 
-     public function getAvailablePlayers($report, $request, $pagination_check = 'yes')
+    public function getAvailablePlayers($report, $request, $pagination_check = 'yes')
     {
         if ($report) {
-             $addedPlayers = SVFianlResultsPlayer::where('total', '<>', null)->OrWhere('Rid', $report->id)->pluck('player_id')->toArray();
+            $addedPlayers = SVFianlResultsPlayer::where('total', '<>', null)->OrWhere('Rid', $report->id)->pluck('player_id')->toArray();
 
             //            Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
 //            ->orderBy('mid')
 //            ->get();
-             $query = DB::table('sv_members')
-                 ->join('sv_initial_results_players', 'sv_initial_results_players.player_id', '=', 'sv_members.mid')
+            $query = DB::table('sv_members')
+                ->join('sv_initial_results_players', 'sv_initial_results_players.player_id', '=', 'sv_members.mid')
                 ->join('sv_initial_results', 'sv_initial_results.Rid', '=', 'sv_initial_results_players.Rid')
                 ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
                 ->join('sv_clubs', 'sv_clubs.cid', '=', 'sv_members.club_id')
-                 ->join('sv_fianl_results_players', 'sv_fianl_results_players.player_id', '=', 'sv_members.mid')
+                ->join('sv_fianl_results_players', 'sv_fianl_results_players.player_id', '=', 'sv_members.mid')
                 ->join('sv_fianl_results', 'sv_fianl_results.id', '=', 'sv_fianl_results_players.Rid')
-                 ->select('sv_initial_results_players.*',
+                ->select('sv_initial_results_players.*',
                     'sv_members.name',
                     'sv_members.phone1',
                     'sv_members.phone2',
@@ -163,10 +155,10 @@ class AbsentFinalResultsService
                     'sv_members.registration_date',
                     'sv_clubs.name as club_name'
 
-                )
- //                ->where(['sv_initial_results_players.total' => null, 'sv_initial_results.confirmed' => 1])
+                )  //here
+                //                ->where(['sv_initial_results_players.total' => null, 'sv_initial_results.confirmed' => 1])
                 ->where(['sv_fianl_results_players.total' => null, 'sv_fianl_results.confirmed' => 1])
-                 ->where('sv_members.weapon_id', $report->weapon_id)
+                ->where('sv_members.weapon_id', $report->weapon_id)
                 ->where('sv_members.reg_type', 'personal')
                 ->whereNotIn('sv_members.mid', $addedPlayers)
 //            ->whereNot('gfg' , $report->finalPlayers()->pluck('mid'))
@@ -176,15 +168,36 @@ class AbsentFinalResultsService
 //                $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
 //                fn($q) => $q->filter($request)
 //            )
-                 ->orderBy('sv_initial_results_players.total', 'desc');
+                ->orderBy('sv_initial_results_players.total', 'desc');
+
+
+            /********search part ******/
+            $query->when($request->club_id, fn ($q, $club) => $q->where('cid', $club))
+                ->when($request->nat, fn ($q, $nat) => $q->where('nat', $nat))
+
+
+                //                ->when($request->details, fn($q, $details) => $q->where('details', $details))
+                ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
+                ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
+                ->orderBy('sv_initial_results_players.total', 'desc');
+
+            if (!empty($request->search)) {
+                $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
+                    ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
+                    ->orWhere('sv_members.phone1', $request->search)
+                    ->orWhere('sv_members.phone2', $request->search);
+            }
+            /*********end search part****/
+
+
             $query = $query->distinct('sv_members.mid');
 
-            if($pagination_check === 'yes'){
-              $data =  $query->paginate(config('app.admin_pagination_number'));
-            }else{
-              $data =  $query->get();
+            if ($pagination_check === 'yes') {
+                $data = $query->paginate(config('app.admin_pagination_number'));
+            } else {
+                $data = $query->get();
             }
-             return $data;
+            return $data;
         }
         return collect();
     }
@@ -213,7 +226,7 @@ class AbsentFinalResultsService
                 ]),
                 fn ($q) => $q->filter($request)
             )
-            ->orderBy('mid' , 'desc')
+            ->orderBy('mid', 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
     }
 
@@ -225,14 +238,14 @@ class AbsentFinalResultsService
     {
         return SVFianlResults::query()
 //            ->where('confirmed', true)
-             ->whereHas('finalPlayers', function ($q) {
+            ->whereHas('finalPlayers', function ($q) {
                 $q->where('total', null);
-             })
+            })
             ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id' , 'desc')
+            ->orderBy('id', 'desc')
             ->cursorPaginate(config('app.admin_pagination_number'));
 
     }
@@ -244,7 +257,7 @@ class AbsentFinalResultsService
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id' , 'desc');
+            ->orderBy('id', 'desc');
         if ($withPaging == 'yes') {
             return $query->cursorPaginate(config('app.admin_pagination_number'));
         }
@@ -340,14 +353,14 @@ class AbsentFinalResultsService
 
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderBy('mid' , 'desc')
+            ->orderBy('mid', 'desc')
             ->get();
     }
 
 
     /**********************/
-     public function getConfirmedPlayers(Request $request , $paginationCheck ='yes')
-     {
+    public function getConfirmedPlayers(Request $request, $paginationCheck = 'yes')
+    {
 //        return SV_initial_results::query()->where('confirmed',true)
 //            ->when($request->weapon_id, fn($q, $weapon) => $q->where('weapon_id', $weapon))
 //            ->when($request->details, fn($q, $details) => $q->where('details', $details))
@@ -408,9 +421,9 @@ class AbsentFinalResultsService
 
 
         $query = $query->distinct('sv_members.mid');
-        if($paginationCheck === 'yes'){
+        if ($paginationCheck === 'yes') {
             $data = $query->paginate(config('app.admin_pagination_number'));
-        }else{
+        } else {
             $data = $query->get();
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 
- use App\Models\Logs;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
 use App\Services\ResultsService;
@@ -21,6 +21,7 @@ use App\Http\Controllers\GroupController;
 use App\Services\PersonalMembersProvider;
 use App\Services\PersonalResultsProvider;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WeaponController;
 use App\Exports\AbsentInitialResultsExport;
 use App\Http\Controllers\ProfileController;
@@ -224,8 +225,8 @@ Route::group(
             Route::delete('clubs/{id}', [ClubsController::class, 'destroy'])->name('clubs.destroy');
             Route::post('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
             Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
-            Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
-                ->name('clubs.weapons.by.age');
+            /* Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
+                ->name('clubs.weapons.by.age');*/
 
             //Clubs-Weapons routes
             Route::prefix('clubs-weapons')->group(function () {
@@ -267,15 +268,7 @@ Route::group(
                     })->name('members-download-pdf');
                 }
             );
-            //age calculation
-            Route::get('/calculate-age', function (\Illuminate\Http\Request $request) {
-                if ($request->has('dob')) {
-                    $dob = \Carbon\Carbon::parse($request->dob);
-                    $age = $dob->age;
-                    return response()->json(['age' => $age]);
-                }
-                return response()->json(['age' => null]);
-            })->name('calculate.age');
+
 
             //registered groups
             Route::prefix('groups')->group(
@@ -379,32 +372,31 @@ Route::group(
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
-                    Route::get('print-reports-details',[ResultsController::class, 'getResportsDetails_print'])->name('print-reports-details');
+                    Route::get('print-reports-details', [ResultsController::class, 'getResportsDetails_print'])->name('print-reports-details');
                     //search in initial results reports
                     Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');
                     //list for initial resports results
-                    Route::get('list-initial-results-reports',[ResultsController::class,'listOfInitialResults'])->name('list-initial-results-reports');
-                    Route::get('search-list-initial-results-reports',[ResultsController::class,'searchInListOfInitialResults'])->name('search-list-initial-results-reports');
+                    Route::get('list-initial-results-reports', [ResultsController::class, 'listOfInitialResults'])->name('list-initial-results-reports');
+                    Route::get('search-list-initial-results-reports', [ResultsController::class, 'searchInListOfInitialResults'])->name('search-list-initial-results-reports');
                     //update player total for list of initial reports results
-                    Route::get('update-player-total-for-preliminary-results/{player_id}',[ResultsController::class,'updateTotalForPlayer'])->name('update-player-total-for-preliminary-results');
+                    Route::get('update-player-total-for-preliminary-results/{player_id}', [ResultsController::class, 'updateTotalForPlayer'])->name('update-player-total-for-preliminary-results');
                     //Individuals Absent Preliminary Results
-                    Route::get('individuals-absent-preliminary-results',[ResultsController::class,'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
-                    Route::get('search-individuals-absent-preliminary-results',[ResultsController::class,'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
+                    Route::get('individuals-absent-preliminary-results', [ResultsController::class, 'IndividualsAbsentPreliminaryResults'])->name('individuals-absent-preliminary-results');
+                    Route::get('search-individuals-absent-preliminary-results', [ResultsController::class, 'searchIndividualsAbsentInitialResults'])->name('search-individuals-absent-preliminary-results');
 
-                     Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
+                    Route::post('absent/personal/results/export-excel', function (Request $request, ResultsService $results_service) {
                         $provider = new AbsentInitialResultsExport($request, $results_service);
                         $controller = new ExcelController($provider);
                         return $controller->export($request, 'absent_Personal_results_report.xlsx');
                     })->name('absent-personal-results-export-excel');
-
-                 }
+                }
             );
 
 
             Route::prefix('final-results')->group(
                 function () {
                     Route::get('reports', [FinalResultsController::class, 'index'])->name('final_results.reports');
-//                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
+                    //                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
 
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
@@ -414,7 +406,7 @@ Route::group(
                     Route::post('final-confirm-report/{rid}', [FinalResultsController::class, 'confirmReport'])->name('report-confirmation_final');
                     Route::get('add-player-to-report/{rid}', [FinalResultsController::class, 'addPlayer'])->name('add-player-to-report_final');
                     Route::get('registered-members', [FinalResultsController::class, 'index'])->name('results-registered-members_final');
-//                    Route::post('members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
+                    //                    Route::post('members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
                     Route::get('/reports/{rid}/print', [FinalResultsController::class, 'printData'])->name('report.print_final');
                     Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
@@ -432,6 +424,7 @@ Route::group(
                     Route::delete('/delete-report/{id}', [FinalResultReportController::class, 'deleteReport'])->name('final_reports_delete.delete');
                     Route::get('registered-members-print/{id}', [FinalResultReportController::class, 'showReportMembersByPrint'])->name('results-registered-members_by_print_final');
                     Route::get('reports-players', [FinalResultReportController::class, 'getResportsAll'])->name('reports-details_players_final');
+                    Route::delete('/delete-report-player/{rid}/{player_id}', [FinalResultReportController::class, 'deletePlayer'])->name('final_reports_delete_player.delete');
 
                     /*********************final absents results report***********/
                     Route::get('absent-reports', [AbsentMembersFinalResultController::class, 'index'])->name('final_results.absents.reports');
@@ -596,20 +589,37 @@ Route::group(
                 }
             );
         });
-        //Public Routes
-        Route::prefix('public')->group(function () {
-            //Personal Registration
-            Route::prefix('personal')->group(function () {
-                Route::get('registration', [PersonalRegistration::class, 'index'])->name('public-personal-registration');
-                Route::post('register', [PersonalRegistration::class, 'store'])->name('store-public-personal-registration');
-            });
-            Route::prefix('group')->group(function () {
-                Route::get('registration', [GroupRegistration::class, 'index'])->name('public-group-registration');
-                Route::post('register', [GroupRegistration::class, 'store'])->name('store-public-group-registration');
-            });
-        });
     }
 );
 
+
+//   Route::prefix('public')->group(function () {
+
+Route::prefix('personal')->group(function () {
+    Route::get('registration', [PersonalRegistration::class, 'index'])->name('public-personal-registration');
+    Route::post('register', [PersonalRegistration::class, 'store'])->name('store-public-personal-registration');
+});
+Route::prefix('group')->group(function () {
+    Route::get('registration', [GroupRegistration::class, 'index'])->name('public-group-registration');
+    Route::post('register', [GroupRegistration::class, 'store'])->name('store-public-group-registration');
+});
+//  });
+
+Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
+    ->name('clubs.weapons.by.age');
+
+
+//age calculation
+Route::get('/calculate-age', function (\Illuminate\Http\Request $request) {
+    if ($request->has('dob')) {
+        $dob = \Carbon\Carbon::parse($request->dob);
+        $age = $dob->age;
+        return response()->json(['age' => $age]);
+    }
+    return response()->json(['age' => null]);
+})->name('calculate.age');
+
+//images temp upload
+Route::post('/temp-upload', [UploadController::class, 'tempUpload'])->name('temp.upload');
 
 require __DIR__ . '/auth.php';
