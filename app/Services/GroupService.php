@@ -174,48 +174,19 @@ class GroupService
     public function createNewGroup(GroupRegistrationRequest $request)
     {
         $data = $request->validated();
-        $tempFiles = session('temp_files', []); // get stored temp images from session
 
-        return DB::transaction(function () use ($data, $tempFiles) {
+        return DB::transaction(function () use ($data) {
+
             $team = Sv_team::create([
-                'name'      => $data['team_name'],
-                'club_id'   => $data['club_id'] ?? null,
+                'name' => $data['team_name'],
+                'club_id' => $data['club_id'] ?? null,
                 'weapon_id' => $data['weapon_id'],
             ]);
 
-            foreach ($data['members'] as $index => $member) {
-                // Retrieve paths from session if they exist
-                $frontKey = "members[{$index}][front_id_pic]";
-                $backKey  = "members[{$index}][back_id_pic]";
-
-                $frontSessionPath = $tempFiles[$frontKey] ?? null;
-                $backSessionPath  = $tempFiles[$backKey] ?? null;
-                //dd($frontSessionPath);
-                // Decide which path to use (session or request)
-
-                $frontPath = $this->handleFileInput($member['front_id_pic'] ?? $frontSessionPath, 'front');
-                $backPath  = $this->handleFileInput($member['back_id_pic'] ?? $backSessionPath, 'back');
-                //dd($frontPath);
-                $team->teamMembers()->create([
-                    'reg_type'         => 'group',
-                    'team_id'          => $team->tid,
-                    'weapon_id'        => $data['weapon_id'],
-                    'name'             => $member['name'],
-                    'ID'               => $member['ID'],
-                    'Id_expire_date'   => $member['Id_expire_date'],
-                    'dob'              => $member['dob'],
-                    'phone1'           => $member['phone1'],
-                    'front_id_pic'     => $frontPath,
-                    'back_id_pic'      => $backPath,
-                    'registration_date' => now()->toDateString(),
-                ]);
-            }
-
-            //  clear the session after successful insert
-            session()->forget('temp_files');
-            return $team;
-        });
-    }
+            foreach ($data['members'] as $member) {
+                // Retrieve temporary file paths from hidden inputs (if available)
+                $frontTempPath = $member['front_id_pic_temp'] ?? null;
+                $backTempPath  = $member['back_id_pic_temp'] ?? null;
 
                 // Move files from temp to final location
                 $frontPath = $this->moveTempFile($frontTempPath, public_path() . '/storage/national_ids/');
@@ -248,42 +219,21 @@ class GroupService
      */
     protected function moveTempFile($tempPath, $finalFolder)
     {
-        // Handle both URL or relative path
-        if (str_contains($urlPath, '/storage/')) {
-            $relativePath = str_replace(url('/storage/'), '', $urlPath);
-        } else {
-            $relativePath = ltrim($urlPath, '/'); // e.g., "temp/abc.jpg"
+        if (!$tempPath) {
+            return null;
         }
 
-        if (Storage::disk('public')->exists($relativePath)) {
-            $newPath = str_replace('temp/', 'national_ids/', $relativePath);
-            Storage::disk('public')->move($relativePath, $newPath);
-            return $newPath;
+        // Remove "/storage/" prefix for storage disk access
+        $relativePath = str_replace('/storage/', '', $tempPath);
+
+        if (!Storage::disk('public')->exists($relativePath)) {
+            return null;
         }
 
-        return null;
-    }
+        // Move file to final folder
+        $newPath = $finalFolder . '/' . basename($relativePath);
+        Storage::disk('public')->move($relativePath, $newPath);
 
-    protected function handleFileInput($fileInput, string $prefix = 'file'): ?string
-    {
-        // 1️⃣ If it's an UploadedFile, store it normally
-        if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
-            return $fileInput->store("national_ids", "public");
-        }
-
-        // 2️⃣ If it's a temp file path (either full URL or relative path)
-        if (
-            is_string($fileInput) &&
-            (str_contains($fileInput, '/storage/temp/') || str_starts_with($fileInput, 'temp/'))
-        ) {
-            return $this->moveTempFile($fileInput);
-        }
-
-        // 3️⃣ If it's already stored path
-        if (is_string($fileInput) && str_contains($fileInput, 'national_ids/')) {
-            return $fileInput;
-        }
-
-        return null;
+        return '/storage/' . $newPath;
     }
 }
