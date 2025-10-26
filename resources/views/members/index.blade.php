@@ -84,7 +84,7 @@
                                 <div class="col-md-3">
                                     <!--<label for="mgid" class="form-label">المجموعات</label>-->
                                     <select name="mgid" id="mgid" class="form-select form-select-lg">
-                                        <option value="" disabled selected>اختر المجموعة</option>
+                                        <option value=""  selected>اختر المجموعة</option>
                                         @foreach($memberGroups as $memberGroup)
                                         <option value="{{ $memberGroup->mgid }}"
                                             {{ request('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
@@ -98,7 +98,7 @@
                                 <div class="col-md-3">
                                     <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                     <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                        <option value="" disabled selected>اختر السلاح </option>
+                                        <option value=""  selected>اختر السلاح </option>
                                         @foreach($weapons as $weapon)
                                         <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
                                             {{ $weapon->name }}
@@ -111,7 +111,7 @@
                                 <div class="col-md-3">
                                     <!--<label for="club_id" class="form-label">النادي</label>-->
                                     <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                        <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي</option>
+                                        <option value=""  {{ !request('club_id') ? 'selected' : '' }}>اختر نادي الرماية</option>
                                         @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}" {{ request('club_id') == $club->cid ? 'selected' : '' }}>
                                             {{ $club->name }}
@@ -124,14 +124,14 @@
                                 <div class="col-md-3">
                                     <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                     <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                        <option value="" disabled selected>اختر النادي أولاً</option>
+                                        <option value=""  selected>اختر السلاح</option>
                                     </select>
                                 </div>
                                 @endif
                                 <div class="col-md-3">
                                     <!--<label for="nat" class="form-label">الجنسية</label>-->
                                     <select name="nat" id="nat" class="form-select form-select-lg">
-                                        <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
+                                        <option value=""  {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
                                         @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
@@ -142,7 +142,7 @@
                                 <div class="col-md-3">
                                     <!--<label for="reg_club" class="form-label">مكان التسجيل</label>-->
                                     <select name="reg_club" id="reg_club" class="form-select form-select-lg">
-                                        <option value="" disabled {{ !request('reg_club') ? 'selected' : '' }}>اختر مكان التسجيل
+                                        <option value="" {{ !request('reg_club') ? 'selected' : '' }}>اختر نادي التسجيل
                                         </option>
                                         @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}"
@@ -335,7 +335,7 @@
                                                 <th>الجنسية</th>
                                                 <th>المجموعات</th>
                                                 <th>تاريخ التسجيل</th>
-                                                <th>ادوات تحكم</th>
+                                                <th>التحكم</th>
                                             </tr>
                                         </thead>
                                         <tbody>

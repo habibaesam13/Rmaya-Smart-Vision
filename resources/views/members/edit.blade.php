@@ -119,7 +119,7 @@ use Carbon\Carbon;
                     <div class="col-md-3">
                         <label for="mgid" class="form-label">المجموعات</label>
                         <select name="mgid" id="mgid" class="form-select form-select-lg">
-                            <option value="" disabled>اختر المجموعة</option>
+                            <option value="" >اختر المجموعة</option>
                             @foreach($memberGroups as $memberGroup)
                             <option value="{{ $memberGroup->mgid }}"
                                 {{ old('mgid', $member->mgid) == $memberGroup->mgid ? 'selected' : '' }}>

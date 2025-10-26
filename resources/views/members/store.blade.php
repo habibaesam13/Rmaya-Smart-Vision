@@ -111,7 +111,7 @@
                     <div class="col-md-3">
                         <label for="weapon_id" class="form-label">السلاح</label>
                         <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                            <option value="" disabled selected>اختر النادي أولاً</option>
+                            <option value="" disabled selected>اختر السلاح</option>
                         </select>
                         @error('weapon_id')
                         <div class="text-danger small">{{ $message }}</div>
@@ -120,7 +120,7 @@
                     <div class="col-md-3">
                         <label for="mgid" class="form-label">المجموعات</label>
                         <select name="mgid" id="mgid" class="form-select form-select-lg">
-                            <option value="" disabled>اختر المجموعة</option>
+                            <option value="">اختر المجموعة</option>
                             @foreach($memberGroups as $memberGroup)
                             <option value="{{ $memberGroup->mgid }}" {{ old('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
                                 {{ $memberGroup->name }}
@@ -192,7 +192,7 @@
             if (clubId && dob && gender) {
                 weaponSelect.innerHTML = '<option value="" disabled selected>جاري التحميل...</option>';
 
-                fetch(`{{url(LaravelLocalization::getCurrentLocale().'/admin/clubs/${clubId}/weapons-by-age')}}?dob=${dob}&gender=${gender}`)
+                fetch(`{{url('/clubs/${clubId}/weapons-by-age')}}?dob=${dob}&gender=${gender}`)
                     .then(response => response.json())
                     .then(data => {
                         weaponSelect.innerHTML = '<option value="" disabled selected>اختر السلاح</option>';
@@ -222,7 +222,7 @@
         dobInput.addEventListener('change', function() {
             const dob = this.value;
             if (dob) {
-               fetch(`{{ url(LaravelLocalization::getCurrentLocale().'/admin/calculate-age') }}?dob=${dob}`)
+               fetch(`{{ url('/calculate-age') }}?dob=${dob}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.age !== null) {
