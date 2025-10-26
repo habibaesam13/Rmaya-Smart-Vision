@@ -185,7 +185,7 @@
   <script>
     const oldMembers = @json(old('members', []));
     const oldTempFiles = @json(session('temp_files', []));
-
+    
     document.querySelectorAll('.weapon-radio').forEach(radio => {
       radio.addEventListener('change', function() {
         const membersCount = this.dataset.members;
@@ -252,79 +252,6 @@
         selected.dispatchEvent(new Event('change'));
       }
     });
-
-
-
-
-
-
-
-
-
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-      // Find the checked radio button in the group
-      const selected = document.querySelector('.weapon-radio:checked');
-
-      if (selected) {
-        const selectedValue = selected.value; // weapon_id
-        const membersCount = selected.dataset.members; // data-members value
-        const tbody = document.getElementById('membersTableBody');
-        tbody.innerHTML = ''; // clear old rows
-
-        for (let i = 0; i < membersCount; i++) {
-          const member = oldMembers[i] || {};
-
-
-          const row = `
-            <tr>
-              <td><input required class="form-control form-control-sm id-num" type="text"
-                name="members[${i}][ID]" value="${member.ID || ''}" placeholder="00000000000000" minlength="15" maxlength="15"   ></td>
-        
-              <td><input required class="form-control form-control-sm id-date" type="date"
-                name="members[${i}][Id_expire_date]"  lang="en" value="${member.Id_expire_date || ''}"></td>
-        
-              <td><input required class="form-control form-control-sm name-input" type="text"
-                name="members[${i}][name]" value="${member.name || ''}" placeholder="الاسم"></td>
-        
-              <td><input style="direction:ltr" required class="form-control form-control-sm phone-num"
-                type="number" name="members[${i}][phone1]" value="${member.phone1 || ''}" placeholder="05xxxxxxxx"></td>
-        
-              <td><input required class="form-control form-control-sm birth-date" type="date"
-                name="members[${i}][dob]"  lang="en" value="${member.dob || ''}"></td>
-        
-              <td><input required class="form-control form-control-sm age" type="number"
-                name="members[${i}][age]" value="${member.age || ''}" readonly placeholder="00"></td>
-        
-              <td><input required class="form-control form-control-sm id-front" type="file"
-                name="members[${i}][front_id_pic]" accept=".jpg,.jpeg,.png"></td>
-        
-              <td><input required class="form-control form-control-sm id-back" type="file"
-                name="members[${i}][back_id_pic]" accept=".jpg,.jpeg,.png"></td>
-            </tr>`;
-          tbody.insertAdjacentHTML('beforeend', row);
-        }
-
-
-
-
-      }
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     function setupRowValidation() {
       const today = new Date();
       const year = today.getFullYear();
@@ -446,8 +373,6 @@
       }
     });
   </script>
-
-
 </body>
 
 </html>

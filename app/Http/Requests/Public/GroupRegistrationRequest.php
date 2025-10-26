@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Public;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\Sv_weapons;
@@ -53,8 +55,32 @@ class GroupRegistrationRequest extends FormRequest
                 'before_or_equal:' . now()->subYears(16)->toDateString(),
             ],
             'members.*.age' => ['nullable', 'numeric', 'min:16'],
-            'members.*.front_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
-            'members.*.back_id_pic' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'members.*.front_id_pic' => [
+                'nullable', // allow null if already in session
+                function ($attribute, $value, $fail) {
+                    $key = str_replace(['.', 'members'], ['[', 'members['], $attribute) . ']';
+                    $tempFiles = session('temp_files', []);
+                    if (
+                        !$value &&  // not an uploaded file
+                        !isset($tempFiles[$key]) // not in session
+                    ) {
+                        $fail('صورة الهوية الأمامية مطلوبة.');
+                    }
+                },
+            ],
+            'members.*.back_id_pic' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    $key = str_replace(['.', 'members'], ['[', 'members['], $attribute) . ']';
+                    $tempFiles = session('temp_files', []);
+                    if (
+                        !$value &&
+                        !isset($tempFiles[$key])
+                    ) {
+                        $fail('صورة الهوية الخلفية مطلوبة.');
+                    }
+                },
+            ],
         ];
     }
 
