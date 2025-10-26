@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -227,16 +226,31 @@
             name="members[${i}][age]" value="${member.age || ''}" readonly placeholder="00"></td>
 
           <td>
-            ${tempFront ? `<img src="${tempFront}" alt="preview" style="width:80px;height:80px;object-fit:cover;border-radius:6px;">` : ''}
-            <input required class="form-control form-control-sm id-front" type="file"
-              name="members[${i}][front_id_pic]" accept=".jpg,.jpeg,.png">
+          ${tempFront 
+            ? `<img src="${tempFront}" alt="preview" style="width:37px;height:37px;object-fit:cover;border-radius:6px;">` 
+            : ''
+          }
+          <input 
+            ${tempFront ? '' : 'required'} 
+            class="form-control form-control-sm id-front" 
+            type="file"
+            name="members[${i}][front_id_pic]" 
+            accept=".jpg,.jpeg,.png">
           </td>
 
-          <td>
-            ${tempBack ? `<img src="${tempBack}" alt="preview" style="width:80px;height:80px;object-fit:cover;border-radius:6px;">` : ''}
-            <input required class="form-control form-control-sm id-back" type="file"
-              name="members[${i}][back_id_pic]" accept=".jpg,.jpeg,.png">
-          </td>
+      <td>
+        ${tempBack 
+          ? `<img src="${tempBack}" alt="preview" style="width:37px;height:37px;object-fit:cover;border-radius:6px;">` 
+          : ''
+        }
+        <input 
+          ${tempBack ? '' : 'required'} 
+          class="form-control form-control-sm id-back" 
+          type="file"
+          name="members[${i}][back_id_pic]" 
+          accept=".jpg,.jpeg,.png">
+      </td>
+
         </tr>`;
           tbody.insertAdjacentHTML('beforeend', row);
         }
@@ -342,11 +356,9 @@
       if (e.target.matches('input[type=file]')) {
         const file = e.target.files[0];
         if (!file) return;
-
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('field', e.target.name); // <--- identify which input
-
+        formData.append('field', e.target.name);
         try {
           const response = await fetch(`{{ route('temp.upload') }}`, {
             method: 'POST',
@@ -355,7 +367,6 @@
             },
             body: formData
           });
-
           const data = await response.json();
           if (data.success) {
             // Save path in hidden input
@@ -364,7 +375,6 @@
             hidden.name = e.target.name + '_temp';
             hidden.value = data.path;
             e.target.closest('td').appendChild(hidden);
-
             console.log('Uploaded & stored in session:', data.path);
           }
         } catch (error) {
