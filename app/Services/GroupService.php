@@ -38,11 +38,11 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        $groups = Sv_team::with(['club', 'weapon'])->orderBy('tid');
+        $groups = Sv_team::with(['club', 'weapon'])->orderByDesc('tid');
         $groupsCount = $groups->count();
-        $groups_without_pag=$groups->get();
+        $groups_without_pag = $groups->get();
         $groups = $groups->cursorPaginate(config('app.admin_pagination_number'));
-        return ['groups' => $groups, 'groupsCount' => $groupsCount,'groups_without_pag'=>$groups_without_pag];
+        return ['groups' => $groups, 'groupsCount' => $groupsCount, 'groups_without_pag' => $groups_without_pag];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
@@ -53,11 +53,11 @@ class GroupService
         $members_count = $query->count(); // total count
 
         $members = $query->orderByDesc('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
-        $members_without_pag=$query->orderByDesc('mid')->get();
+        $members_without_pag = $query->orderByDesc('mid')->get();
         return [
             'members' => $members,
             'members_count' => $members_count,
-            'members_without_pag'=>$members_without_pag,
+            'members_without_pag' => $members_without_pag,
         ];
     }
 
@@ -88,17 +88,17 @@ class GroupService
     }
 
 
-    public function search(Request $request,$pag)
+    public function search(Request $request, $pag)
     {
-        return $pag? $this->searchQuery($request)
+        return $pag ? $this->searchQuery($request)
             ->cursorPaginate(config('app.admin_pagination_number'))
-            ->appends($request->query()):$this->searchQuery($request)->get();
+            ->appends($request->query()) : $this->searchQuery($request)->get();
     }
 
     //المسجلين فرق
-    public function membersByGroupSearch(Request $request,$pag)
+    public function membersByGroupSearch(Request $request, $pag)
     {
-        $query= Sv_member::query()
+        $query = Sv_member::query()
             ->where('sv_members.reg_type', 'group')
             ->join('sv_teams as t', 'sv_members.team_id', '=', 't.tid')
             ->when(
@@ -113,7 +113,7 @@ class GroupService
             )
             ->select('sv_members.*', 't.name as team_name')
             ->orderBy('sv_members.mid');
-            return $pag?$query->cursorPaginate(config('app.admin_pagination_number')):$query->get();
+        return $pag ? $query->cursorPaginate(config('app.admin_pagination_number')) : $query->get();
     }
 
 
@@ -171,12 +171,10 @@ class GroupService
 
     //groups registration
 
-    public function createNewGroup(GroupRegistrationRequest $request )
+    public function createNewGroup(GroupRegistrationRequest $request)
     {
-        
         $data = $request->validated();
 
-        
         return DB::transaction(function () use ($data) {
 
             $team = Sv_team::create([
@@ -186,24 +184,56 @@ class GroupService
             ]);
 
             foreach ($data['members'] as $member) {
-                $frontPath = $member['front_id_pic']->store('national_ids', 'public');
-                $backPath = $member['back_id_pic']->store('national_ids', 'public');
+                // Retrieve temporary file paths from hidden inputs (if available)
+                $frontTempPath = $member['front_id_pic_temp'] ?? null;
+                $backTempPath  = $member['back_id_pic_temp'] ?? null;
 
+                // Move files from temp to final location
+                $frontPath = $this->moveTempFile($frontTempPath, public_path() . '/storage/national_ids/');
+                $backPath  = $this->moveTempFile($backTempPath, public_path() . '/storage/national_ids/');
+
+                // Create each member
                 $team->teamMembers()->create([
-                    'reg_type' => 'group',
-                    'team_id' => $team->tid,
-                    'weapon_id' => $data['weapon_id'],
-                    'name' => $member['name'],
-                    'ID' => $member['ID'],
-                    'Id_expire_date' => $member['Id_expire_date'],
-                    'dob' => $member['dob'],
-                    'phone1' => $member['phone1'],
-                    'front_id_pic' => $frontPath,
-                    'back_id_pic' => $backPath,
+                    'reg_type'        => 'group',
+                    'team_id'         => $team->tid,
+                    'weapon_id'       => $data['weapon_id'],
+                    'name'            => $member['name'],
+                    'ID'              => $member['ID'],
+                    'Id_expire_date'  => $member['Id_expire_date'],
+                    'dob'             => $member['dob'],
+                    'phone1'          => $member['phone1'],
+                    'front_id_pic'    => $frontPath,
+                    'back_id_pic'     => $backPath,
                 ]);
             }
 
+            // clear session uploads after success
+            session()->forget('uploaded_files');
+
             return $team;
         });
+    }
+
+    /**
+     * Move file from temporary session folder to final location.
+     */
+    protected function moveTempFile($tempPath, $finalFolder)
+    {
+        if (!$tempPath) {
+            return null;
+        }
+
+        // Remove "/storage/" prefix for storage disk access
+        $relativePath = str_replace('/storage/', '', $tempPath);
+
+        if (!Storage::disk('public')->exists($relativePath)) {
+            return null;
+        }
+
+        // Move file to final folder
+        $newPath = $finalFolder . '/' . basename($relativePath);
+        Storage::disk('public')->move($relativePath, $newPath);
+
+        return '/storage/' . $newPath;
     }
 }

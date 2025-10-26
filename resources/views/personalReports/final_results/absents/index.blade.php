@@ -97,8 +97,16 @@
                     {{--                            <i class="ri-file-pdf-2-line"></i>--}}
                     {{--                        </button>--}}
                     {{--                    </form>--}}
-                    <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
-                            <i class="ri-file-pdf-2-line"></i>
+                    {{--/**********excel btn**********/--}}
+                    <a title="اكسيل" onclick="exportDivToExcel('pr', 'absent_players_report.xlsx')"
+                       target="_blank"
+                       class="btn btn-sm btn-success  ">
+                        <i class="ri-file-excel-line"></i>
+                    </a>
+                    {{--/*********excel brn**********/--}}
+
+                    <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-danger  ">
+                            <i class="ri-printer-line"></i>
                         </span>
 
                 </div>
@@ -137,14 +145,14 @@
 
 
                             <!-------------start -->
-                            @if( request()->addMembertoReportRid  > 0)   <input type='number'
+                            @if( request()->addMembertoReportRid  > 0)   <input type='number' class='d-none'
                                                                                 name='addMembertoReportRid'
                                                                                 value='{{(int)request()->addMembertoReportRid}}'/> @endif
                             <!---end -->
 
 
                             <div class="col-md-4">
-                                <label for="club_id" class="form-label"> اختر النادي </label>
+                                <!--<label for="club_id" class="form-label"> اختر النادي </label>-->
                                 <select name="club_id" class="form-select">
                                     <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر النادي
 
@@ -178,7 +186,7 @@
                             @if($reportSection)
                                 {{-- Weapons --}}
                                 <div class="col-md-4">
-                                    <label for="weapon_id" class="form-label">السلاح</label>
+                                    <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                     <select name="weapon_id" id="weapon_id" class="form-select">
                                         <option value="" disabled selected>اختر السلاح</option>
                                         @foreach($weapons as $weapon)
@@ -192,7 +200,7 @@
                             @else
                                 {{-- Clubs --}}
                                 <div class="col-md-4">
-                                    <label for="club_id" class="form-label">النادي</label>
+                                    <!--<label for="club_id" class="form-label">النادي</label>-->
                                     <select name="club_id" id="club_id" class="form-select">
                                         <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر
                                             النادي
@@ -208,7 +216,7 @@
 
                                 {{-- Weapons --}}
                                 <div class="col-md-4">
-                                    <label for="weapon_id" class="form-label">السلاح</label>
+                                    <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                     <select name="weapon_id" id="weapon_id" class="form-select">
                                         <option value="" disabled selected>اختر النادي أولاً</option>
                                     </select>
@@ -218,7 +226,7 @@
 
                             {{-- Countries --}}
                             <div class="col-md-4">
-                                <label for="nat" class="form-label">الجنسية</label>
+                                <!--<label for="nat" class="form-label">الجنسية</label>-->
                                 <select name="nat" id="nat" class="form-select">
                                     <option value="" {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية
                                     </option>
@@ -267,12 +275,12 @@
                             {{-- Dates + Registration Place in same row --}}
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="date-from" class="form-label">من</label>
+                                    <!--<label for="date-from" class="form-label">من</label>-->
                                     <input id="date-from" type="date" name="date_from" class="form-control "
                                            value="{{ request('date_from') }}">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="date-to" class="form-label">إلى</label>
+                                    <!--<label for="date-to" class="form-label">إلى</label>-->
                                     <input id="date-to" type="date" name="date_to" class="form-control "
                                            value="{{ request('date_to') }}">
                                 </div>
@@ -335,7 +343,7 @@
                                 <i class="fas fa-search me-2"></i>بحث
                             </button>
                             <a href="{{ (request()->addMembertoReportRid  && request()->addMembertoReportRid > 0 ) ?  url()->current() . '?addMembertoReportRid=' . request()->addMembertoReportRid :   url()->current()  }}"
-                               class="btn btn-danger"> <i class="fas fa-undo me-2"></i>إعادة تعيين </a>
+                               class="btn btn-primary"> <i class="ri-arrow-go-back-line"></i>إعادة تعيين </a>
                         </div>
                     </form>
                 </div>
@@ -554,94 +562,94 @@
                     </div>
                 @else
 
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
+                    <!--<table class="table table-bordered">-->
+                    <!--    <thead>-->
+                    <!--    <tr>-->
 
-                            <th>الاسم</th>
-                            <th>رقم الهوية</th>
-                            <th>الهاتف</th>
-                            <th>العمر</th>
-                            <th>السلاح</th>
-                            <th>نادي الرماية</th>
-                            {{--                        <th>مكان التسجيل</th>--}}
-                            {{--                        <th>الجنسية</th>--}}
-                            <th>المجموعات</th>
-                            <th>تاريخ التسجيل</th>
-                            <th>ملاحظات</th>
-                        </tr>
-                        </thead>
+                    <!--        <th>الاسم</th>-->
+                    <!--        <th>رقم الهوية</th>-->
+                    <!--        <th>الهاتف</th>-->
+                    <!--        <th>العمر</th>-->
+                    <!--        <th>السلاح</th>-->
+                    <!--        <th>نادي الرماية</th>-->
+                    <!--        {{--                        <th>مكان التسجيل</th>--}}-->
+                    <!--        {{--                        <th>الجنسية</th>--}}-->
+                    <!--        <th>المجموعات</th>-->
+                    <!--        <th>تاريخ التسجيل</th>-->
+                    <!--        <th>ملاحظات</th>-->
+                    <!--    </tr>-->
+                    <!--    </thead>-->
 
-                        <tbody>
+                    <!--    <tbody>-->
 
-                        @forelse($members as $member)
-                            <tr>
-                                <td>{{ $member->name }}</td>
-                                <td>{{ $member->ID}}</td>
-                                <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
-                                <td>{{ $member->age_calculation()}}</td>
-                                <td>{{ $member->weapon->name}}</td>
-                                <td>{{ $member->club?->name ?? '---' }}</td>
-                                {{--                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>--}}
-                                {{--                        <td>--}}
-                                {{--                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== ''--}}
-                                {{--                            ? $member->nationality->country_name_ar--}}
-                                {{--                            : (trim($member->nationality->country_name ?? '') !== ''--}}
-                                {{--                                ? $member->nationality->country_name--}}
-                                {{--                                : '---')--}}
-                                {{--                            }}--}}
-                                {{--                        </td>--}}
+                    <!--    @forelse($members as $member)-->
+                    <!--        <tr>-->
+                    <!--            <td>{{ $member->name }}</td>-->
+                    <!--            <td>{{ $member->ID}}</td>-->
+                    <!--            <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>-->
+                    <!--            <td>{{ $member->age_calculation()}}</td>-->
+                    <!--            <td>{{ $member->weapon->name}}</td>-->
+                    <!--            <td>{{ $member->club?->name ?? '---' }}</td>-->
+                    <!--            {{--                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>--}}-->
+                    <!--            {{--                        <td>--}}-->
+                    <!--            {{--                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== ''--}}-->
+                    <!--            {{--                            ? $member->nationality->country_name_ar--}}-->
+                    <!--            {{--                            : (trim($member->nationality->country_name ?? '') !== ''--}}-->
+                    <!--            {{--                                ? $member->nationality->country_name--}}-->
+                    <!--            {{--                                : '---')--}}-->
+                    <!--            {{--                            }}--}}-->
+                    <!--            {{--                        </td>--}}-->
 
 
-                                {{--                        </td>--}}
-                                <td>{{ $member->member_group?->name ?? '---' }}</td>
-                                <td>{{ $member->registration_date}}</td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-3">
+                    <!--            {{--                        </td>--}}-->
+                    <!--            <td>{{ $member->member_group?->name ?? '---' }}</td>-->
+                    <!--            <td>{{ $member->registration_date}}</td>-->
+                    <!--            <td>-->
+                    <!--                <div class="d-flex justify-content-center gap-3">-->
 
-                                        {{-- Edit Button --}}
-                                        {{--                                        <form action="{{route('personal.edit')}}" method="GET" class="d-inline">--}}
-                                        {{--                                            @csrf--}}
-                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
-                                        {{--                                            <button type="submit" class="icon-btn text-warning" title="تعديل">--}}
-                                        {{--                                                <i class="fas fa-edit"></i>--}}
-                                        {{--                                            </button>--}}
-                                        {{--                                        </form>--}}
-                                        {{-- Delete Button --}}
-                                        {{--                                        <form action="{{route('personal-registration-delete')}}" method="POST"--}}
-                                        {{--                                              class="d-inline"--}}
-                                        {{--                                              onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">--}}
+                    <!--                    {{-- Edit Button --}}-->
+                    <!--                    {{--                                        <form action="{{route('personal.edit')}}" method="GET" class="d-inline">--}}-->
+                    <!--                    {{--                                            @csrf--}}-->
+                    <!--                    {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}-->
+                    <!--                    {{--                                            <button type="submit" class="icon-btn text-warning" title="تعديل">--}}-->
+                    <!--                    {{--                                                <i class="fas fa-edit"></i>--}}-->
+                    <!--                    {{--                                            </button>--}}-->
+                    <!--                    {{--                                        </form>--}}-->
+                    <!--                    {{-- Delete Button --}}-->
+                    <!--                    {{--                                        <form action="{{route('personal-registration-delete')}}" method="POST"--}}-->
+                    <!--                    {{--                                              class="d-inline"--}}-->
+                    <!--                    {{--                                              onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">--}}-->
 
-                                        {{--                                            @csrf--}}
-                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
-                                        {{--                                            @method('DELETE')--}}
-                                        {{--                                            <button type="submit" class="icon-btn text-danger" title="حذف">--}}
-                                        {{--                                                <i class="fas fa-trash-alt"></i>--}}
-                                        {{--                                            </button>--}}
-                                        {{--                                        </form>--}}
+                    <!--                    {{--                                            @csrf--}}-->
+                    <!--                    {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}-->
+                    <!--                    {{--                                            @method('DELETE')--}}-->
+                    <!--                    {{--                                            <button type="submit" class="icon-btn text-danger" title="حذف">--}}-->
+                    <!--                    {{--                                                <i class="fas fa-trash-alt"></i>--}}-->
+                    <!--                    {{--                                            </button>--}}-->
+                    <!--                    {{--                                        </form>--}}-->
 
-                                        {{-- Toggle Status Button --}}
-                                        {{--                                        <form action="{{route('personal-registration-toggle')}}" method="POST"--}}
-                                        {{--                                              class="d-inline">--}}
-                                        {{--                                            @csrf--}}
-                                        {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}
-                                        {{--                                            <button type="submit" class="icon-btn text-success"--}}
-                                        {{--                                                    title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">--}}
-                                        {{--                                                <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>--}}
-                                        {{--                                            </button>--}}
-                                        {{--                                        </form>--}}
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="11" class="text-center text-muted">
-                                    لا توجد نتائج مطابقة للبحث
-                                </td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
+                    <!--                    {{-- Toggle Status Button --}}-->
+                    <!--                    {{--                                        <form action="{{route('personal-registration-toggle')}}" method="POST"--}}-->
+                    <!--                    {{--                                              class="d-inline">--}}-->
+                    <!--                    {{--                                            @csrf--}}-->
+                    <!--                    {{--                                            <input type="hidden" name="mid" value="{{ $member->mid }}">--}}-->
+                    <!--                    {{--                                            <button type="submit" class="icon-btn text-success"--}}-->
+                    <!--                    {{--                                                    title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">--}}-->
+                    <!--                    {{--                                                <i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>--}}-->
+                    <!--                    {{--                                            </button>--}}-->
+                    <!--                    {{--                                        </form>--}}-->
+                    <!--                </div>-->
+                    <!--            </td>-->
+                    <!--        </tr>-->
+                    <!--    @empty-->
+                    <!--        <tr>-->
+                    <!--            <td colspan="11" class="text-center text-muted">-->
+                    <!--                لا توجد نتائج مطابقة للبحث-->
+                    <!--            </td>-->
+                    <!--        </tr>-->
+                    <!--    @endforelse-->
+                    <!--    </tbody>-->
+                    <!--</table>-->
                 @endif
                 <div class="mt-4 d-flex justify-content-center">
                     {{--                    {{ $members->appends(request()->query())->links() }}--}}

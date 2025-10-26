@@ -223,11 +223,10 @@
                                            @if($confirmed) readonly @endif>
                                 </td>
 
-
-                                @if(!$confirmed)
+                                @if(!$confirmed  && request()->route()->getName() !== 'generate-report-registered-members_final')
                                     <td class="text-center">
                                         <form
-                                            action="{{ route('report-player-delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"
+                                            action="{{ route('final_reports_delete_player.delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"
                                             method="POST" class="d-inline"
                                             onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
                                             @csrf

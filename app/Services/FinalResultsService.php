@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\sv_initial_results_players;
 use App\Models\Sv_member;
 
+
+
 class FinalResultsService
 {
     use ImageTrait;
@@ -239,16 +241,21 @@ class FinalResultsService
     /**Preliminary results reports - clubs - details */
 
 
-    public function getReportsDetails(Request $request)
+    public function getReportsDetails(Request $request, $paginationCheck = 'yes')
     {
-        return SVFianlResults::query()
+        $query = SVFianlResults::query()
 //            ->where('confirmed', true)
             ->when($request->weapon_id, fn ($q, $weapon) => $q->where('weapon_id', $weapon))
             ->when($request->details, fn ($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
-            ->orderBy('id', 'desc')
-            ->cursorPaginate(config('app.admin_pagination_number'));
+            ->orderBy('id', 'desc');
+        if ($paginationCheck === 'yes') {
+            $data = $query->cursorPaginate(config('app.admin_pagination_number'));
+        } else {
+            $data = $query->get();
+        }
+        return $data;
 
     }
 
@@ -305,7 +312,7 @@ class FinalResultsService
         }
 
         if (!empty($request->total)) {
-            $query = $query->where('sv_fianl_results_players.total', '<=', $request->total);
+            $query = $query->where('sv_fianl_results_players.total', '>=', $request->total);
         }
         $query->orderBy('sv_fianl_results_players.total', 'desc')->orderBy('sv_fianl_results_players.second_total', 'desc');
 
@@ -588,4 +595,17 @@ class FinalResultsService
         }
         return false;
     }
+    
+    
+    
+        public function deletePlayer($rid , $player_id)
+    {
+        $player = SVFianlResultsPlayer::where('Rid' , $rid)->find($player_id);
+        if ($player) {
+            $player->delete();
+            return true;
+        }
+        return false;
+    }
+
 }

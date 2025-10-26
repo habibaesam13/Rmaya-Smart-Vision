@@ -230,10 +230,39 @@
          @endif
 
 
+  @if(checkModulePermission('users', 'view') or checkModulePermission('logs', 'view')) 
+ <li class="side-nav-title mt-2"> ادارة المشرفين </li> 
+      
+      
+      @if(checkModulePermission('users', 'view')) 
+      <li class="side-nav-item  @if (request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*')  || request()->routeIs('admin.give_module_to_role_show')  ) active   @endif">
+        <a data-bs-toggle="collapse" href="#sidebarLayouts_admins" aria-expanded="false" aria-controls="sidebarLayouts_2" class="side-nav-link">
+          <span class="menu-icon">
+            <i class="ri-layout-2-line"></i>
+          </span>
+          <span class="menu-text"> {{-- __('lang.user_management') --}} Users Management</span>
+          <span class="menu-arrow"></span>
+        </a>
+        <div class="collapse  @if (request()->routeIs('admin.users.*')  ||  request()->routeIs('admin.roles.*') || request()->routeIs('admin.give_module_to_role_show')) show   @endif" id="sidebarLayouts_admins">
+          <ul class="sub-menu"> @if(checkModulePermission('users', 'add')) <li class="side-nav-item">
+              <a href="{{url(route('admin.users.create'))}}" class="side-nav-link"> {{-- __('lang.add_user') --}} Add User</a>
+            </li>@endif @if(checkModulePermission('users', 'show')) <li class="side-nav-item">
+              <a href="{{url(route('admin.users.index'))}}" class="side-nav-link"> {{-- __('lang.show_admins') --}} View Users</a>
+            </li>@endif @if(checkModulePermission('users', 'view_roles')) <li class="side-nav-item">
+              <a href="{{url(route('admin.roles.index'))}}" class="side-nav-link"> {{-- __('lang.admins_roles') --}} Users Permissions </a>
+            </li>@endif </ul>
+        </div>
+      </li>@endif 
+      @if(checkModulePermission('logs', 'view')) <li class="side-nav-item ">
+        <a href="{{url(route('admin.logs.index'))}}" class="side-nav-link ">
+          <span class="menu-icon">
+            <i class="ri-file-list-line"></i>
+          </span>
+          <span class="menu-text">Logs</span>
+        </a>
+      </li> @endif 
 
-
-
-
+@endif 
 
 
 
@@ -493,10 +522,10 @@
                     @php  $roleIds = auth()->user()->roles->pluck('id');
                 use App\Models\Noti; $noti = Noti::whereIn('roles_id', $roleIds)->where('viewed','no')->get()->count();
                     @endphp
-                    <button class="topbar-link btn btn-soft-success btn-icon btn-sm rounded-circle" onclick="window.location.href='{{route('noti.index')}}'" type="button">
+                    <!--<button class="topbar-link btn btn-soft-success btn-icon btn-sm rounded-circle" onclick="window.location.href='{{route('noti.index')}}'" type="button">
                         <i class="ri-notification-snooze-line  fs-18 animate-ring "></i>
                         <span class="noti-icon-badge rounded-circle">{{$noti}}</span>
-                    </button>
+                    </button>-->
                     <!---->
                 </div>
             </div>

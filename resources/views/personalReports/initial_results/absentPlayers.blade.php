@@ -125,13 +125,14 @@
                             <div class="col-md-12 col-lg-2 col-12 mb-2" style="padding-top:8px">
                                 <div class="g-1 row justify-content-center">
                                     <div class="col-12 col-lg-5 col-md-6 ">
-                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
+                                        <button type="submit" class="btn btn-sm btn-success mt-1 mt-md-0 mt-lg-0 w-100" name="search" value="بحث">
                                             <i class="ri-search-2-line "></i>&nbsp;&nbsp;بحث
                                         </button>
                                     </div>
                                     <div class="col-12 col-lg-7 col-md-6">
-                                        <a href="{{ route('individuals-absent-preliminary-results') }}" class="btn btn-sm btn-danger w-100">
-                                            اعادة ضبط
+                                        <a href="{{ route('individuals-absent-preliminary-results') }}" class="btn btn-sm btn-primary w-100">
+                                            <i class="ri-arrow-go-back-line me-1"></i>
+                                            اعادة تعيين
                                         </a>
                                     </div>
                                 </div>
@@ -142,7 +143,7 @@
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
                         <div class="card-header">
                             <h5 class="mb-0 header-title">
-                                <i class="fas fa-file-alt me-2"></i>
+                                <i class="ri-file-line me-2"></i>
                                 إضافة تقرير يومي
                             </h5>
                         </div>
