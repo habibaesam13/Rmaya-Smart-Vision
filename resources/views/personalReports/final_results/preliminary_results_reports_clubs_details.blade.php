@@ -7,8 +7,8 @@
                     <h4 class="header-title">تقارير النتائح النهائية - الديتيل</h4>
                 </div>
                 <div class="col-12 col-md-4 text-md-end text-center">
-                        <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-danger  ">
-                            <i class="ri-printer-line"></i>
+                        <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
+                            <i class="ri-file-pdf-2-line"></i>
                         </span>
                 </div>
 

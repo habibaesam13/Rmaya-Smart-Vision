@@ -21,7 +21,7 @@
                     {{--/**********excel btn**********/--}}
                     <a title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')"
                        target="_blank"
-                       class="btn btn-sm btn-success  ">
+                       class="btn btn-sm btn-primary  ">
                         <i class="ri-file-excel-line"></i>
                     </a>
                     {{--/*********excel brn**********/--}}
@@ -143,10 +143,10 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <div class="d-flex">
-                                                    <!--<label>-->
-                                                    <!--<span class="fs-10" >مجموع العلامة المكتسبة</span>-->
-                                                    <!--<span class="fw-bolder fs-20" style="color:#bf1e2f"> => </span>-->
-                                                    <!--</label>-->
+                                                    <label>
+                                                    <span class="fs-10" >مجموع العلامة المكتسبة</span>
+                                                    <span class="fw-bolder fs-20" style="color:#bf1e2f"> => </span>
+                                                    </label>
                                                     <input name="total" value="{{ request('total')}}" type="number"
                                                            min="0"
                                                            class="form-control form-control-sm"
@@ -166,7 +166,7 @@
                                         {{--                            <div>--}}
                                         {{--                            </div>--}}
                                         <div class="col-8 ">
-                                            <div class="file-upload-wrapper gap-2 mb-2 d-flex">
+                                            <div class="file-upload-wrapper p-1 d-flex">
 
                                                 <button type="submit" value="submit" class="btn btn-sm btn-success ml">
                                                     <i class="ri-search-2-line me-2"></i> 
