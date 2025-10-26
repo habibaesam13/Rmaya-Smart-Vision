@@ -36,7 +36,7 @@ class GroupController extends Controller
         
         $groups = $this->groupService->getGroups()['groups'];
         
-        $groupsCount = $this->groupService->getGroups()['groupsCount'];
+        $groupsCount = $groups_without_pag->count()??0;
         
         $weapons = $this->weaponService->getAllGroupWeapons();
         return view('groups.registered_groups', ['groups' => $groups, 'weapons' => $weapons, 'groupsCount' => $groupsCount, 'groups_without_pag' => $groups_without_pag]);
@@ -46,7 +46,7 @@ class GroupController extends Controller
         $groups = $this->groupService->search($request, 1);
         $groups_without_pag = $this->groupService->search($request, 0);
         $weapons = $this->weaponService->getAllGroupWeapons();
-        $groupsCount = Sv_team::count();
+        $groupsCount = $groups_without_pag->count()??0;
         return view('groups.registered_groups', [
             'groups'  => $groups,
             'weapons' => $weapons,
@@ -107,8 +107,9 @@ class GroupController extends Controller
             return redirect()->route('access_denied');
         }
         $members = $this->groupService->getMembersWithGroups()['members'];
-        $members_count = $this->groupService->getMembersWithGroups()['members_count'];
+        
         $members_without_pag=$this->groupService->getMembersWithGroups()['members_without_pag'];
+        $members_count = $members_without_pag->count()??0;
         $groups = $this->groupService->getGroups();
         $weapons = $this->weaponService->getAllGroupWeapons();
         return view('groups.groups_members', compact(['members', 'groups', 'weapons', 'members_count','members_without_pag']));
@@ -119,7 +120,7 @@ class GroupController extends Controller
         $members_without_pag= $this->groupService->membersByGroupSearch($request,0);
         $groups = $this->groupService->getGroups();
         $weapons = $this->weaponService->getAllPersonalWeapons();
-        $members_count = $query = Sv_member::where('reg_type', 'group')->count();
+        $members_count = $members_without_pag->count()??0;
         return view('groups.groups_members', compact(['members', 'groups', 'weapons', 'members_count','members_without_pag']));
     }
 

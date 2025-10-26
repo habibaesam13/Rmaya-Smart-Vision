@@ -39,24 +39,19 @@ class GroupService
     public function getGroups()
     {
         $groups = Sv_team::with(['club', 'weapon'])->orderByDesc('tid');
-        $groupsCount = $groups->count();
         $groups_without_pag = $groups->get();
         $groups = $groups->cursorPaginate(config('app.admin_pagination_number'));
-        return ['groups' => $groups, 'groupsCount' => $groupsCount, 'groups_without_pag' => $groups_without_pag];
+        return ['groups' => $groups, 'groups_without_pag' => $groups_without_pag];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
     {
         $query = Sv_member::with(['team', 'club', 'weapon'])
             ->where('reg_type', 'group');
-
-        $members_count = $query->count(); // total count
-
         $members = $query->orderByDesc('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
         $members_without_pag = $query->orderByDesc('mid')->get();
         return [
             'members' => $members,
-            'members_count' => $members_count,
             'members_without_pag' => $members_without_pag,
         ];
     }

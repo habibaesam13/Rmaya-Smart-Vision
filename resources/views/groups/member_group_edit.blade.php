@@ -27,36 +27,39 @@ use Carbon\Carbon;
                     @method('PUT')
                     <div class="row g-3">
                         {{-- رقم الهوية + الاسم --}}
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label for="ID" class="col-form-label">رقم بطاقة الهوية</label>
                             <input type="number" class="form-control text-center" name="ID" id="ID"
                                 value="{{ old('ID', $member->ID) }}">
                         </div>
-                        <div class="col-md-6">
+                        {{-- تاريخ الميلاد + تاريخ انتهاء --}}
+                        
+                        <div class="col-md-3">
+                            <label for="expire-date" class="col-form-label">تاريخ انتهاء الهوية</label>
+                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date"
+                                value="{{ old('Id_expire_date', $member->Id_expire_date ? Carbon::parse($member->Id_expire_date)->format('Y-m-d') : '') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="birth-date" class="col-form-label">تاريخ الميلاد</label>
+                            <input type="date" class="form-control" id="birth-date" name="dob"
+                                value="{{ old('dob', $member->dob ? Carbon::parse($member->dob)->format('Y-m-d') : '') }}">
+                        </div>
+                        {{-- العمر --}}
+                        <div class="col-md-3">
+                            <label for="age">العمر</label>
+                            <input type="text" class="form-control" readonly id="age"
+                                value="{{ $member->dob ? Carbon::parse($member->dob)->age : '' }}">
+                        </div>
+                        <div class="col-md-3">
                             <label for="full-name" class="col-form-label">الاسم بالكامل</label>
                             <input type="text" class="form-control" id="full-name" name="name"
                                 value="{{ old('name', $member->name) }}">
                         </div>
 
-                        {{-- تاريخ الميلاد + تاريخ انتهاء --}}
-                        <div class="col-md-6">
-                            <label for="birth-date" class="col-form-label">تاريخ الميلاد</label>
-                            <input type="date" class="form-control" id="birth-date" name="dob"
-                                value="{{ old('dob', $member->dob ? Carbon::parse($member->dob)->format('Y-m-d') : '') }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="expire-date" class="col-form-label">تاريخ انتهاء الهوية</label>
-                            <input type="date" class="form-control" id="expire-date" name="Id_expire_date"
-                                value="{{ old('Id_expire_date', $member->Id_expire_date ? Carbon::parse($member->Id_expire_date)->format('Y-m-d') : '') }}">
-                        </div>
+                        
 
 
-                        {{-- العمر --}}
-                        <div class="col-md-12">
-                            <label for="age">العمر</label>
-                            <input type="text" class="form-control" readonly id="age"
-                                value="{{ $member->dob ? Carbon::parse($member->dob)->age : '' }}">
-                        </div>
+                        
 
                         {{-- الهاتف --}}
                         <div class="col-md-6">
@@ -82,7 +85,6 @@ use Carbon\Carbon;
         </div>
     </div>
 </div>
-@endsection
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -111,3 +113,5 @@ use Carbon\Carbon;
         });
     });
 </script>
+@endsection
+
