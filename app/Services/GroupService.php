@@ -176,12 +176,12 @@ class GroupService
 
                 $path_front = null;
                 $path_back = null;
-
+                //dd($member);
                 // Handle front ID pic
                 if (isset($member['front_id_pic']) && $member['front_id_pic'] instanceof \Illuminate\Http\UploadedFile) {
                     $file = $member['front_id_pic'];
                     $newfile = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                    $file->move(storage_path('app/public/national_ids'), $newfile);
+                    $file->move(public_path() . '/storage/national_ids/', $newfile);
                     $path_front = 'national_ids/' . $newfile;
                 }
 
@@ -189,7 +189,7 @@ class GroupService
                 if (isset($member['back_id_pic']) && $member['back_id_pic'] instanceof \Illuminate\Http\UploadedFile) {
                     $file = $member['back_id_pic'];
                     $newfile = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                    $file->move(storage_path('app/public/national_ids'), $newfile);
+                    $file->move(public_path() . '/storage/national_ids/', $newfile);
                     $path_back = 'national_ids/' . $newfile;
                 }
 
