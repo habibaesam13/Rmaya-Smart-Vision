@@ -13,6 +13,7 @@ class GroupRegistrationRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        //dd($_REQUEST);
         return true;
     }
     protected array $weaponAgeRanges = [

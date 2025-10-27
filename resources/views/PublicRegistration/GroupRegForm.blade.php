@@ -184,7 +184,7 @@
   <script>
     
     const oldMembers = @json(old('members', []));
-    const oldTempFiles = @json(session('temp_files', []));
+    //const oldTempFiles = @json(session('temp_files', []));
 
     document.querySelectorAll('.weapon-radio').forEach(radio => {
       radio.addEventListener('change', function() {
@@ -194,14 +194,14 @@
         for (let i = 0; i < membersCount; i++) {
           const member = oldMembers[i] || {};
           // Define temp file paths before using them
-          const frontKey = `members[${i}][front_id_pic]`;
-          const backKey = `members[${i}][back_id_pic]`;
-          const tempFront = oldTempFiles[frontKey] ?
-            `{{ asset('storage') }}/${oldTempFiles[frontKey].replace(/^public\//, '')}` :
-            '';
-          const tempBack = oldTempFiles[backKey] ?
-            `{{ asset('storage') }}/${oldTempFiles[backKey].replace(/^public\//, '')}` :
-            '';
+          // const frontKey = `members[${i}][front_id_pic]`;
+          // const backKey = `members[${i}][back_id_pic]`;
+          // const tempFront = oldTempFiles[frontKey] ?
+          //   `{{ asset('storage') }}/${oldTempFiles[frontKey].replace(/^public\//, '')}` :
+          //   '';
+          // const tempBack = oldTempFiles[backKey] ?
+          //   `{{ asset('storage') }}/${oldTempFiles[backKey].replace(/^public\//, '')}` :
+          //   '';
 
 
           const row = `
@@ -225,12 +225,9 @@
             name="members[${i}][age]" value="${member.age || ''}" readonly placeholder="00"></td>
 
           <td>
-          ${tempFront 
-            ? `<img src="${tempFront}" alt="preview" style="width:37px;height:37px;object-fit:cover;border-radius:6px;">` 
-            : ''
-          }
+          
           <input 
-            ${tempFront ? '' : 'required'} 
+          required
             class="form-control form-control-sm id-front" 
             type="file"
             name="members[${i}][front_id_pic]" 
@@ -238,12 +235,9 @@
           </td>
 
       <td>
-        ${tempBack 
-          ? `<img src="${tempBack}" alt="preview" style="width:37px;height:37px;object-fit:cover;border-radius:6px;">` 
-          : ''
-        }
+
         <input 
-          ${tempBack ? '' : 'required'} 
+          required
           class="form-control form-control-sm id-back" 
           type="file"
           name="members[${i}][back_id_pic]" 
@@ -350,7 +344,8 @@
       });
     }
   </script>
-  <script>
+  <!-- script for session working local -->
+  <!-- <script>
     document.addEventListener('change', async function(e) {
       if (e.target.matches('input[type=file]')) {
         const file = e.target.files[0];
@@ -381,7 +376,7 @@
         }
       }
     });
-  </script>
+  </script> -->
 </body>
 
 </html>

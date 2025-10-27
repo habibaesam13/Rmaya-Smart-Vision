@@ -162,96 +162,147 @@ class GroupService
     }
 
     //groups registration
-
-    public function createNewGroup(GroupRegistrationRequest $request)
+    public function createNewGroup($data)
     {
-        $data = $request->validated();
-        $tempFiles = session('temp_files', []); // get stored temp images from session
+        return DB::transaction(function () use ($data) {
 
-        return DB::transaction(function () use ($data, $tempFiles) {
             $team = Sv_team::create([
-                'name'      => $data['team_name'],
-                'club_id'   => $data['club_id'] ?? null,
+                'name' => $data['team_name'],
+                'club_id' => $data['club_id'] ?? null,
                 'weapon_id' => $data['weapon_id'],
             ]);
 
-            foreach ($data['members'] as $index => $member) {
-                // Retrieve paths from session if they exist
-                $frontKey = "members[{$index}][front_id_pic]";
-                $backKey  = "members[{$index}][back_id_pic]";
+            foreach ($data['members'] as $member) {
 
-                $frontSessionPath = $tempFiles[$frontKey] ?? null;
-                $backSessionPath  = $tempFiles[$backKey] ?? null;
-                //dd($frontSessionPath);
-                // Decide which path to use (session or request)
+                $path_front = null;
+                $path_back = null;
 
-                $frontPath = $this->handleFileInput($member['front_id_pic'] ?? $frontSessionPath, 'front');
-                $backPath  = $this->handleFileInput($member['back_id_pic'] ?? $backSessionPath, 'back');
-                //dd($frontPath);
+                // Handle front ID pic
+                if (isset($member['front_id_pic']) && $member['front_id_pic'] instanceof \Illuminate\Http\UploadedFile) {
+                    $file = $member['front_id_pic'];
+                    $newfile = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(storage_path('app/public/national_ids'), $newfile);
+                    $path_front = 'national_ids/' . $newfile;
+                }
+
+                // Handle back ID pic
+                if (isset($member['back_id_pic']) && $member['back_id_pic'] instanceof \Illuminate\Http\UploadedFile) {
+                    $file = $member['back_id_pic'];
+                    $newfile = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(storage_path('app/public/national_ids'), $newfile);
+                    $path_back = 'national_ids/' . $newfile;
+                }
+
+                // Create member record
                 $team->teamMembers()->create([
-                    'reg_type'         => 'group',
-                    'team_id'          => $team->tid,
-                    'weapon_id'        => $data['weapon_id'],
-                    'name'             => $member['name'],
-                    'ID'               => $member['ID'],
-                    'Id_expire_date'   => $member['Id_expire_date'],
-                    'dob'              => $member['dob'],
-                    'phone1'           => $member['phone1'],
-                    'front_id_pic'     => $frontPath,
-                    'back_id_pic'      => $backPath,
-                    'registration_date' => now()->toDateString(),
+                    'reg_type' => 'group',
+                    'team_id' => $team->tid,
+                    'weapon_id' => $data['weapon_id'],
+                    'name' => $member['name'],
+                    'ID' => $member['ID'],
+                    'Id_expire_date' => $member['Id_expire_date'],
+                    'dob' => $member['dob'],
+                    'phone1' => $member['phone1'],
+                    'front_id_pic' => $path_front,
+                    'back_id_pic' => $path_back,
                 ]);
             }
 
-            //  clear the session after successful insert
-            session()->forget('temp_files');
             return $team;
         });
     }
 
+
+    /** working for local session paths  */
+    // public function createNewGroup(GroupRegistrationRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     $tempFiles = session('temp_files', []); // get stored temp images from session
+
+    //     return DB::transaction(function () use ($data, $tempFiles) {
+    //         $team = Sv_team::create([
+    //             'name'      => $data['team_name'],
+    //             'club_id'   => $data['club_id'] ?? null,
+    //             'weapon_id' => $data['weapon_id'],
+    //         ]);
+
+    //         foreach ($data['members'] as $index => $member) {
+    //             // Retrieve paths from session if they exist
+    //             $frontKey = "members[{$index}][front_id_pic]";
+    //             $backKey  = "members[{$index}][back_id_pic]";
+
+    //             $frontSessionPath = $tempFiles[$frontKey] ?? null;
+    //             $backSessionPath  = $tempFiles[$backKey] ?? null;
+    //             //dd($frontSessionPath);
+    //             // Decide which path to use (session or request)
+
+    //             $frontPath = $this->handleFileInput($member['front_id_pic'] ?? $frontSessionPath, 'front');
+    //             $backPath  = $this->handleFileInput($member['back_id_pic'] ?? $backSessionPath, 'back');
+    //             //dd($frontPath);
+    //             $team->teamMembers()->create([
+    //                 'reg_type'         => 'group',
+    //                 'team_id'          => $team->tid,
+    //                 'weapon_id'        => $data['weapon_id'],
+    //                 'name'             => $member['name'],
+    //                 'ID'               => $member['ID'],
+    //                 'Id_expire_date'   => $member['Id_expire_date'],
+    //                 'dob'              => $member['dob'],
+    //                 'phone1'           => $member['phone1'],
+    //                 'front_id_pic'     => $frontPath,
+    //                 'back_id_pic'      => $backPath,
+    //                 'registration_date' => now()->toDateString(),
+    //             ]);
+    //         }
+
+    //         //  clear the session after successful insert
+    //         session()->forget('temp_files');
+    //         return $team;
+    //     });
+    // }
+
     /**
      * Move file from temporary session folder to final location.
      */
-    protected function moveTempFile(string $urlPath): ?string
-    {
-        // Handle both URL or relative path
-        if (str_contains($urlPath, '/storage/')) {
-            $relativePath = str_replace(url('/storage/'), '', $urlPath);
-        } else {
-            $relativePath = ltrim($urlPath, '/'); // e.g., "temp/abc.jpg"
-        }
+    // protected function moveTempFile(string $urlPath): ?string
+    // {
+    //     // Handle both URL or relative path
+    //     if (str_contains($urlPath, '/storage/')) {
+    //         $relativePath = str_replace(url('/storage/'), '', $urlPath);
+    //     } else {
+    //         $relativePath = ltrim($urlPath, '/'); // e.g., "temp/abc.jpg"
+    //     }
 
-        if (Storage::disk('public')->exists($relativePath)) {
-            $newPath = str_replace('temp/', 'national_ids/', $relativePath);
-            Storage::disk('public')->move($relativePath, $newPath);
-            return $newPath;
-        }
+    //     if (Storage::disk('public')->exists($relativePath)) {
+    //         $newPath = str_replace('temp/', 'national_ids/', $relativePath);
+    //         Storage::disk('public')->move($relativePath, $newPath);
+    //         return $newPath;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
-    protected function handleFileInput($fileInput, string $prefix = 'file'): ?string
-    {
-        // 1️⃣ If it's an UploadedFile, store it normally
-        if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
-            return $fileInput->store("national_ids", "public");
-        }
+    // protected function handleFileInput($fileInput, string $prefix = 'file'): ?string
+    // {
+    //     // 1️⃣ If it's an UploadedFile, store it normally
+    //     if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
+    //         return $fileInput->store("national_ids", "public");
+    //     }
 
-        // 2️⃣ If it's a temp file path (either full URL or relative path)
-        if (
-            is_string($fileInput) &&
-            (str_contains($fileInput, '/storage/temp/') || str_starts_with($fileInput, 'temp/'))
-        ) {
-            return $this->moveTempFile($fileInput);
-        }
+    //     // 2️⃣ If it's a temp file path (either full URL or relative path)
+    //     if (
+    //         is_string($fileInput) &&
+    //         (str_contains($fileInput, '/storage/temp/') || str_starts_with($fileInput, 'temp/'))
+    //     ) {
+    //         return $this->moveTempFile($fileInput);
+    //     }
 
-        // 3️⃣ If it's already stored path
-        if (is_string($fileInput) && str_contains($fileInput, 'national_ids/')) {
-            return $fileInput;
-        }
+    //     // 3️⃣ If it's already stored path
+    //     if (is_string($fileInput) && str_contains($fileInput, 'national_ids/')) {
+    //         return $fileInput;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
-    
+
 }

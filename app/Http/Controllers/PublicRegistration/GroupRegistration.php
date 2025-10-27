@@ -23,8 +23,9 @@ class GroupRegistration extends Controller
         return view('PublicRegistration.GroupRegForm',['weapons'=>$groupsWeapons,'oldTempFiles' => session('temp_files', [])]);
     }
     public function store(GroupRegistrationRequest $request){
-        
-        $team= $this->groupService->createNewGroup($request);
+        $data = $request->validated();
+        $team= $this->groupService->createNewGroup($request,$data);
+        //dd($team);
         if($team){
             return redirect()->back()->with('success','تم تسجيل الفريق بنجاح');
             
