@@ -209,8 +209,6 @@ class GroupService
         });
     }
 
-
-
     /**
      * Move file from temporary session folder to final location.
      */
@@ -254,4 +252,6 @@ class GroupService
 
         return null;
     }
+
+    
 }

@@ -182,18 +182,17 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    
     const oldMembers = @json(old('members', []));
     const oldTempFiles = @json(session('temp_files', []));
-    
+
     document.querySelectorAll('.weapon-radio').forEach(radio => {
       radio.addEventListener('change', function() {
         const membersCount = this.dataset.members;
         const tbody = document.getElementById('membersTableBody');
         tbody.innerHTML = ''; // clear old rows
-
         for (let i = 0; i < membersCount; i++) {
           const member = oldMembers[i] || {};
-
           // Define temp file paths before using them
           const frontKey = `members[${i}][front_id_pic]`;
           const backKey = `members[${i}][back_id_pic]`;
@@ -266,7 +265,8 @@
         selected.dispatchEvent(new Event('change'));
       }
     });
-    function setupRowValidation() {
+
+    function setupRowValidation(ageRule = {}) {
       const today = new Date();
       const year = today.getFullYear();
       const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -290,7 +290,6 @@
           const ageField = this.closest('tr').querySelector('.age');
           if (dob) {
             fetch(`{{ url('/calculate-age') }}?dob=${dob}`)
-
               .then(response => response.json())
               .then(data => {
                 ageField.value = data.age ?? '';
