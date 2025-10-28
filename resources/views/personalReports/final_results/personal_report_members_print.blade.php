@@ -1,5 +1,5 @@
-<div class="page-container my-4" >
-        @include('print.table_header',['title'=> $report?->weapon?->name ?? '---'  . "تقرير "])
+<div class="page-container my-4">
+    @include('print.table_header',['title'=> $report?->weapon?->name ?? '---'  . "تقرير "])
 
     {{-- Success Message --}}
     @if(session('success'))
@@ -30,8 +30,8 @@
             </div>
 
 
-            {{-- Report Info --}}
-         <!--   <div class="row g-3 mb-4">
+        {{-- Report Info --}}
+        <!--   <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="info-box bg-light p-3 rounded">
                         <label class="text-muted small mb-1">السلاح</label>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>-->
-         </div>
+        </div>
     </div>
 
     {{-- Results Table Card --}}
@@ -60,8 +60,9 @@
             @csrf
             <div class="table-responsive">
                 <center>
-                تقرير سلاح : {{ $report?->weapon?->name ?? '---' }} - رقم الديتيل : {{ $report?->details ?? '---' }} - التاريخ : {{ $report?->date ? date_create($report->date)->format('d-m-Y') : '---' }}
-              </center>  {{--                    <h2>{{session()->get('absents')}}</h2>--}}
+                    تقرير سلاح : {{ $report?->weapon?->name ?? '---' }} - رقم الديتيل : {{ $report?->details ?? '---' }}
+                    - التاريخ : {{ $report?->date ? date_create($report->date)->format('d-m-Y') : '---' }}
+                </center> {{--                    <h2>{{session()->get('absents')}}</h2>--}}
                 <table class="table table-bordered ">
                     <thead>
                     <tr>
@@ -82,39 +83,42 @@
                         <th>10</th>
                         <th>المجموع</th>
                         <th>ملاحظات</th>
-                     </tr>
+                    </tr>
                     </thead>
                     <tbody>
                     @forelse($members as $index => $member)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                            <td>{{ $member?->player?->phone1 ?? '---' }}</td>
-                            <td>{{ $member?->player?->ID ?? '---' }}</td>
-                            <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
-                            {{-- goal --}}
-                            <td>
-                                {{ old('goal.' . $member->id, $member->goal ?? '') }}
-                            </td>
+                        @if(!($confirmed &&  $member->total === null))
 
-                            {{-- R1 → R10 --}}
-                            @for($i=1; $i<=10; $i++)
+                            <tr>
+                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                <td>{{ $member?->player?->phone1 ?? '---' }}</td>
+                                <td>{{ $member?->player?->ID ?? '---' }}</td>
+                                <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
+                                {{-- goal --}}
                                 <td>
-                                     {{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}
+                                    {{ old('goal.' . $member->id, $member->goal ?? '') }}
                                 </td>
-                            @endfor
 
-                            {{-- total --}}
-                            <td>
-                                  {{  $member->total ?? '' }}
-                            </td>
+                                {{-- R1 → R10 --}}
+                                @for($i=1; $i<=10; $i++)
+                                    <td>
+                                        {{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}
+                                    </td>
+                                @endfor
 
-                            {{-- notes --}}
-                            <td>
-                                 {{ old('notes.'.$member->id, $member->notes ?? '') }}
-                            </td>
+                                {{-- total --}}
+                                <td>
+                                    {{  $member->total ?? '' }}
+                                </td>
+
+                                {{-- notes --}}
+                                <td>
+                                    {{ old('notes.'.$member->id, $member->notes ?? '') }}
+                                </td>
 
 
-                         </tr>
+                            </tr>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="18" class="text-center text-muted py-4">

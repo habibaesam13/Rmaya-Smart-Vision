@@ -145,7 +145,6 @@
                                 </div>
                             </form>
                         </div>
-
                         {{-- Results Table Card --}}
                         <div class="card shadow-sm border-0" id="printArea">
                             <div class="card-body ">

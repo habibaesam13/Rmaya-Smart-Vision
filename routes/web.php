@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\StatisticsController;
 use App\Models\Logs;
 use Illuminate\Http\Request;
 use App\Services\GroupService;
@@ -56,9 +57,6 @@ Route::group([
         return view('admin.index');
     })->middleware(['auth', 'verified'])->name('dashboard');
 });
-
-
-
 
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -226,7 +224,7 @@ Route::group(
             Route::post('clubs/{id}/toggle-status', [ClubsController::class, 'toggleStatus'])->name('clubs.toggle-status');
             Route::get('clubs/{cid}/weapons', [ClubsWeaponsController::class, 'getClubWeapons'])->name('clubs.weapons');
             /* Route::get('/clubs/{club}/weapons-by-age', [ClubsController::class, 'getWeaponsByAge'])
-                ->name('clubs.weapons.by.age');*/
+                 ->name('clubs.weapons.by.age');*/
 
             //Clubs-Weapons routes
             Route::prefix('clubs-weapons')->group(function () {
@@ -244,6 +242,7 @@ Route::group(
                 function () {
                     Route::get('registered', [PersonalController::class, 'index'])->name('personal-registration');
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
+                    Route::get('registered/show/{id}', [PersonalController::class, 'show'])->name('personal.show');
                     Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
                     Route::get('register', [PersonalController::class, 'create'])->name('personal-create');
                     Route::post('register', [PersonalController::class, 'store'])->name('personal-store');
@@ -390,6 +389,7 @@ Route::group(
                         $controller = new ExcelController($provider);
                         return $controller->export($request, 'absent_Personal_results_report.xlsx');
                     })->name('absent-personal-results-export-excel');
+
                 }
             );
 
@@ -397,9 +397,8 @@ Route::group(
             Route::prefix('final-results')->group(
                 function () {
                     Route::get('reports', [FinalResultsController::class, 'index'])->name('final_results.reports');
-                    //                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
-                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
-
+//                    Route::post('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
+                    Route::put('update-report-registered-members_final/{rid}', [FinalResultsController::class, 'updateReport'])->name('update-report-registered-members_final');
                     Route::post('generate-report_final', [FinalResultsController::class, 'store'])->name('generate-report-registered-members_final');
                     Route::post('calculate-total', [FinalResultsController::class, 'calculateTotal'])->name('calculate-total_final');
                     Route::post('final-members/detailed-repoert/{rid}', [FinalResultsController::class, 'saveReport'])->name('detailed-members-report-save_final');
@@ -417,6 +416,8 @@ Route::group(
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
                         return $controller->downloadPDF($request);
                     })->name('personal-results-report-download-pdf_final');
+
+
                     /*********************final Eliminations results report***********/
                     Route::get('/final-report-eliminations', [FinalResultReportController::class, 'index'])->name('final_reports.index');
                     Route::get('/get-weapons/{club_id}', [FinalResultReportController::class, 'getWeaponsByClub']);
@@ -427,169 +428,21 @@ Route::group(
                     Route::get('reports-players', [FinalResultReportController::class, 'getResportsAll'])->name('reports-details_players_final');
                     Route::delete('/delete-report-player/{rid}/{player_id}', [FinalResultReportController::class, 'deletePlayer'])->name('final_reports_delete_player.delete');
 
+
                     /*********************final absents results report***********/
                     Route::get('absent-reports', [AbsentMembersFinalResultController::class, 'index'])->name('final_results.absents.reports');
                     Route::get('generate-report_final-edit/{id}', [AbsentMembersFinalResultController::class, 'editReport'])->name('generate-report-registered-members_final_edit_for_absent');
                     Route::get('reports-absent-players', [AbsentMembersFinalResultController::class, 'getResportsAll'])->name('reports-details_absent_players_final');
 
-
-
-                    Route::get('test_test', function (FinalResultsService $n) {
-
-                        return $n->getOrdersArray();
-
-                        $final = [];
-
-                        $arr1 = [
-                            20 => 100,
-                            21 => 80,
-                            22 => 60,
-                            23 => 60,
-                            24 => 60,
-                            25 => 40,
-                            26 => 20,
-                            27 => 20,
-                            28 => 3,
-                        ];
-
-                        $arr2 = [
-                            20 => 0,
-                            21 => 0,
-                            22 => 1,
-                            23 => 500,
-                            24 => 10,
-                            25 => 20,
-                            26 => 30,
-                            27 => 100,
-                            28 => 2,
-                        ];
-
-                        // Extract keys and values to allow same foreach structure
-                        $keys = array_keys($arr1);
-                        $values1 = array_values($arr1);
-                        $values2 = array_values($arr2);
-
-                        $count = count($values1);
-                        $previ = -1;
-                        $next = -1;
-
-                        foreach ($values1 as $i => $item1) {
-                            $key1 = $keys[$i];
-
-                            if ($i != 0) {
-                                $previ = $values1[$i - 1];
-                            }
-
-                            if ($i < $count - 1) {
-                                $next = $values1[$i + 1];
-                            }
-
-                            if ($previ === $item1) {
-                                $final[$item1][] = $values2[$i];
-                            } elseif ($i === 0 && $next === $item1) {
-                                $final[$item1][] = $values2[$i];
-                            } elseif ($i == $count - 1 && $previ === $item1) {
-                                $final[$item1][] = $values2[$i];
-                            } elseif ($previ !== $item1 && $item1 === $next && $i !== $count - 1) {
-                                $final[$item1][] = $values2[$i];
-                            } else {
-                                $final[$item1][] = $item1;
-                            }
-                        }
-
-                        // Sort the outer array by key descending (e.g., 60 > 20)
-                        krsort($final);
-
-                        // Sort each inner array descending
-                        foreach ($final as &$arr) {
-                            rsort($arr);
-                        }
-                        unset($arr);
-
-
-
-                        $flattened = [];
-                        $index = 0;
-                        foreach ($arr1 as $key => $val) {
-                            $flattened[$key] = null; // initialize to preserve order
-                        }
-
-                        // Fill the flattened array sequentially (values in order)
-                        $allValues = [];
-                        foreach ($final as $group) {
-                            foreach ($group as $value) {
-                                $allValues[] = $value;
-                            }
-                        }
-
-                        // Map flattened values to original keys in order
-                        $i = 0;
-                        foreach (array_keys($flattened) as $key) {
-                            if (isset($allValues[$i])) {
-                                $flattened[$key] = $allValues[$i];
-                            }
-                            $i++;
-                        }
-
-                        dd($flattened);
-                    });
-
-
-
-
-
-                    Route::get('test_test_original', function () {
-                        $previ = -1;
-                        $next = -1;
-                        $final = [];
-
-
-
-                        $arr1 = [100, 80, 60, 60, 60, 40, 20, 20, 3];
-                        $arr2 = [0, 0, 1, 500, 10, 20, 30, 100, 2];
-                        foreach ($arr1 as $key1 => $item1) {
-
-
-                            if ($key1 != 0) {
-                                $previ = $arr1[$key1 - 1];
-                            }
-
-
-                            if ($key1 < count($arr1) - 1) {
-                                $next = $arr1[$key1 + 1];
-                            }
-
-
-                            if ($previ === $item1) {
-                                $final[$item1][] = $arr2[$key1];
-                            } elseif ($key1 === 0 && $next === $item1) {
-                                $final[$item1][] = $arr2[$key1];
-                            } elseif ($key1 == count($arr1) - 1 && $previ === $item1) {
-                                $final[$item1][] = $arr2[$key1];
-                            } elseif ($previ !== $item1 && $item1 === $next  && $key1 !== count($arr1) - 1) {
-                                $final[$item1][] = $arr2[$key1];
-                            } else {
-                                $final[$item1][] = $item1;
-                            }
-                        }
-
-                        // Sort the outer array by keys descending (60 > 20 > ...)
-                        krsort($final);
-
-                        // Optional: sort each inner array descending too
-                        foreach ($final as &$arr) {
-                            rsort($arr);
-                        }
-                        unset($arr);
-
-                        // Convert associative array to numeric-indexed
-                        $finalArr = array_values($final);
-
-                        dd($finalArr);
-                    });
                 }
             );
+
+            /*********************statistics report***********/
+            Route::get('statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+
+
         });
+
     }
 );
 

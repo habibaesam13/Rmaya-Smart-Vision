@@ -15,6 +15,7 @@ class SVFianlResults extends Model
         'details',
         'file',
         'confirmed',
+
     ];
 
     // One report has many player results

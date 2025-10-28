@@ -2,7 +2,7 @@
 
 @section('content')
 
-{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">--}}
+    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">--}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
     </script>
 
@@ -21,7 +21,7 @@
                     {{--/**********excel btn**********/--}}
                     <a title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')"
                        target="_blank"
-                       class="btn btn-sm btn-primary  ">
+                       class="btn btn-sm btn-success  ">
                         <i class="ri-file-excel-line"></i>
                     </a>
                     {{--/*********excel brn**********/--}}
@@ -67,7 +67,7 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <select name="weapon_id" required id="weaponSelect"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control">
                                                     <option value=""> اختر السلاح .....</option>
                                                     @foreach($weapons as $weapon)
                                                         <option
@@ -80,7 +80,7 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <select name="club_id"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control">
                                                     <option {{ request('club_id') === "" ? 'selected' : '' }} value="">
                                                         اختر النادي .....
                                                     </option>
@@ -96,7 +96,7 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <select name="rate_limiting"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control">
                                                     <option value="">فرز الترتيب .....</option>
                                                     <option
                                                         {{ request('rate_limiting') == 1 ? 'selected' : '' }}   value="1">
@@ -110,9 +110,27 @@
                                                         {{ request('rate_limiting') == 3 ? 'selected' : '' }}   value="3">
                                                         من الاول الى الثالث
                                                     </option>
+
+                                                    <!-------------------------------------->
+                                                    <option
+                                                        {{ request('rate_limiting') == 10 ? 'selected' : '' }}   value="10">
+                                                        من الاول الى العاشر
+                                                    </option>
+                                                    <option
+                                                        {{ request('rate_limiting') == 15 ? 'selected' : '' }}   value="15">
+                                                        من الاول الى الخامس عشر
+                                                    </option>
                                                     <option
                                                         {{ request('rate_limiting') == 20 ? 'selected' : '' }}   value="20">
                                                         من الاول الى العشرون
+                                                    </option>
+                                                    <option
+                                                        {{ request('rate_limiting') == 25 ? 'selected' : '' }}   value="25">
+                                                        من الاول الى الخامس و العشرون
+                                                    </option>
+                                                    <option
+                                                        {{ request('rate_limiting') == 30 ? 'selected' : '' }}   value="20">
+                                                        من الاول الى الثلاثون
                                                     </option>
                                                 </select>
                                             </div>
@@ -123,7 +141,7 @@
                                             <div class="file-upload-wrapper p-1">
                                                 <input name="search" value="{{ request('search')}}"
                                                        placeholder="ألاسم / رقم الهوية / رقم الهاتف"
-                                                       class="form-control form-control-sm">
+                                                       class="form-control form-control">
                                             </div>
                                         </div>
 
@@ -131,10 +149,10 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <div class="d-flex">
-                                                    <!--<label>تاريخ الديتيل</label>-->
-                                                    <input name="details_date" value="{{ request('details_date')}}"
+                                                   <label>تاريخ الديتيل</label>
+                                                    <input title="تاريخ الديتيل" name="details_date" value="{{ request('details_date')}}"
                                                            type="date"
-                                                           class="form-control form-control-sm">
+                                                           class="form-control form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -143,14 +161,14 @@
                                         <div class="col-4">
                                             <div class="file-upload-wrapper p-1">
                                                 <div class="d-flex">
-                                                    <label>
-                                                    <span class="fs-10" >مجموع العلامة المكتسبة</span>
-                                                    <span class="fw-bolder fs-20" style="color:#bf1e2f"> => </span>
-                                                    </label>
+                                                    <!--<label>-->
+                                                    <!--<span class="fs-10" >مجموع العلامة المكتسبة</span>-->
+                                                    <!--<span class="fw-bolder fs-20" style="color:#bf1e2f"> => </span>-->
+                                                    <!--</label>-->
                                                     <input name="total" value="{{ request('total')}}" type="number"
                                                            min="0"
-                                                           class="form-control form-control-sm"
-                                                           placeholder="مجموع العلامة المكتسبة">
+                                                           class="form-control form-control"
+                                                           placeholder="مجموع العلامة المكتسبة   >= ">
                                                 </div>
                                             </div>
                                         </div>
@@ -166,10 +184,10 @@
                                         {{--                            <div>--}}
                                         {{--                            </div>--}}
                                         <div class="col-8 ">
-                                            <div class="file-upload-wrapper p-1 d-flex">
+                                            <div class="file-upload-wrapper gap-2 mb-2 d-flex">
 
                                                 <button type="submit" value="submit" class="btn btn-sm btn-success ml">
-                                                    <i class="ri-search-2-line me-2"></i> 
+                                                    <i class="ri-search-2-line me-2"></i>
                                                     بحث
                                                 </button>
 
@@ -192,6 +210,7 @@
                     {{-- Results Table Card --}}
                     <div class="card shadow-sm border-0" id="printArea">
                         <div class="card-body">
+
                             @csrf
                             <div class="table-responsive">
                                 <table class="table table-bordered ">
@@ -229,6 +248,9 @@
                                 }
                                         @endphp
 
+
+
+
                                         {{--{{dd($sortedRatings[$index])}}--}}
                                         <tr style="background-color: {{$currentColor}} !important;">
                                             <td class="text-center fw-bold">{{ $index + 1 }} </td>
@@ -238,23 +260,42 @@
                                             <td class="fw_bold total-input">{{$item->total}}</td>
                                             {{-- goal --}}
                                             <td>
-                                                <form class="d-flex "
-                                                      action="{{route('final_report_save_second_total.update' , $item->result_player_id)}}"
-                                                      method="get">
-                                                    @csrf
-{{--                                                    <input type="number" name="second_total" onfocus=" this.value='';"--}}
-{{--                                                           onblur="if(this.value == '') this.value='{{$item->second_total ?? 0}}';"--}}
-{{--                                                           --}}{{--                                               onkeydown="this.value='';"--}}
-{{--                                                           value="{{$item->second_total ?? 0}}" class="second_total"--}}
-{{--                                                           min="0"/>--}}
-                                                    <input type="number" name="second_total"
-                                                           value="{{$item->second_total ?? 0}}" class="second_total"
-                                                           min="0"/>
+                                                @if($res[$index]?->total  === $res[$index + 1]?->total  || $res[$index]?->total  === $res[$index -1 ]?->total)
+                                                    <form class="d-flex "
+                                                          action="{{route('final_report_save_second_total.update' , $item->result_player_id)}}"
+                                                          method="get">
+                                                        @csrf
+                                                        <input type="number" name="second_total"
+                                                               value="{{$item->second_total ?? 0}}" class="second_total"
+                                                               min="0"/>
 
-                                                    <label class="col">
-                                                        <input type="submit" class="btn btn-sm btn-primary" value="حفظ">
-                                                    </label>
-                                                </form>
+                                                        <label class="col">
+                                                            <input type="submit" class="btn btn-sm btn-primary"
+                                                                   value="حفظ">
+                                                        </label>
+                                                    </form>
+
+                                                @endif
+{{--                                               @php $m = ($index <  count($res)-1) ? $index   : ''; @endphp--}}
+{{--                                                <br>--}}
+{{--                                                @if(($index <  count($res)-1   && ( $res[$index]  === $res[$m] || $res[$index] === $res[$m + 1] ))--}}
+{{--                                                  ||--}}
+{{--                                                  ($index ===  count($res)-1 && $index != 0 && $res[$index]->total === $res[$index-1]->total)--}}
+{{--                                                    )--}}
+{{--                                                    <form class="d-flex "--}}
+{{--                                                          action="{{route('final_report_save_second_total.update' , $item->result_player_id)}}"--}}
+{{--                                                          method="get">--}}
+{{--                                                        @csrf--}}
+{{--                                                        <input type="number" name="second_total"--}}
+{{--                                                               value="{{$item->second_total ?? 0}}" class="second_total"--}}
+{{--                                                               min="0"/>--}}
+
+{{--                                                        <label class="col">--}}
+{{--                                                            <input type="submit" class="btn btn-sm btn-primary"--}}
+{{--                                                                   value="حفظ">--}}
+{{--                                                        </label>--}}
+{{--                                                    </form>--}}
+{{--                                                @endif--}}
                                             </td>
                                             {{-- total --}}
                                             <td>
@@ -272,10 +313,10 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="18" class="text-center text-muted py-4">
-                                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                                                لا توجد بيانات لعرضها
-                                            </td>
+{{--                                            <td colspan="18" class="text-center text-muted py-4">--}}
+{{--                                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>--}}
+{{--                                                لا توجد بيانات لعرضها--}}
+{{--                                            </td>--}}
                                         </tr>
                                     @endforelse
                                     </tbody>
@@ -359,19 +400,19 @@
     </script>
 
 
-<script>
-    function printDiv(divId) {
-        const content = document.getElementById(divId).innerHTML;
-        const printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write('<html><head><title>Print</title>');
-        printWindow.document.write("<style> .hide_print{display:none !important;}@page { size: auto;  margin: 5mm; }.hide_print{display:none !important}.show_print{display:block !important}@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:5px;font-size:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}</style><style>@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}.table td th{border: 1px solid #ccc !important;} th{background:#cccccc69 !important; -webkit-print-color-adjust: exact !important;} h4,h3,h2,h1,h5 {text-align:right;}</style>");
-        printWindow.document.write('</head><body>');
-        printWindow.document.write(content);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.print();
-    }
+    <script>
+        function printDiv(divId) {
+            const content = document.getElementById(divId).innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print</title>');
+            printWindow.document.write("<style> .hide_print{display:none !important;}@page { size: auto;  margin: 5mm; }.hide_print{display:none !important}.show_print{display:block !important}@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:5px;font-size:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}</style><style>@if(app()->getLocale()=='ar') body{font-family:'Amiri',sans-serif;direction:rtl!important;text-align:right}@else body{font-family:sans-serif;direction:ltr!important;text-align:left}@endif table,td,th{border:1px solid}table{width:100%;border-collapse:collapse}h2{text-align:left}table{font-family:arial,sans-serif;border-collapse:collapse;direction:rtl;width:100%;color:#000}td,th{text-align:center;padding:12px}th{background-color:#af9c60;background-color:rgb(175 156 96 / .1);padding:10px}tr:nth-child(even){background-color:#F8F9FB}.content-container_table{padding:5px 0;font-family:DejaVu Sans,sans-serif;height:auto;margin:auto;font-weight:700;border:2px solid lightgray!important;border-right:none!important;border-left:none!important}.content-left,.content-middle,.content-right{display:inline-block!important;vertical-align:top;margin-top:0}.content-middle{width:100px;padding:0 4px;clear:both;background-color:red;flex-wrap:wrap}.content-middle img{margin:auto;text-align:center}.content-left h6,.content-right h6{color:#998048;font-weight:700;margin:8px 0;text-transform:uppercase}.content-left h5,.content-right h5{font-weight:700;margin:8px 0;text-transform:capitalize}.content-left small,.content-right small{font-weight:400;margin:6px 0}.bottom-border{border-bottom:1px solid lightgrey}.last_td{border-bottom:1px solid lightgrey;border-top:1px solid lightgrey}.redTest{color:red}.right{text-align:right;margin-top:0!important}.left{text-align:left;margin-top:0!important}.logo{display:block;text-align:center;margin:auto;max-width:200px}.left-col,.right-col,.middle-col{width:32%!important}.left-col{text-align:left!important}.right-col{text-align:right!important}.td_header{width:32%}.th_header{width:32%}.middle_bottom_td{width:65%}h3{font-weight:bold!important;color:#B8741A}.outer_div_right{text-align:right;font-size:70%;width:100%}.outer_div_left{text-align:left;font-size:70%;width:100%}.inner_span{font-weight:bold!important;color:#134356;font-size:120%;display:block;margin-bottom:7px}.upper_tr{padding-bottom:8px;padding-top:8px;background:none!important;text-align:center!important;color:rgb(0 0 0 / .8)}.date_tr{text-align:left}.span_tr{color:#c00;font-weight:bold!important}.date_tr{float:right}.wrapper{padding-left:20px;padding-right:20px}.table_card{font-size:70%!important}.header-title{text-align:center}.header-title{margin-top:10px!important}.table td th{border: 1px solid #ccc !important;} th{background:#cccccc69 !important; -webkit-print-color-adjust: exact !important;} h4,h3,h2,h1,h5 {text-align:right;}</style>");
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
 
-</script>
+    </script>
 
 @endsection

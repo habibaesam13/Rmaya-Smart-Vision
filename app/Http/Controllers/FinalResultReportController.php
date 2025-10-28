@@ -72,7 +72,7 @@ class FinalResultReportController extends Controller
     {
         $action = $this->finalResultsService->deleteReport($id);
         if ($action) {
-            return redirect()->back()->with('success', 'لقد تم الغاء التقرير بنجاح');
+            return redirect()->back()->with('success', 'لقد تم الغاء الديتيل بنجاح');
         } else {
             return redirect()->back()->with('error', 'لم تتم عملية الالغاء بنجاح حاول مرة اخري');
         }
@@ -85,9 +85,9 @@ class FinalResultReportController extends Controller
     {
         $action = $this->finalResultsService->deletePlayer($rid , $playerId);
         if ($action) {
-            return redirect()->back()->with('success', 'لقد تم الغاء اللاعب من التقرير بنجاح');
+            return redirect(route('report-members_final' , $rid))->with('success', "تم إلغاء الرامي بنجاح");
         } else {
-            return redirect()->back()->with('error', 'لم تتم عملية الالغاء بنجاح حاول مرة اخري');
+            return redirect(route('report-members_final' , $rid))->with('error', 'لم تتم عملية الالغاء بنجاح حاول مرة اخري');
         }
     }
 

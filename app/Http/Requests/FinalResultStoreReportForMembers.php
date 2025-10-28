@@ -31,25 +31,31 @@ class FinalResultStoreReportForMembers extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'checkedMembers'   => 'required|array',
+//        dd(request()->method() );
+        $arr = [
+            'checkedMembers' => 'required|array',
             'checkedMembers.*' => 'exists:sv_members,mid',
-            'date'             => 'date|required',
-            'details'          => 'integer|required',
+            'date' => 'date|required',
+            'details' => 'integer|required|unique:sv_fianl_results',
         ];
+
+        if (request()->method() === 'PUT') {
+            $arr['details'] =    'integer|required' ;
+        }
+        return  $arr;
     }
 
     public function messages(): array
     {
         return [
             'checkedMembers.required' => 'يجب اختيار عضو واحد على الأقل.',
-            'checkedMembers.array'    => 'يجب إرسال الأعضاء المحددين كمصفوفة.',
+            'checkedMembers.array' => 'يجب إرسال الأعضاء المحددين كمصفوفة.',
             'checkedMembers.*.exists' => 'عضو أو أكثر من الأعضاء المحددين غير موجودين في النظام.',
-            'date.date'               => 'يجب أن يكون حقل التاريخ تاريخاً صحيحاً.',
-            'details.integer'         => 'يجب أن يكون حقل التفاصيل قيمة رقمية صحيحة.',
+            'date.date' => 'يجب أن يكون حقل التاريخ تاريخاً صحيحاً.',
+            'details.integer' => 'يجب أن يكون حقل التفاصيل قيمة رقمية صحيحة.',
+            'details.unique' => 'رقم الديتيل موجود بالفعل',
         ];
     }
-
 
 
     public function withValidator($validator)

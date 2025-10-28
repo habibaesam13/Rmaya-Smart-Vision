@@ -17,8 +17,8 @@ use Illuminate\Http\Request;
 use App\Http\Traits\LogsTrait;
 
 class FinalResultsController extends Controller
-{ 
-    use LogsTrait;
+{
+     use LogsTrait;
 
     protected PersonalService $personalService;
     protected CountriesService $countryService;
@@ -83,14 +83,14 @@ class FinalResultsController extends Controller
         //     ->orderBy('mid', 'desc')->cursorPaginate(config('app.admin_pagination_number'));
         $reportSection = true;
         request()->session()->forget('absents');
-        $arranging_arr = ['' => '', 0 => 'الاول', 1 => 'الثاني', 2 => 'الثالت', 3 => 'الرابع', 4 => 'الخامس', 5 => 'الاول', 6 => 'السادس', 7 => 'السابع', 8 => 'الثامن', 9 => 'التاسع', 10 => 'العاشر', 11 => 'الاحدي عشر', 12 => 'الاثنا عشر', 13 => 'الثالث عشر'];
+        $arranging_arr = ['' => '', 0 => 'الاول', 1 => 'الثاني', 2 => 'الثالت', 3 => 'الرابع', 4 => 'الخامس', 5 => 'السادس', 6 => 'السابع', 7 => 'الثامن', 8 => 'التاسع', 9 => 'العاشر', 10 => "الاحدي عشر", 11 => 'الاثنا عشر', 12 => 'الثالث عشر', 13 => 'الرابع عشر'];
         return view('personalReports/final_results/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'reportSection', 'Edit_report', 'available_players', 'arranging_arr', 'allavailable_players', 'count'));
     }
 
 //    public function store(StoreReportForMembers $request)
     public function store(FinalResultStoreReportForMembers $request)
     {
-        $data = $request->validated();
+         $data = $request->validated();
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
         $members = $this->resultService->getReportDetails($report->id);
@@ -123,9 +123,9 @@ class FinalResultsController extends Controller
 
             return redirect()
                 ->route('report-members_final', $rid)
-                ->with(['success' => 'تم تأكيد التقرير']);
+                ->with(['success' => 'تم إعتماد و إرسال النتائج']);
         }
-        
+
         return redirect()->back()->with('error', 'حدث خطأ أثناء التأكيد');
     }
 
@@ -192,10 +192,10 @@ class FinalResultsController extends Controller
 
     public function updateReport(FinalResultStoreReportForMembers $request, $rid)
     {
-        $report = $this->resultService->getReport($rid);
+         $report = $this->resultService->getReport($rid);
 
         if (!$report) {
-            
+
             return redirect()->back()->with('error', 'لم يتم العثور على التقرير');
         }
         $validated = $request->validated();

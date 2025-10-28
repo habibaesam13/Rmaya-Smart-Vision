@@ -51,13 +51,13 @@ class AbsentMembersFinalResultController extends Controller
 //            $available_players = $this->resultService->getConfirmedPlayers($request);
             $reportSection = true;
             $ids = $available_players ? $available_players->pluck('mid') : null;
-            $membersCount = $available_players ?  count($available_players) : 0;
+//            $membersCount = $available_players ?  count($available_players) : 0;
         } else {
             $available_players = $this->resultService->getConfirmedPlayers($request , 'yes');
             $allAvailable_players =  $this->resultService->getConfirmedPlayers($request , 'no');
             $reportSection = false;
             $ids = $available_players ? $available_players->pluck('mid') : null;
-            $membersCount = $available_players ? count($available_players) : 0;
+//            $membersCount = $available_players ? count($available_players) : 0;
         }
         if(empty($request->weapon_id) && !$request->filled('addMembertoReportRid')){
             $available_players = collect();
@@ -70,7 +70,7 @@ class AbsentMembersFinalResultController extends Controller
         $reportSection = true;
         request()->session()->put('absents' , 'yes');
         $arranging_arr = ['' => '' , 0=>'الاول' , 1=>'الثاني', 2=>'الثالت', 3=>'الرابع',4=>'الخامس', 5=>'الاول', 6=>'السادس',7=>'السابع',8=>'الثامن' , 9=>'التاسع' , 10=>'العاشر' , 11=>'الاحدي عشر' , 12=>'الاثنا عشر' , 13=>'الثالث عشر'];
-         return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'membersCount', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
+         return view('personalReports/final_results/absents/index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'reportSection', 'Edit_report', 'available_players' , 'arranging_arr' , 'allAvailable_players'));
      }
 
 

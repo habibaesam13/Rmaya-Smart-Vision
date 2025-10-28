@@ -5,10 +5,9 @@
 
     <div class="page-container my-4">
 
-
-        <!---------------start print part ----------------->
+         <!---------------start print part ----------------->
         <div id="pr" style="display:none">
-            @include('personalReports.final_results.personal_report_members_print' ,  ['members' => @$members , ''])
+            @include('personalReports.final_results.personal_report_members_print' ,  ['members' => @$members , 'confirmed' => $confirmed ])
         </div>
         <!--------end print part ------>
         </h2>
@@ -30,6 +29,16 @@
                 </ul>
             </div>
         @endif
+        @if($confirmed)
+            <div class="d-flex" style="justify-content: flex-end">
+            <span onclick="printDiv('pr')"
+                  class="btn btn-sm btn-danger  mb-2">
+                         <i class="ri-printer-line"></i>
+                        <span title="طباعة" class=" ml-0">طباعة الديتيل</span>
+            </span>
+            </div>
+        @endif
+
         {{-- Header Card --}}
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
@@ -64,9 +73,10 @@
                     </div>
                 </div>
 
-                {{-- Action Buttons --}}
-                <div class="d-flex flex-wrap gap-2">
-                    @if(!$confirmed)
+                @if(!$confirmed)
+
+                    {{-- Action Buttons --}}
+                    <div class="d-flex flex-wrap gap-2">
                         <form action="{{route('add-player-to-report_final',$report?->id)}}" method="get">
                             @csrf
                             <input type="text" class="d-none" name="absents" value="{{request()->get('absents')}}">
@@ -82,53 +92,42 @@
                                 <span>اعتماد وإرسال النتائج الأولية</span>
                             </button>
                         </form>
-                    @endif
-                    {{-- report save --}}
+                        {{-- report save --}}
+                        <form action="{{ route('detailed-members-report-save_final', $report?->id) }}"
+                              method="POST"
+                              id="saveReportForm"
+                              enctype="multipart/form-data"
+                              class="d-flex align-items-center gap-2">
+                            @csrf
+                            <input type="hidden" name="players_data" id="playersData">
 
-                    <form action="{{ route('detailed-members-report-save_final', $report?->id) }}"
-                          method="POST"
-                          id="saveReportForm"
-                          enctype="multipart/form-data"
-                          class="d-flex align-items-center gap-2">
-                        @csrf
-                        <input type="hidden" name="players_data" id="playersData">
+                            {{-- الملف --}}
+                            <div class="file-upload-wrapper">
+                                <input type="file" name="attached_file" id="attached_file" title="اختر ملف .... "
+                                       class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
+                                <span class="text-danger">PDF , DOC 2MG</span>
 
-                        {{-- الملف --}}
-                        <div class="file-upload-wrapper">
-                            <input type="file" name="attached_file" id="attached_file"
-                                   class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
-                        </div>
-                        {{-- Print Button --}}
-                        {{--                <a href="{{ route('report.print_final', $report->id) }}"--}}
-                        {{--                    target="_blank"--}}
-                        {{--                    class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">--}}
-                        {{--                    <i class="fas fa-print"></i>--}}
-                        {{--                    <span>طباعة</span>--}}
-                        {{--                </a>--}}
+                            </div>
 
-                        {{--                  //here--}}
-                        <span onclick="printDiv('pr')"
-                              class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
+                            <span onclick="printDiv('pr')"
+                                  class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
                         <i class="fas fa-print"></i>
-                        <span>طباعة</span>
+                        <span>طباعة الديتيل</span>
                     </span>
-                        @if(!$confirmed)
                             {{-- زر الحفظ --}}
                             <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
                                 <i class="fas fa-save"></i>
-                                <span>حفظ التقرير</span>
+                                <span>حفظ الديتيل</span>
                             </button>
-                        @endif
-                    </form>
-                    {{--                    <form action="{{route('personal-results-report-download-pdf_final',$report->id)}}" method="GET">--}}
-                    {{--                        <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center gap-2">--}}
-                    {{--                            <i class="fas fa-print"></i>--}}
-                    {{--                            <span>PDF</span>--}}
-                    {{--                        </button>--}}
-                    {{--                    </form>--}}
+
+                        </form>
+                    </div>
+                    <div class="row pb-3 text-danger">في حالة ارفاق ملف للديتيل يجب حفظ الديتيل اولا قبل اعتماد
+                        الديتيل
+                    </div>
+                @endif
 
 
-                </div>
             </div>
         </div>
         {{-- Results Table Card --}}
@@ -158,92 +157,94 @@
                             <th>المجموع</th>
                             <th>ملاحظات</th>
                             @if(!$confirmed)
-                                <th>إجراءات</th>
+                                <th>التحكم</th>
                             @endif
                         </tr>
                         </thead>
                         <tbody>
                         @forelse($members as $index => $member)
-                            <tr>
-                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td>{{ $member?->player?->phone1 ?? '---' }}</td>
-                                <td>{{ $member?->player?->ID ?? '---' }}</td>
-                                <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
-                                {{-- goal --}}
-                                <td>
-                                    <input type="number"
-                                           name="goal"
-                                           required
-                                           data-player="{{ $member->id }}"
-                                           class="form-control form-control-sm"
-                                           min="1"
-                                           {{--                                           value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"--}}
-                                            value="{{  $member->goal ?? ''  }}"
-                                           value=""
-                                           @if($confirmed) readonly @endif>
-                                </td>
-
-                                {{-- R1 → R10 --}}
-                                @for($i=1; $i<=10; $i++)
+                            @if(!($confirmed &&  $member->total === null))
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                    <td>{{ $member?->player?->phone1 ?? '---' }}</td>
+                                    <td>{{ $member?->player?->ID ?? '---' }}</td>
+                                    <td class="fw-bold">{{ $member?->player?->name ?? '---' }}</td>
+                                    {{-- goal --}}
                                     <td>
                                         <input type="number"
-                                               name="R{{ $i }}"
+                                               name="goal"
+                                               required
                                                data-player="{{ $member->id }}"
-                                               class="form-control form-control-sm score-input"
-                                               {{--                                               placeholder="0"--}}
-                                               min="0"
-                                               data-row="{{ $index }}"
-                                               {{--                                               value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"--}}
-                                               value="{{   $member->{'R'.$i} ?? '' }}"
-
+                                               class="form-control form-control-sm"
+                                               min="1"
+                                               {{--                                           value="{{ old('goal.' . $member->id, $member->goal ?? '') }}"--}}
+                                               value="{{  $member->goal ?? ''  }}"
                                                value=""
                                                @if($confirmed) readonly @endif>
                                     </td>
-                                @endfor
 
-                                {{-- total --}}
-                                <td>
-                                    <input type="text"
-                                           name="total"
-                                           data-player="{{ $member->id }}"
-                                           class="form-control form-control-sm bg-light total-input"
+                                    {{-- R1 → R10 --}}
+                                    @for($i=1; $i<=10; $i++)
+                                        <td>
+                                            <input type="number"
+                                                   name="R{{ $i }}"
+                                                   data-player="{{ $member->id }}"
+                                                   class="form-control form-control-sm score-input"
+                                                   {{--                                               placeholder="0"--}}
+                                                   min="0"
+                                                   data-row="{{ $index }}"
+                                                   {{--                                               value="{{ old('R'.$i.'.'.$member->id, $member->{'R'.$i} ?? '') }}"--}}
+                                                   value="{{   $member->{'R'.$i} ?? '' }}"
 
-                                           id="total-{{ $index }}"
-                                           value="{{  $member->total ?? '' }}">
-                                </td>
+                                                   value=""
+                                                   @if($confirmed) readonly @endif>
+                                        </td>
+                                    @endfor
 
-                                {{-- notes --}}
-                                <td>
-                                    <input type="text"
-                                           name="notes"
-                                           data-player="{{ $member->id }}"
-                                           class="form-control form-control-sm"
-                                           placeholder="ملاحظات"
-                                           value="{{ old('notes.'.$member->id, $member->notes ?? '') }}"
-                                           @if($confirmed) readonly @endif>
-                                </td>
+                                    {{-- total --}}
+                                    <td>
+                                        <input type="text"
+                                               name="total"
+                                               data-player="{{ $member->id }}"
+                                               class="form-control form-control-sm bg-light total-input"
 
-                                @if(!$confirmed  && request()->route()->getName() !== 'generate-report-registered-members_final')
-                                    <td class="text-center">
-                                        <form
-                                            action="{{ route('final_reports_delete_player.delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"
-                                            method="POST" class="d-inline"
-                                            onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="icon-btn text-danger" title="حذف">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                               id="total-{{ $index }}"
+                                               value="{{  $member->total ?? '' }}">
                                     </td>
-                                @endif
-                            </tr>
+
+                                    {{-- notes --}}
+                                    <td>
+                                        <input type="text"
+                                               name="notes"
+                                               data-player="{{ $member->id }}"
+                                               class="form-control form-control-sm"
+                                               placeholder="ملاحظات"
+                                               value="{{ old('notes.'.$member->id, $member->notes ?? '') }}"
+                                               @if($confirmed) readonly @endif>
+                                    </td>
+                                    @if(!$confirmed)
+                                    {{--                                    @if(!$confirmed  && request()->route()->getName() !== 'generate-report-registered-members_final')--}}
+                                        <td class="text-center">
+                                            <form
+                                                action="{{ route('final_reports_delete_player.delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('هل انت متأكد من الغاء هذا الرامي من الديتيل ؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="icon-btn text-danger" title="حذف">
+                                                    <i class="ri-delete-bin-fill icon-btn"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endif
                         @empty
                             <tr>
-                                <td colspan="18" class="text-center text-muted py-4">
-                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                                    لا توجد بيانات لعرضها
-                                </td>
+                                {{--                                <td colspan="18" class="text-center text-muted py-4">--}}
+                                {{--                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>--}}
+                                {{--                                    لا توجد بيانات لعرضها--}}
+                                {{--                                </td>--}}
                             </tr>
                         @endforelse
                         </tbody>

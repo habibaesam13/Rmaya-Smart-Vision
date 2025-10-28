@@ -16,7 +16,6 @@ use App\Models\sv_initial_results_players;
 use App\Models\Sv_member;
 
 
-
 class FinalResultsService
 {
     use ImageTrait;
@@ -32,6 +31,7 @@ class FinalResultsService
     public function createReport($data)
     {
 
+        //    dd(session('absent'));
         return DB::transaction(function () use ($data) {
 
             $report = SVFianlResults::create($data);
@@ -181,12 +181,26 @@ class FinalResultsService
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
             ->orderBy('sv_initial_results_players.total', 'desc');
 
-        if (!empty($request->search)) {
-            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.phone1', $request->search)
-                ->orWhere('sv_members.phone2', $request->search);
+        if (!empty($request->q)) {
+            $qvalue = trim($request->q);
+            $query->where(function ($sub) use ($qvalue) {
+                $sub->where('sv_members.name', 'like', "%" . $qvalue . "%")
+                    ->orWhere('sv_members.ID', 'like', "%" . $qvalue . "%")
+                    ->orWhere('sv_members.phone1', $qvalue)
+                    ->orWhere('sv_members.phone2', $qvalue);
+            });
         }
+//        if (!empty($request->q)) {
+//            $qValue = trim($request->q);
+//
+//            $query->where(function ($sub) use ($qValue) {
+//                $sub->where('sv_members.name', 'like', "%{$qValue}%")
+//                    ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+//                    ->orWhere('sv_members.phone1',  $qValue )
+//                    ->orWhere('sv_members.phone2',  $qValue );
+//            });
+//        }
+
         /*********ens search part****/
 
         $data = $query->orderBy('sv_initial_results_players.total', 'desc')->get();
@@ -302,13 +316,21 @@ class FinalResultsService
 //            $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
 //        }
 
+//        if (!empty($request->search)) {  //here here
+//            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.phone1', $request->search)
+//                ->orWhere('sv_members.phone2', $request->search);
+//        }
         if (!empty($request->search)) {
-            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.phone1', $request->search)
-                ->orWhere('sv_members.phone2', $request->search);
+            $qValue = trim($request->search);
 
-
+            $query->where(function ($sub) use ($qValue) {
+                $sub->where('sv_members.name', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.phone1', $qValue)
+                    ->orWhere('sv_members.phone2', $qValue);
+            });
         }
 
         if (!empty($request->total)) {
@@ -388,7 +410,7 @@ class FinalResultsService
 //                ->when($request->date_to, fn($q, $to) => $q->whereDate('date', '<=', $to))
 //                ->orderBy('mid')
 //            ->cursorPaginate(config('app.admin_pagination_number'));
-        $occupied_players = Sv_member::Has('sv_final_results')->pluck('mid')->toArray();
+        $occupied_players = Sv_member::has('sv_final_results')->pluck('mid')->toArray();
         $query = DB::table('sv_members')
             ->join('sv_initial_results_players', 'sv_initial_results_players.player_id', '=', 'sv_members.mid')
             ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
@@ -403,26 +425,40 @@ class FinalResultsService
                 'sv_weapons.name as weapon_name',
                 'sv_members.registration_date',
                 'sv_clubs.name as club_name'
-            )
-            //here
-            ->when($request->weapon_id, fn ($q, $weapon) => $q->where('sv_members.weapon_id', $weapon))
-            ->when($request->reg_club, fn ($q, $club) => $q->where('cid', $club))
+            )->where('sv_members.weapon_id', $request->weapon_id);
+
+
+        //here
+        $query = $query->when($request->reg_club, fn ($q, $club) => $q->where('cid', $club))
             ->when($request->nat, fn ($q, $nat) => $q->where('nat', $nat))
             ->when($request->mgid, fn ($q, $mg) => $q->where('sv_members.mgid', $mg))
             //                ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('registration_date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('registration_date', '<=', $to))
             ->when($request->gender, fn ($q, $gender) => $q->where('sv_members.gender', $gender));
+
+
+//        if (!empty($request->q)) {
+//            $query = $query->where('sv_members.name', 'like', "%" . $request->q . "%")
+//                ->orWhere('sv_members.ID', 'like', "%" . $request->q . "%")
+//                ->orWhere('sv_members.phone1', $request->q)
+//                ->orWhere('sv_members.phone2', $request->q);
+//        }
         if (!empty($request->q)) {
-            $query = $query->where('sv_members.name', 'like', "%" . $request->q . "%")
-                ->orWhere('sv_members.ID', 'like', "%" . $request->q . "%")
-                ->orWhere('sv_members.phone1', $request->q)
-                ->orWhere('sv_members.phone2', $request->q);
+            $qValue = trim($request->q);
+
+            $query->where(function ($sub) use ($qValue) {
+                $sub->where('sv_members.name', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.phone1', $qValue)
+                    ->orWhere('sv_members.phone2', $qValue);
+            });
         }
         $query = $query->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results_players.total', '>', -1]])
             ->whereNotIn('mid', $occupied_players)
             ->orderBy('sv_initial_results_players.total', 'desc');
-//dd($query->get());
+
+        //dd($query->get());
         if ($with_pagination = 'yes') {
             $data = $query->cursorPaginate(config('app.admin_pagination_number'));
         } else {
@@ -595,12 +631,11 @@ class FinalResultsService
         }
         return false;
     }
-    
-    
-    
-        public function deletePlayer($rid , $player_id)
+
+
+    public function deletePlayer($rid, $player_id)
     {
-        $player = SVFianlResultsPlayer::where('Rid' , $rid)->find($player_id);
+        $player = SVFianlResultsPlayer::where('Rid', $rid)->find($player_id);
         if ($player) {
             $player->delete();
             return true;
