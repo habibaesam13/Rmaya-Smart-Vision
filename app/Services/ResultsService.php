@@ -61,13 +61,14 @@ class ResultsService
     {
         return SV_initial_results::findOrfail($rid);
     }
-    public function deleteReport( $rid){
-        $report=$this->getReport($rid);
-        if(!$report){
-            return redirect()->route('reports-details')->with('error','التقرير غير موجود');
+    public function deleteReport($rid)
+    {
+        $report = $this->getReport($rid);
+        if (!$report) {
+            return redirect()->route('reports-details')->with('error', 'التقرير غير موجود');
         }
         $report->delete();
-        return redirect()->route('reports-details')->with('success','تم حذف التقرير بنجاح');
+        return redirect()->route('reports-details')->with('success', 'تم حذف التقرير بنجاح');
     }
     public function confirmReport($rid)
     {
@@ -75,8 +76,9 @@ class ResultsService
         $report->confirmed = !$report->confirmed;
         return $report->save();
     }
-    public function getConfirmedReportdetailsWithoutAbsent($reportId){
-        $Players = sv_initial_results_players::where('Rid', $reportId)->where('total','>=',0)->get();
+    public function getConfirmedReportdetailsWithoutAbsent($reportId)
+    {
+        $Players = sv_initial_results_players::where('Rid', $reportId)->where('total', '>=', 0)->get();
         return $Players;
     }
     public function deletePlayerFromReport($player_id)
@@ -182,11 +184,27 @@ class ResultsService
                     'active',
                     'date_from',
                     'date_to',
-                    'reg_club'
+                    'reg_club',
+                    'reg',
+
                 ]),
                 fn($q) => $q->filter($request)
             )
             ->orderByDesc('mid');
+        // Get all player IDs that exist in initial results
+        $initialReportMembers = Sv_initial_results_players::pluck('player_id');
+        // Handle registration filter
+        if ($request->filled('reg')) {
+            if ($request->reg === 'registered') {
+                // Only members that exist in initial results
+                $results->whereIn('mid', $initialReportMembers);
+                //dd($members->get());
+
+            } elseif ($request->reg === 'not-registered') {
+                // Only members that are NOT in initial results
+                $results->whereNotIn('mid', $initialReportMembers);
+            }
+        }
         if ($club_id !== null) {
             $results->where('club_id', $club_id);
         }
@@ -221,7 +239,7 @@ class ResultsService
     {
         $query = Sv_initial_results_players::query()
             ->with(['player.club', 'player.weapon', 'report.weapon']);
-        
+
         $query->whereHas('report', function ($sub) use ($request) {
             $sub->where('confirmed', true);
             if ($request->filled('date')) {
@@ -236,12 +254,11 @@ class ResultsService
                     ->orWhere('phone1', 'like', "%{$request->q}%");
             });
         }
-        
+
         // Always get total
         $query->orderByDesc('total');
         //dd($query->orderByDesc('total')->get());
         return $query->paginate(config('app.admin_pagination_number'));
-        
     }
 
 

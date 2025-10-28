@@ -12,6 +12,7 @@ use App\Services\CountriesService;
 use App\Http\Requests\StoreReportForMembers;
 use App\Http\Requests\SaveMembersReportRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Sv_initial_results_players;
 
 class ResultsController extends Controller
 {
@@ -44,15 +45,18 @@ class ResultsController extends Controller
             ]
         );
         $Edit_report = null;
-        $club_id=auth()->user()->clubid ?? null;
+        $club_id = auth()->user()->clubid ?? null;
+        $membersCount = null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-             $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0,$club_id);
-             $available_players = $this->resultService->getAvailablePlayers($Edit_report,$club_id);
+            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0, $club_id);
+            $available_players = $this->resultService->getAvailablePlayers($Edit_report, $club_id);
+            $membersCount = $available_players_without_pag->count() ?? 0;
             $reportSection = true;
         } else {
-            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0,$club_id);
-            $available_players = $this->resultService->GetAllAvailablePlayers($request, 1,$club_id);
+            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0, $club_id);
+            $available_players = $this->resultService->GetAllAvailablePlayers($request, 1, $club_id);
+            $membersCount = $available_players_without_pag->count() ?? 0;
             $reportSection = false;
         }
 
@@ -60,32 +64,36 @@ class ResultsController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        $membersCount = Sv_member::where('reg_type', 'personal')->count();
         $members = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
             ->where('reg_type', 'personal')
             ->when($club_id, fn($q) => $q->where('club_id', $club_id))
             ->when(
-                $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
+                $request->hasAny(['mgid', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
-            ->orderByDesc('mid')
-            ->cursorPaginate(config('app.admin_pagination_number'));
-
+            ->orderByDesc('mid');
+        if ($club_id != null) {
+            $members->where('club_id', $club_id);
+        }
+        //dd($members->get());
+        $members = $members->cursorPaginate(config('app.admin_pagination_number'));
+        if ($membersCount == null) {
+            $membersCount = $members->count() ?? 0;
+        }
         $reportSection = true;
-
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount', 'reportSection', 'Edit_report', 'available_players', 'available_players_without_pag'));
     }
     public function store(StoreReportForMembers $request)
     {
         $data = $request->validated();
-        $data['absents']=$request->input('absent_report')??0;
+        $data['absents'] = $request->input('absent_report') ?? 0;
         //dd($data);
         $data['weapon_id'] = $request->getWeaponId();
         $report = $this->resultService->createReport($data);
         $members = $this->resultService->getReportDetails($report->Rid);
-        $absent_report=$request->input('absent_report')??0;
+        $absent_report = $request->input('absent_report') ?? 0;
         if ($report) {
-            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false,'absent_report'=>$absent_report]);
+            return view('personalReports/initial_results/personal_report_members', ['members' => $members, 'report' => $report, 'confirmed' => false, 'absent_report' => $absent_report]);
         }
         return redirect()->back()->with('error', 'حدث خطأ أثناء الانشاء');
     }
@@ -97,10 +105,9 @@ class ResultsController extends Controller
         if (!$report) {
             return redirect()->route('results-registered-members');
         }
-        if($report->confirmed){
-            $members=$this->resultService->getConfirmedReportdetailsWithoutAbsent($rid);
-        }
-        else{
+        if ($report->confirmed) {
+            $members = $this->resultService->getConfirmedReportdetailsWithoutAbsent($rid);
+        } else {
             $members = $this->resultService->getReportDetails($rid);
         }
         return view('personalReports/initial_results/personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $report->confirmed]);
@@ -128,7 +135,7 @@ class ResultsController extends Controller
 
     public function saveReport(Request $request, $rid)
     {
-        
+
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
 
@@ -146,7 +153,8 @@ class ResultsController extends Controller
         return redirect()->route('report-members', $rid)
             ->with('info', 'تم الرجوع إلى التقرير.');
     }
-    public function deleteReport($rid){
+    public function deleteReport($rid)
+    {
         return $this->resultService->deleteReport($rid);
     }
     public function calculateTotal(Request $request)
@@ -171,11 +179,11 @@ class ResultsController extends Controller
     }
 
 
-    public function addPlayer(Request $request,$rid)
+    public function addPlayer(Request $request, $rid)
     {
-        $report=$this->resultService->getReport($rid);
-        if($report->absents){
-            return redirect()->route('individuals-absent-preliminary-results',['addMembertoReportRid' => $rid]);
+        $report = $this->resultService->getReport($rid);
+        if ($report->absents) {
+            return redirect()->route('individuals-absent-preliminary-results', ['addMembertoReportRid' => $rid]);
         }
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
     }
@@ -220,7 +228,7 @@ class ResultsController extends Controller
     {
 
         $results = $this->resultService->searchInitialResultsReports($request);
-        
+
         if (empty($results)) {
             $results = new LengthAwarePaginator([], 0, config('app.admin_pagination_number'));
         }
@@ -259,7 +267,7 @@ class ResultsController extends Controller
         }
         //dd($results);
         $totalCount = $results_without_pag ? $results_without_pag->count() : 0;
-        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs', 'results_without_pag','totalCount'));
+        return view('personalReports.initial_results.list_of_initial_results_reports', compact('results', 'weapons', 'clubs', 'results_without_pag', 'totalCount'));
     }
     public function updateTotalForPlayer(Request $request, $player_id)
     {
@@ -293,15 +301,15 @@ class ResultsController extends Controller
         if (!is_array($absentPlayers_without_pag) && !$absentPlayers_without_pag instanceof \Illuminate\Support\Collection) {
             $absentPlayers_without_pag = collect();
         }
-        $Edit_report=null;
+        $Edit_report = null;
         if ($request->filled('addMembertoReportRid')) {
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-            $absentPlayers=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,1);
-            $absentPlayers_without_pag=$this->resultService->getAvailableAbsentPlayers($request,$Edit_report,auth()->user()->clubid,0);
+            $absentPlayers = $this->resultService->getAvailableAbsentPlayers($request, $Edit_report, auth()->user()->clubid, 1);
+            $absentPlayers_without_pag = $this->resultService->getAvailableAbsentPlayers($request, $Edit_report, auth()->user()->clubid, 0);
         }
 
 
-        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers','Edit_report', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
+        return view('personalReports.initial_results.absentPlayers', compact(['absentPlayers', 'Edit_report', 'clubs', 'weapons', 'countries', 'absentPlayers_without_pag']));
     }
     public function searchIndividualsAbsentInitialResults(Request $request)
     {
