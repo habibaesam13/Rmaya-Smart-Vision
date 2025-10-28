@@ -20,7 +20,12 @@ class ReportController extends Controller
             return redirect()->route('results-registered-members');
         }
         $siteSettings=SiteSettings::first();
-        $members = $this->resultSevice->getReportDetails($rid);
+        if(!$report->confirmed){
+            $members = $this->resultSevice->getReportDetails($rid);
+        }
+        else{
+            $members = $this->resultSevice->getConfirmedReportdetailsWithoutAbsent($rid);
+        }
         return view('personalReports.initial_results.print', ['report' => $report, 'members' => $members,'siteSettings'=>$siteSettings]);
     }
 }

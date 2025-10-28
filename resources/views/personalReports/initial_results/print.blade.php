@@ -57,9 +57,11 @@
         .print-btn:hover {
             background-color: #0056b3;
         }
-         .m-left{
+
+        .m-left {
             margin-left: -24px;
-         }
+        }
+
         @media print {
             @page {
                 size: landscape;
@@ -86,7 +88,7 @@
                 <h3>تقرير النتائج</h3>
                 <p class="text-muted m-0">نوع السلاح: {{ $report->weapon?->name ?? '-' }}</p>
                 <p class="text-muted m-0"> رقم الديتيل: {{ $report->details}}</p>
-                <p class="text-muted m-0">التاريخ: {{  optional( $report->date)->format('d/m/Y')  }}</p>
+                <p class="text-muted m-0">التاريخ: {{ optional( $report->date)->format('d/m/Y')  }}</p>
 
             </div>
             <div class="text-end">
@@ -116,8 +118,8 @@
             </thead>
             <tbody>
                 @forelse($members as $member)
-                 @php $club_id=$member->player->club_id; @endphp
-                 
+                @php $club_id=$member->player->club_id; @endphp
+
                 <tr>
                     <td>{{ $member?->player?->phone1 ?? '---' }} {{$member->confirmed}}</td>
                     <td>{{ $member?->player?->ID ?? '---' }}</td>
@@ -142,28 +144,30 @@
                 @endforelse
             </tbody>
         </table>
-           <table celpadding="0" cellspacing="0" class="noborder show_printxx" style="border:none;width:100%;padding-top:10px;">
-                                <tr>
-                                    <td class="noborder" style="text-align:center;width:50%;vertical-align: text-bottom;">لجنة الرماية
-                                    </td>
-                                    <td class="noborder" style="text-align:center;width:50%">لجنة التحكيم
+        <table celpadding="0" cellspacing="0" class="noborder show_printxx" style="border:none;width:100%;padding-top:10px;">
+            <tr>
+                <td class="noborder" style="text-align:center;width:50%;vertical-align: text-bottom;">لجنة الرماية
+                </td>
+                <td class="noborder" style="text-align:center;width:50%">لجنة التحكيم
+                    <br>
+                        <?php if ($club_id == 1) { ?>
+                                        <span style="font-size: 16px;"> مقدم / سيف صبيح طناف الراشدي </span>
+                                        <?php } ?><?php if ($club_id == 3) { ?>
+                                        <span style="font-size: 16px;"> مقدم ركن م / سالم عبيد راشد السلامي </span>
+                                        <?php } ?><?php if ($club_id == 4) { ?>
+                                        <span style="font-size: 16px;"> رائد / علي حيي سعيد محمد الكعبي </span>
+                                        <?php } ?><?php if ($club_id == 2) { ?>
+                                        <span style="font-size: 16px;"> رائد / احمد خلف براك المزروعي </span>
+                                    <?php } ?>
                                     <br>
-                                     
-                                     <?php if($club_id==1){?>
-                                       <span style="font-size: 16px;">  مقدم / سيف صبيح طناف الراشدي	 	  </span>
-                                       <?php }?><?php if($club_id==3){?>
-                                       <span style="font-size: 16px;">   مقدم ركن م / سالم عبيد راشد السلامي		 </span>
-                                       <?php }?><?php if($club_id==4){?>
-                                       <span style="font-size: 16px;">  رائد / علي حيي سعيد محمد الكعبي		   </span>
-                                       <?php }?><?php if($club_id==2){?>
-                                       <span style="font-size: 16px;">     رائد / احمد خلف براك المزروعي		 </span>
-                                      <?php }?>
-                                    <br>
-                                    
-                                    @if($report->confirmed)  <img style="max-width:200px" src="{{ asset('storage/' . $club_id.'.png') }}">  @endif
-                                    </td>
-                                </tr>
-                            </table>
+                               
+                   
+                    <br>
+
+                     @if($report->confirmed) <img style="max-width:200px" src="{{ asset('storage/' . $club_id.'.png') }}"> @endif 
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="d-flex justify-content-end m-left">
         <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>

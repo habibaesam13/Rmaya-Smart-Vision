@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use App\Models\Sv_member;
 use App\Models\Member_group;
+use App\Models\Sv_initial_results_players;
 use Illuminate\Http\Request;
 use App\Services\ClubService;
 use App\Services\WeaponService;
@@ -58,24 +59,40 @@ class PersonalService
     }
     public function getMembers(Request $request, $pag, $club_id)
     {
-        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
+        // Get all player IDs that exist in initial results
+        $initialReportMembers = Sv_initial_results_players::pluck('player_id');
+
+        // Base query
+        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+            ->where('reg_type', 'personal')
             ->when(
                 $request->hasAny(['mgid', 'reg', 'nat', 'club_id', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
                 fn($q) => $q->filter($request)
             )
             ->orderByDesc('mid');
+
+        // Apply club filter if provided
         if ($club_id != null) {
-            $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])->where('reg_type', 'personal')
-                ->where('club_id', $club_id)
-                ->when(
-                    $request->hasAny(['mgid', 'reg', 'nat', 'weapon_id', 'q', 'gender', 'active', 'date_from', 'date_to', 'reg_club']),
-                    fn($q) => $q->filter($request)
-                )
-                ->orderByDesc('mid');
+            $results->where('club_id', $club_id);
         }
 
-        return $pag ? $results->cursorPaginate(config('app.admin_pagination_number')) : $results->get();
+        // Handle registration filter
+        if ($request->filled('reg')) {
+            if ($request->reg === 'registered') {
+                // Only members that exist in initial results
+                $results->whereIn('mid', $initialReportMembers);
+            } elseif ($request->reg === 'not-registered') {
+                // Only members that are NOT in initial results
+                $results->whereNotIn('mid', $initialReportMembers);
+            }
+        }
+
+        // Return paginated or full results
+        return $pag
+            ? $results->cursorPaginate(config('app.admin_pagination_number'))
+            : $results->get();
     }
+
     public function updatePersonalData($data, $mid, Request $request)
     {
         Log::info('Update started', ['mid' => $mid, 'data' => $data]);
@@ -90,8 +107,7 @@ class PersonalService
             $newfile = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path() . '/storage/national_ids/', $newfile);
             $path_front =  '/national_ids/' . $newfile;
-            $data['front_id_pic']=$path_front;
-
+            $data['front_id_pic'] = $path_front;
         }
         if ($request->hasFile('back_id_pic')) {
 
@@ -100,8 +116,7 @@ class PersonalService
             $newfile = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path() . '/storage/national_ids/', $newfile);
             $path_back =  '/national_ids/' . $newfile;
-            $data['back_id_pic']=$path_back;
-
+            $data['back_id_pic'] = $path_back;
         }
 
         // if ($request->hasFile('front_id_pic')) {
@@ -138,8 +153,7 @@ class PersonalService
             $newfile = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path() . '/storage/national_ids/', $newfile);
             $path_front =  '/national_ids/' . $newfile;
-            $data['front_id_pic']=$path_front;
-
+            $data['front_id_pic'] = $path_front;
         }
         if ($request->hasFile('back_id_pic')) {
 
@@ -148,10 +162,9 @@ class PersonalService
             $newfile = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path() . '/storage/national_ids/', $newfile);
             $path_back =  '/national_ids/' . $newfile;
-            $data['back_id_pic']=$path_back;
-
+            $data['back_id_pic'] = $path_back;
         }
-        
+
         return Sv_member::create($data);
     }
 }

@@ -6,8 +6,17 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title"> تقرير النتائج اليومية للأسلحة</h4>
             </div>
+            @if($confirmed)
             <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="d-flex align-items-center justify-content-md-end justify-content-center gap-2 flex-wrap">
+                    <a href="{{ route('report.print', $report->Rid) }}"
+                        target="_blank"
+                        class="btn btn-sm btn-primary">
+                        <i class="ri-printer-line"></i>
+                    </a>
+                </div>
             </div>
+            @endif
         </div>
 
         <div class="col-12">
@@ -38,20 +47,12 @@
                                     <h5 class="mb-0 text-dark">{{ $report?->date ? $report?->date : '---' }}</h5>
                                 </div>
                             </div>
-                            @if($confirmed)
-                            {{-- Print Button --}}
-                            <a href="{{ route('report.print', $report->Rid) }}"
-                                target="_blank"
-                                class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
-                                <i class="ri-printer-line"></i>
-                            </a>
-                            @endif
 
                         </div>
 
 
                         {{-- Action Buttons --}}
-                            
+
                         <div class="d-flex flex-wrap gap-2 mb-2">
                             @if(!$confirmed)
                             <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
@@ -148,6 +149,7 @@
                             <tbody>
                                 @forelse($members as $index => $member)
                                 @php $club_id=$member->player->club_id; @endphp
+                                
                                 <tr>
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td>{{ $member?->player?->phone1 ?? '---' }}</td>
@@ -226,27 +228,27 @@
                                 @endforelse
                             </tbody>
                         </table>
-                                  <table celpadding="0" cellspacing="0" class="noborder show_printxx" style="border:none;width:100%;padding-top:10px;">
-                                <tr>
-                                    <td class="noborder" style="text-align:center;width:50%;vertical-align: text-bottom;">لجنة الرماية
-                                    </td>
-                                    <td class="noborder" style="text-align:center;width:50%">لجنة التحكيم
+                        <table celpadding="0" cellspacing="0" class="noborder show_printxx" style="border:none;width:100%;padding-top:10px;">
+                            <tr>
+                                <td class="noborder" style="text-align:center;width:50%;vertical-align: text-bottom;">لجنة الرماية
+                                </td>
+                                <td class="noborder" style="text-align:center;width:50%">لجنة التحكيم
                                     <br>
-                                     
-                                     <?php if($club_id==1){?>
-                                       <span style="font-size: 16px;">  مقدم / سيف صبيح طناف الراشدي	 	  </span>
-                                       <?php }?><?php if($club_id==3){?>
-                                       <span style="font-size: 16px;">   مقدم ركن م / سالم عبيد راشد السلامي		 </span>
-                                       <?php }?><?php if($club_id==4){?>
-                                       <span style="font-size: 16px;">  رائد / علي حيي سعيد محمد الكعبي		   </span>
-                                       <?php }?><?php if($club_id==2){?>
-                                       <span style="font-size: 16px;">     رائد / احمد خلف براك المزروعي		 </span>
-                                      <?php }?>
+                                       
+                                     <?php if ($club_id == 1) { ?>
+                                        <span style="font-size: 16px;"> مقدم / سيف صبيح طناف الراشدي </span>
+                                        <?php } ?><?php if ($club_id == 3) { ?>
+                                        <span style="font-size: 16px;"> مقدم ركن م / سالم عبيد راشد السلامي </span>
+                                        <?php } ?><?php if ($club_id == 4) { ?>
+                                        <span style="font-size: 16px;"> رائد / علي حيي سعيد محمد الكعبي </span>
+                                        <?php } ?><?php if ($club_id == 2) { ?>
+                                        <span style="font-size: 16px;"> رائد / احمد خلف براك المزروعي </span>
+                                    <?php } ?>
                                     <br>
-                                    @if($confirmed)  <img style="max-width:200px" src="{{ asset('storage/' . $club_id.'.png') }}">  @endif
-                                    </td>
-                                </tr>
-                            </table>
+                                    @if($confirmed) <img style="max-width:200px" src="{{ asset('storage/' . $club_id.'.png') }}"> @endif 
+                                </td>
+                            </tr>
+                        </table>
 
                     </div>
                 </div>
