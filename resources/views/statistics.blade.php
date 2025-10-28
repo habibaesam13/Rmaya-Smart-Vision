@@ -32,9 +32,9 @@
 
                     <div class="">
 
-                <span class="badge badge-outline-primary">
-                           عدد الأفراد المسجلين : 6
-                </span>
+{{--                <span class="badge badge-outline-primary">--}}
+{{--                           عدد الأفراد المسجلين : 6--}}
+{{--                </span>--}}
 
                         <span title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')" target="_blank"
                               class="btn btn-sm btn-success  ">
@@ -51,7 +51,7 @@
             </div>
 
 
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0" id="pr">
                 <div class="card-body">
                     <!--  -->
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
@@ -62,42 +62,98 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered">
+                            <table class="table table-borderedr">
                                 <thead>
                                 <tr>
-                                    <th></th>
-
-                                    @foreach($generalReportForClubsAndWeapons->pluck( 'club_name')->unique() as $key3 => $item3)
-                                        <th>{{$item3 }}</th>
+                                    <th>النادي</th>
+                                    @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as $clubName)
+                                        <th>{{ $clubName }}</th>
                                     @endforeach
-
                                 </tr>
                                 </thead>
 
                                 <tbody>
+                                <tr>
+                                    <th class="bg-secondary text-light">السلاح</th>
+                                    <?php  $i =0;  ?>
+                                    @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as   $clubName)
+                                        <?php   $i++;  ?>
+                                        <th class="{{$i%2 == 0   ?   'bg-secondary' :  'bg-dark'   }}">
+                                            <div class="row ">
+                                                <div class="col-4 fw-bold text-light px-2 ">All Members {{$i}} </div>
+                                                <div class="col-4 fw-bold text-light px-2 border   border-1 border-top-0  border-bottom-0"> Active</div>
+                                                <div class="col-4 fw-bold text-light px-2"> Qualified</div>
+                                            </div>
+                                        </th>
+                                    @endforeach
+                                </tr>
 
-                                                                @foreach($generalReportForClubsAndWeapons  as $key => $item)
-                                                                    @foreach($generalReportForClubsAndWeapons->pluck('weapon_id' , 'club_name')->unique()  as $key1 => $weapon)
-                                                                        @if($item->weapon_id == $weapon && $item->club_name == $key1  )
-                                                                            <tr>
-                                                                                <th>{{$item->weapon_name}}</th>
-                                                                                @foreach($generalReportForClubsAndWeapons  as $key => $val)
+                                @php
+                                    $weapons = $generalReportForClubsAndWeapons->pluck('weapon_name', 'weapon_id')->unique();
+                                @endphp
 
-                                                                                    @if($val->weapon_id  ==$item->weapon_id)
-                                                                                        <td>
-                                                                                          All  Members count : {{$val->all_members_count}} <br>
-                                                                                            Active Members : {{$val->active_members_count}} <br>
-                                                                                            Qualified : {{$val->qualified}}
+                                @foreach($weapons as $weaponId => $weaponName)
+                                    <tr>
+                                        <th>{{ $weaponName }}</th>
+
+                                        @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as $clubName)
+                                            @php
+                                                $record = $generalReportForClubsAndWeapons
+                                                    ->first(fn($r) => $r->weapon_id == $weaponId && $r->club_name == $clubName);
+                                            @endphp
+
+                                            @if($record)
+                                                <td>
+                                                    <div class="row">
+                                                    <div class="col-4 fw-bold text-primary px-2  ">All Members: {{ $record->all_members_count }}</div>
+                                                    <div class="col-4 px-2    ">Active: {{ $record->active_members_count }}</div>
+                                                    <div class="col-4 px-2   ">Qualified: {{ $record->qualified }}</div>
+                                                    </div>
+                                                </td>
+                                            @else
+                                                <td class="text-muted">—</td>
+                                            @endif
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+{{--                            <table class="table table-bordered">--}}
+{{--                                <thead>--}}
+{{--                                <tr>--}}
+{{--                                    <th></th>--}}
+
+{{--                                    @foreach($generalReportForClubsAndWeapons->pluck( 'club_name')->unique() as $key3 => $item3)--}}
+{{--                                        <th>{{$item3 }}</th>--}}
+{{--                                    @endforeach--}}
+
+{{--                                </tr>--}}
+{{--                                </thead>--}}
+
+{{--                                <tbody>--}}
+
+{{--                                                                @foreach($generalReportForClubsAndWeapons  as $key => $item)--}}
+{{--                                                                    @foreach($generalReportForClubsAndWeapons->pluck('weapon_id' , 'club_name')->unique()  as $key1 => $weapon)--}}
+{{--                                                                        @if($item->weapon_id == $weapon && $item->club_name == $key1  )--}}
+{{--                                                                            <tr>--}}
+{{--                                                                                <th>{{$item->weapon_name}}</th>--}}
+{{--                                                                                @foreach($generalReportForClubsAndWeapons  as $key => $val)--}}
+
+{{--                                                                                    @if($val->weapon_id  ==$item->weapon_id)--}}
+{{--                                                                                        <td>--}}
+{{--                                                                                          All  Members count : {{$val->all_members_count}} <br>--}}
+{{--                                                                                            Active Members : {{$val->active_members_count}} <br>--}}
+{{--                                                                                            Qualified : {{$val->qualified}}--}}
 {{--                                                                                               {{$val->all_member_name}}--}}
-                                                                                        </td>
-                                                                                    @endif
+{{--                                                                                        </td>--}}
+{{--                                                                                    @endif--}}
 
 
-                                                                                @endforeach
-                                                                            </tr>
-                                                                        @endif
-                                                                    @endforeach
-                                                                @endforeach
+{{--                                                                                @endforeach--}}
+{{--                                                                            </tr>--}}
+{{--                                                                        @endif--}}
+{{--                                                                    @endforeach--}}
+{{--                                                                @endforeach--}}
 
 
 {{--                                @foreach($generalReportForClubsAndWeapons as $clubName => $weapons)--}}
@@ -115,57 +171,9 @@
 {{--                                    @endforeach--}}
 {{--                                @endforeach--}}
 
-                                </tbody>
-                            </table>
+{{--                                </tbody>--}}
+{{--                            </table>--}}
 
-
-                            <!---------------start print part ----------------->
-                            <div id="pr" style="display:none">
-                                <div style="float:right;width:34%;text-align:right;display:nonex;font-size:12px"
-                                     class="show_print"><br><span
-                                        style="font-weight:bold!important;color:#bf1e2f;font-size:15px"> الرماية </span><br>
-                                    الشارقة <br>P.O. Box : 7447 | 19777<br> erer@ghd.com | www.fcma.gov.ae <br></div>
-                                <div style="float:right;width:33%;text-align:center;display:nonex;font-size:12px"
-                                     class="show_print"><img style="max-width:60px"
-                                                             src="http://127.0.0.1:8000/settings/1759150706logo.jpg">
-                                    <br> <b style="font-size:14px">قائمة الافراد المتأهلين للتصفيات النهائية</b></div>
-                                <div style="float:right;width:33%;text-align:left;display:nonex;font-size:12px"
-                                     class="show_print"><br><span
-                                        style="font-weight:bold!important;color:#bf1e2f;font-size:14px"> ميادين الريف للرماية 2025</span><br>
-                                    Sharja <br> P.O. Box : 7447 | 19777<br>erer@ghd.com | www.fcma.gov.ae
-                                </div>
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>الاسم</th>
-                                        <th>السلاح</th>
-
-                                        <th>رقم الهوية</th>
-                                        <th>الهاتف</th>
-
-                                        <th>نادي الرماية</th>
-
-
-                                        <th>العلامة المكتسبة</th>
-                                        <th>الترتيب</th>
-
-                                        <th>تاريخ التسجيل</th>
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td colspan="12" class="text-center text-muted mt-3">
-                                            <p class="mt-3 w-100">لا يوجد رماة غير مضافين في تقارير.</p>
-
-                                        </td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--------end print part ------>
 
                         </div>
                     </div>

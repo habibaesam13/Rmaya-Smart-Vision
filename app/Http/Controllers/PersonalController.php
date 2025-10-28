@@ -31,7 +31,7 @@ class PersonalController extends Controller
     }
     public function index(Request $request)
     {
-        
+
         if(!checkModulePermission('members', 'view')) {   return redirect()->route('access_denied');  }
          $validated=$request->validate(
             [
@@ -49,7 +49,7 @@ class PersonalController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        
+
         $members_without_pag = $this->personalService->getMembers($request,0,$club_id);
         $members = $this->personalService->getMembers($request,1,$club_id);
         $membersCount=$members_without_pag->count()??0;
@@ -114,5 +114,15 @@ class PersonalController extends Controller
         return redirect()->route('personal-create')->with('error','حدث خطأ أثناء التسجيل');
         }
         return redirect()->route('personal-create')->with('success','تم التسجيل بنجاح');
+    }
+
+
+    public function show($id)
+    {
+        if(!checkModulePermission('members', 'view')) {   return redirect()->route('access_denied');  }
+        $countries = $this->countryService->getAllCountries();
+         $memberGroups = Member_group::all();
+        $member = $this->personalService->getMemberByID($id);
+        return view('members.show', compact('countries',  'memberGroups', 'member'));
     }
 }

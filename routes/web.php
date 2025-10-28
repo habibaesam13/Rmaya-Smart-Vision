@@ -242,6 +242,7 @@ Route::group(
                 function () {
                     Route::get('registered', [PersonalController::class, 'index'])->name('personal-registration');
                     Route::get('registered/edit', [PersonalController::class, 'edit'])->name('personal.edit');
+                    Route::get('registered/show/{id}', [PersonalController::class, 'show'])->name('personal.show');
                     Route::post('registered/update/{mid}', [PersonalController::class, 'update'])->name('personal.update');
                     Route::get('register', [PersonalController::class, 'create'])->name('personal-create');
                     Route::post('register', [PersonalController::class, 'store'])->name('personal-store');

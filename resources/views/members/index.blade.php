@@ -364,7 +364,20 @@
                                                             <td>{{ $player->registration_date }}</td>
                                                             <td>
                                                                 <div class="d-flex justify-content-center gap-1">
-                                                                    @if(checkModulePermission('members', 'edit'))
+                                                                    @if(checkModulePermission('members', 'view'))
+                                                                        {{-- Edit Button --}}
+                                                                        <form action="{{route('personal.show' , $player->mid)}}"    method="GET" class="d-inline">
+                                                                            @csrf
+                                                                            <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
+                                                                                <i class="ri-eye-2-line   fs-16"></i>
+                                                                            </button>
+                                                                        </form>
+
+                                                                    @endif
+
+
+
+                                                                @if(checkModulePermission('members', 'edit'))
                                                                         {{-- Edit Button --}}
                                                                         <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                                             @csrf
@@ -489,7 +502,19 @@
                                                     <div class="d-flex justify-content-center gap-1">
 
 
-                                                        @if(checkModulePermission('members', 'edit'))
+
+                                                        @if(checkModulePermission('members', 'view'))
+                                                            {{-- Edit Button --}}
+                                                            <form action="{{route('personal.show' , $member->mid)}}"    method="GET" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
+                                                                    <i class="ri-eye-2-line   fs-16"></i>
+                                                                </button>
+                                                            </form>
+
+                                                        @endif
+
+                                                    @if(checkModulePermission('members', 'edit'))
 
                                                             {{-- Edit Button --}}
                                                             <form action="{{route('personal.edit')}}" method="GET" class="d-inline">

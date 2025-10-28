@@ -11,7 +11,6 @@ class StatisticsController extends Controller
 {
     public function index()
     {
-        $clubs = Sv_clubs::select('cid' , 'name')->get();
         $generalReportForClubsAndWeapons = DB::table('sv_clubs')
             ->join('sv_clubs_weapons', 'sv_clubs_weapons.cid', 'sv_clubs.cid')
             ->join('sv_weapons', 'sv_weapons.wid', 'sv_clubs_weapons.wid')
@@ -33,12 +32,11 @@ class StatisticsController extends Controller
                 DB::raw("GROUP_CONCAT(DISTINCT sv_members.mid ORDER BY sv_members.mid SEPARATOR ', ') as all_member_name")
 
             )
-//             ->groupBy('sv_clubs.cid', 'sv_clubs.name' , 'sv_weapons.wid')
             ->groupBy('sv_clubs.cid', 'sv_clubs.name' , 'sv_weapons.wid')
             ->get();
 //        ->groupBy('club_name');
 //        dd($generalReportForClubsAndWeapons);
-          return view('statistics', compact('generalReportForClubsAndWeapons' , 'clubs'));
+          return view('statistics', compact('generalReportForClubsAndWeapons' ));
     }
 
 }
