@@ -18,7 +18,7 @@ use App\Http\Traits\LogsTrait;
 
 class FinalResultsController extends Controller
 {
-    use LogsTrait;
+     use LogsTrait;
 
     protected PersonalService $personalService;
     protected CountriesService $countryService;

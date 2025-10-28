@@ -39,25 +39,20 @@ class GroupService
     public function getGroups()
     {
         $groups = Sv_team::with(['club', 'weapon'])->orderByDesc('tid');
-        $groupsCount = $groups->count();
-        $groups_without_pag=$groups->get();
+        $groups_without_pag = $groups->get();
         $groups = $groups->cursorPaginate(config('app.admin_pagination_number'));
-        return ['groups' => $groups, 'groupsCount' => $groupsCount,'groups_without_pag'=>$groups_without_pag];
+        return ['groups' => $groups, 'groups_without_pag' => $groups_without_pag];
     }
     //تقرير الفرق
     public function getMembersWithGroups()
     {
         $query = Sv_member::with(['team', 'club', 'weapon'])
             ->where('reg_type', 'group');
-
-        $members_count = $query->count(); // total count
-
         $members = $query->orderByDesc('mid')->cursorPaginate(config('app.admin_pagination_number')); // actual data
-        $members_without_pag=$query->orderByDesc('mid')->get();
+        $members_without_pag = $query->orderByDesc('mid')->get();
         return [
             'members' => $members,
-            'members_count' => $members_count,
-            'members_without_pag'=>$members_without_pag,
+            'members_without_pag' => $members_without_pag,
         ];
     }
 
@@ -88,17 +83,17 @@ class GroupService
     }
 
 
-    public function search(Request $request,$pag)
+    public function search(Request $request, $pag)
     {
-        return $pag? $this->searchQuery($request)
+        return $pag ? $this->searchQuery($request)
             ->cursorPaginate(config('app.admin_pagination_number'))
-            ->appends($request->query()):$this->searchQuery($request)->get();
+            ->appends($request->query()) : $this->searchQuery($request)->get();
     }
 
     //المسجلين فرق
-    public function membersByGroupSearch(Request $request,$pag)
+    public function membersByGroupSearch(Request $request, $pag)
     {
-        $query= Sv_member::query()
+        $query = Sv_member::query()
             ->where('sv_members.reg_type', 'group')
             ->join('sv_teams as t', 'sv_members.team_id', '=', 't.tid')
             ->when(
@@ -113,7 +108,7 @@ class GroupService
             )
             ->select('sv_members.*', 't.name as team_name')
             ->orderBy('sv_members.mid');
-            return $pag?$query->cursorPaginate(config('app.admin_pagination_number')):$query->get();
+        return $pag ? $query->cursorPaginate(config('app.admin_pagination_number')) : $query->get();
     }
 
 
@@ -166,44 +161,97 @@ class GroupService
         return $member;
     }
 
-
-
-
     //groups registration
 
-    public function createNewGroup(GroupRegistrationRequest $request )
+    public function createNewGroup(GroupRegistrationRequest $request)
     {
-        
         $data = $request->validated();
+        $tempFiles = session('temp_files', []); // get stored temp images from session
 
-        
-        return DB::transaction(function () use ($data) {
-
+        return DB::transaction(function () use ($data, $tempFiles) {
             $team = Sv_team::create([
-                'name' => $data['team_name'],
-                'club_id' => $data['club_id'] ?? null,
+                'name'      => $data['team_name'],
+                'club_id'   => $data['club_id'] ?? null,
                 'weapon_id' => $data['weapon_id'],
             ]);
 
-            foreach ($data['members'] as $member) {
-                $frontPath = $member['front_id_pic']->store('national_ids', 'public');
-                $backPath = $member['back_id_pic']->store('national_ids', 'public');
+            foreach ($data['members'] as $index => $member) {
+                // Retrieve paths from session if they exist
+                $frontKey = "members[{$index}][front_id_pic]";
+                $backKey  = "members[{$index}][back_id_pic]";
 
+                $frontSessionPath = $tempFiles[$frontKey] ?? null;
+                $backSessionPath  = $tempFiles[$backKey] ?? null;
+                //dd($frontSessionPath);
+                // Decide which path to use (session or request)
+
+                $frontPath = $this->handleFileInput($member['front_id_pic'] ?? $frontSessionPath, 'front');
+                $backPath  = $this->handleFileInput($member['back_id_pic'] ?? $backSessionPath, 'back');
+                //dd($frontPath);
                 $team->teamMembers()->create([
-                    'reg_type' => 'group',
-                    'team_id' => $team->tid,
-                    'weapon_id' => $data['weapon_id'],
-                    'name' => $member['name'],
-                    'ID' => $member['ID'],
-                    'Id_expire_date' => $member['Id_expire_date'],
-                    'dob' => $member['dob'],
-                    'phone1' => $member['phone1'],
-                    'front_id_pic' => $frontPath,
-                    'back_id_pic' => $backPath,
+                    'reg_type'         => 'group',
+                    'team_id'          => $team->tid,
+                    'weapon_id'        => $data['weapon_id'],
+                    'name'             => $member['name'],
+                    'ID'               => $member['ID'],
+                    'Id_expire_date'   => $member['Id_expire_date'],
+                    'dob'              => $member['dob'],
+                    'phone1'           => $member['phone1'],
+                    'front_id_pic'     => $frontPath,
+                    'back_id_pic'      => $backPath,
+                    'registration_date' => now()->toDateString(),
                 ]);
             }
 
+            //  clear the session after successful insert
+            session()->forget('temp_files');
             return $team;
         });
+    }
+
+
+
+    /**
+     * Move file from temporary session folder to final location.
+     */
+    protected function moveTempFile(string $urlPath): ?string
+    {
+        // Handle both URL or relative path
+        if (str_contains($urlPath, '/storage/')) {
+            $relativePath = str_replace(url('/storage/'), '', $urlPath);
+        } else {
+            $relativePath = ltrim($urlPath, '/'); // e.g., "temp/abc.jpg"
+        }
+
+        if (Storage::disk('public')->exists($relativePath)) {
+            $newPath = str_replace('temp/', 'national_ids/', $relativePath);
+            Storage::disk('public')->move($relativePath, $newPath);
+            return $newPath;
+        }
+
+        return null;
+    }
+
+    protected function handleFileInput($fileInput, string $prefix = 'file'): ?string
+    {
+        // 1️⃣ If it's an UploadedFile, store it normally
+        if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
+            return $fileInput->store("national_ids", "public");
+        }
+
+        // 2️⃣ If it's a temp file path (either full URL or relative path)
+        if (
+            is_string($fileInput) &&
+            (str_contains($fileInput, '/storage/temp/') || str_starts_with($fileInput, 'temp/'))
+        ) {
+            return $this->moveTempFile($fileInput);
+        }
+
+        // 3️⃣ If it's already stored path
+        if (is_string($fileInput) && str_contains($fileInput, 'national_ids/')) {
+            return $fileInput;
+        }
+
+        return null;
     }
 }

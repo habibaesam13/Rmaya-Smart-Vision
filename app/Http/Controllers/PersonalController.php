@@ -49,9 +49,10 @@ class PersonalController extends Controller
         $countries = $this->personalService->get_members_data()['countries'];
         $clubs = $this->personalService->get_members_data()['clubs'];
         $weapons = $this->personalService->get_members_data()['weapons'];
-        $membersCount=Sv_member::where('reg_type','personal')->count();
+        
         $members_without_pag = $this->personalService->getMembers($request,0,$club_id);
         $members = $this->personalService->getMembers($request,1,$club_id);
+        $membersCount=$members_without_pag->count()??0;
         $reportSection=false;
         return view('members.index', compact('memberGroups', 'countries', 'clubs', 'weapons', 'members', 'membersCount','reportSection','members_without_pag'));
     }

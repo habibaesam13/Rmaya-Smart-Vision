@@ -223,7 +223,6 @@
                                            @if($confirmed) readonly @endif>
                                 </td>
                                  @if(!$confirmed  && request()->route()->getName() !== 'generate-report-registered-members_final')
-{{--                                @if(!$confirmed )--}}
                                  <td class="text-center">
                                         <form
                                             action="{{ route('final_reports_delete_player.delete', ['rid' => $report->id, 'player_id' => $member->id]) }}"

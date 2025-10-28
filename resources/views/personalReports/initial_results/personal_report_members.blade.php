@@ -8,14 +8,14 @@
             </div>
             {{-- Success Message --}}
             @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show " role="alert">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
             @if ($errors->any())
             <div class="alert alert-danger">
-                <ul class="mb-0">
+                <ul>
                     @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                     @endforeach
@@ -54,7 +54,7 @@
 
 
                         {{-- Action Buttons --}}
-                            
+
                         <div class="d-flex flex-wrap gap-2 mb-2">
                             @if(!$confirmed)
                             <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
@@ -139,7 +139,7 @@
                                     <th>المجموع</th>
                                     <th>ملاحظات</th>
                                     @if(!$confirmed)
-                                    <th>إجراءات</th>
+                                    <th>التحكم</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -204,7 +204,7 @@
                                         <td class="text-center">
                                             <form action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
                                                 method="POST" class="d-inline"
-                                                onsubmit="return confirm('هل أنت متأكد من حذف هذا الرامي؟');">
+                                                onsubmit="return confirm('هل أنت متأكد من الغاء الرامي من الديتيل؟');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="حذف"><i

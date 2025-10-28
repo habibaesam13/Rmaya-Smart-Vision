@@ -20,12 +20,14 @@ class GroupRegistration extends Controller
     }
     public function index(){
         $groupsWeapons=$this->weaponService->getAllGroupWeapons();
-        return view('PublicRegistration.GroupRegForm',['weapons'=>$groupsWeapons]);
+        return view('PublicRegistration.GroupRegForm',['weapons'=>$groupsWeapons,'oldTempFiles' => session('temp_files', [])]);
     }
     public function store(GroupRegistrationRequest $request){
+        
         $team= $this->groupService->createNewGroup($request);
         if($team){
             return redirect()->back()->with('success','تم تسجيل الفريق بنجاح');
+            
         }
         return redirect()->back()->with('error','حدث خطأ أتناء التسجيل');
     }

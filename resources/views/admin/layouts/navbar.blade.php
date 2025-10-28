@@ -69,7 +69,7 @@
                     </li> @endif
 
 
-                <li class="side-nav-title mt-2">            وحدة المسجلين                </li>
+                <li class="side-nav-title mt-2"> وحدة المسجلين</li>
                 @if(checkModulePermission('members', 'view'))
                     {{-- Personal Registered --}}
                     <li class="side-nav-item @if (request()->routeIs('personal.*')) active @endif">
@@ -100,7 +100,7 @@
 
                 @if(checkModulePermission('intial_results', 'view'))
 
-                    <li class="side-nav-title mt-2">            وحدة النتائج الأولية                 </li>
+                    <li class="side-nav-title mt-2"> وحدة النتائج الأولية</li>
                     @if(checkModulePermission('intial_results', 'daily_rpt'))
                         {{-- تقارير النتائج اليومية --}}
                         <li class="side-nav-item @if (request()->routeIs('results.*')) active @endif">
@@ -141,7 +141,7 @@
 
 
                 @if(checkModulePermission('final_results', 'view'))
-                    <li class="side-nav-title mt-2">            وحدة النتائج النهائية                 </li>
+                    <li class="side-nav-title mt-2"> وحدة النتائج النهائية</li>
 
                     @if(checkModulePermission('final_results', 'mem'))
                         {{-- final_results.reports--}}
@@ -190,7 +190,7 @@
 
 
 
-                <li class="side-nav-title mt-2">            لوحة تحكم الاندية                   </li>
+                <li class="side-nav-title mt-2"> لوحة تحكم الاندية</li>
                 @if(checkModulePermission('club_panel', 'reg'))
                     {{-- تسجيل فردي أندية --}}
                     <li class="side-nav-item @if (request()->routeIs('personal-create')) active @endif">
@@ -227,43 +227,53 @@
                         </a>
                     </li> @endif
 
-         @endif
+            @endif
 
 
-  @if(checkModulePermission('users', 'view') or checkModulePermission('logs', 'view'))
- <li class="side-nav-title mt-2"> ادارة المشرفين </li>
+            @if(checkModulePermission('users', 'view') or checkModulePermission('logs', 'view'))
+                <li class="side-nav-title mt-2"> ادارة المشرفين</li>
 
 
-      @if(checkModulePermission('users', 'view'))
-      <li class="side-nav-item  @if (request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*')  || request()->routeIs('admin.give_module_to_role_show')  ) active   @endif">
-        <a data-bs-toggle="collapse" href="#sidebarLayouts_admins" aria-expanded="false" aria-controls="sidebarLayouts_2" class="side-nav-link">
-          <span class="menu-icon">
-            <i class="ri-layout-2-line"></i>
-          </span>
-          <span class="menu-text"> {{-- __('lang.user_management') --}} Users Management</span>
-          <span class="menu-arrow"></span>
-        </a>
-        <div class="collapse  @if (request()->routeIs('admin.users.*')  ||  request()->routeIs('admin.roles.*') || request()->routeIs('admin.give_module_to_role_show')) show   @endif" id="sidebarLayouts_admins">
-          <ul class="sub-menu"> @if(checkModulePermission('users', 'add')) <li class="side-nav-item">
-              <a href="{{url(route('admin.users.create'))}}" class="side-nav-link"> {{-- __('lang.add_user') --}} Add User</a>
-            </li>@endif @if(checkModulePermission('users', 'show')) <li class="side-nav-item">
-              <a href="{{url(route('admin.users.index'))}}" class="side-nav-link"> {{-- __('lang.show_admins') --}} View Users</a>
-            </li>@endif @if(checkModulePermission('users', 'view_roles')) <li class="side-nav-item">
-              <a href="{{url(route('admin.roles.index'))}}" class="side-nav-link"> {{-- __('lang.admins_roles') --}} Users Permissions </a>
-            </li>@endif </ul>
-        </div>
-      </li>@endif
-      @if(checkModulePermission('logs', 'view')) <li class="side-nav-item ">
-        <a href="{{url(route('admin.logs.index'))}}" class="side-nav-link ">
-          <span class="menu-icon">
-            <i class="ri-file-list-line"></i>
-          </span>
-          <span class="menu-text">Logs</span>
-        </a>
-      </li> @endif
+                @if(checkModulePermission('users', 'view'))
+                    <li class="side-nav-item  @if (request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*')  || request()->routeIs('admin.give_module_to_role_show')  ) active   @endif">
+                        <a data-bs-toggle="collapse" href="#sidebarLayouts_admins" aria-expanded="false"
+                           aria-controls="sidebarLayouts_2" class="side-nav-link">
+                          <span class="menu-icon">
+                            <i class="ri-layout-2-line"></i>
+                          </span>
+                            <span class="menu-text"> {{-- __('lang.user_management') --}} Users Management</span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div
+                            class="collapse  @if (request()->routeIs('admin.users.*')  ||  request()->routeIs('admin.roles.*') || request()->routeIs('admin.give_module_to_role_show')) show   @endif"
+                            id="sidebarLayouts_admins">
+                            <ul class="sub-menu"> @if(checkModulePermission('users', 'add'))
+                                    <li class="side-nav-item">
+                                        <a href="{{url(route('admin.users.create'))}}"
+                                           class="side-nav-link"> {{-- __('lang.add_user') --}} Add User</a>
+                                    </li>@endif @if(checkModulePermission('users', 'show'))
+                                    <li class="side-nav-item">
+                                        <a href="{{url(route('admin.users.index'))}}"
+                                           class="side-nav-link"> {{-- __('lang.show_admins') --}} View Users</a>
+                                    </li>@endif @if(checkModulePermission('users', 'view_roles'))
+                                    <li class="side-nav-item">
+                                        <a href="{{url(route('admin.roles.index'))}}"
+                                           class="side-nav-link"> {{-- __('lang.admins_roles') --}} Users
+                                            Permissions </a>
+                                    </li>@endif </ul>
+                        </div>
+                    </li>@endif
+                @if(checkModulePermission('logs', 'view'))
+                    <li class="side-nav-item ">
+                        <a href="{{url(route('admin.logs.index'))}}" class="side-nav-link ">
+                          <span class="menu-icon">
+                            <i class="ri-file-list-line"></i>
+                          </span>
+                            <span class="menu-text">Logs</span>
+                        </a>
+                    </li> @endif
 
-@endif
-
+        @endif
 
 
 
@@ -335,7 +345,7 @@
             </a>
         </li>
 {{-- final_results.reports--}}
-            <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif  ">
+            <li class="side-nav-item  @if (request()->routeIs('final_reports.reports')) active @endif ">
                                 <a href="{{ route('final_results.reports') }}" class="side-nav-link">
                                     <i class="fa-solid fa-person me-2"></i>
                                     قائمة الافراد المتأهلين للتصفيات النهائية
@@ -344,7 +354,7 @@
                             </li>
 
                             {{-- final_results.reports--}}
-            <li class="side-nav-item  @if (request()->routeIs('final_reports.index')) active @endif  ">
+            <li class="side-nav-item  @if (request()->routeIs('final_reports.index')) active @endif ">
                                 <a href="{{ route('final_reports.index') }}" class="side-nav-link">
                                     <i class="fa-solid fa-list me-2"></i>
                                    final reports
@@ -352,7 +362,7 @@
                             </li>
 
                             {{-- final_results.reports--}}
-            <li class="side-nav-item  @if (request()->routeIs('final_results.absents.reports')) active @endif  ">
+            <li class="side-nav-item  @if (request()->routeIs('final_results.absents.reports')) active @endif ">
                                 <a href="{{ route('final_results.absents.reports') }}" class="side-nav-link">
                                     <i class="fa-solid fa-list me-2"></i>
                                     absent final players
@@ -360,7 +370,7 @@
                             </li>
 
                             {{-- final_results.reports--}}
-            <li class="side-nav-item  @if (request()->routeIs('reports-details_absent_players_final')) active @endif  ">
+            <li class="side-nav-item  @if (request()->routeIs('reports-details_absent_players_final')) active @endif ">
                                 <a href="{{route('reports-details_absent_players_final')}}" class="side-nav-link">
                                     <i class="fa-solid fa-list me-2"></i>
                                     final reports has absent players
@@ -370,13 +380,9 @@
                              -->
 
 
-
-
         </ul>
     </div>
     </li>
-
-
 
 
     </ul>
@@ -422,7 +428,12 @@
     </span>
                 </a>
 
-                <div> @if(app()->getLocale() == 'en') <h4 class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name_en') }}</h4> @if(all_settings()->getItem('company_department_name_en')) <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex" >{{ all_settings()->getItem('company_department_name_en') }}</h5> @endif @else <h4 class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name') }}</h4> @if(all_settings()->getItem('company_department_name')) <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex">{{ all_settings()->getItem('company_department_name') }}</h5> @endif @endif </div>
+                <div> @if(app()->getLocale() == 'en') <h4
+                        class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name_en') }}</h4> @if(all_settings()->getItem('company_department_name_en'))
+                        <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex">{{ all_settings()->getItem('company_department_name_en') }}</h5> @endif @else
+                        <h4 class="page-title fs-18 fw-bold mb-0 d-none d-md-flex">{{ all_settings()->getItem('company_name') }}</h4> @if(all_settings()->getItem('company_department_name'))
+                            <h5 class="page-title fs-13 fw-bold mb-0 m-1 d-none d-md-flex">{{ all_settings()->getItem('company_department_name') }}</h5> @endif @endif
+                </div>
             </div>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -519,10 +530,10 @@
             <!-- Notification Dropdown -->
             <div class="topbar-item">
                 <div class="dropdown">
-                    @php  $roleIds = auth()->user()->roles->pluck('id');
+                @php  $roleIds = auth()->user()->roles->pluck('id');
                 use App\Models\Noti; $noti = Noti::whereIn('roles_id', $roleIds)->where('viewed','no')->get()->count();
-                    @endphp
-                    <!--<button class="topbar-link btn btn-soft-success btn-icon btn-sm rounded-circle" onclick="window.location.href='{{route('noti.index')}}'" type="button">
+                @endphp
+                <!--<button class="topbar-link btn btn-soft-success btn-icon btn-sm rounded-circle" onclick="window.location.href='{{route('noti.index')}}'" type="button">
                         <i class="ri-notification-snooze-line  fs-18 animate-ring "></i>
                         <span class="noti-icon-badge rounded-circle">{{$noti}}</span>
                     </button>-->
@@ -543,10 +554,13 @@
                 {{ $properties['native'] }}
                             <i class="ri-earth-line drop-down__item-icon"></i>
                           </a>
-                        </li> -->@endforeach <li class=" drop-down__item">
+                        </li> -->@endforeach
+                        <li class=" drop-down__item">
                             <a href="javascript:void(0);">
-                                <span onclick="window.location.href='{{route('admin.get_admin_logout')}}'">Sign Out</span>
-                                <i  onclick="window.location.href='{{route('admin.get_admin_logout')}}'" class="ri-logout-box-line drop-down__item-icon"></i>
+                                <span
+                                    onclick="window.location.href='{{route('admin.get_admin_logout')}}'">Sign Out</span>
+                                <i onclick="window.location.href='{{route('admin.get_admin_logout')}}'"
+                                   class="ri-logout-box-line drop-down__item-icon"></i>
                             </a>
                         </li>
                     </ul>
@@ -564,7 +578,8 @@
                 <div class="card mb-1">
                     <div class="px-3 py-2 d-flex flex-row align-items-center" id="top-search">
                         <i class="ri-search-line fs-22"></i>
-                        <input type="search" class="form-control border-0" id="search-modal-input" placeholder="Search for actions, people,">
+                        <input type="search" class="form-control border-0" id="search-modal-input"
+                               placeholder="Search for actions, people,">
                         <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[esc]</button>
                     </div>
                 </div>
