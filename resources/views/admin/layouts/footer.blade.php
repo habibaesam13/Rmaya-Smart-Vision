@@ -20,9 +20,10 @@
                             Reserved.</p>
                     </div>
                     <div class="col-lg-5 col-12 d-flex justify-content-lg-end justify-content-center">
-                        <p style="display: inline-flex; margin-top: 3px; ">powered by </p>
+                     
                         <a href="https://esmart-vision.com/" target="_blank">
-                            <img src="https://smartvision-samples.com/company_system/public/uploads/foter-logo-co.png" style="width:99px" alt=""></a>
+                            <img src="https://smartvision-samples.com/company_system/public/uploads/foter-logo-co.png" style="width:99px" alt=""></a> 
+                            <p style="display: inline-flex; margin-top: 3px; ">powered by </p>
                     </div>
                 </div>
             </div>
@@ -122,7 +123,16 @@
 @livewireScripts
 
 @yield('scripts')
-
+ <script>
+        
+        
+        $(document).ready(function(){
+  $('#dropDown').click(function(){
+    $('.drop-down').toggleClass('drop-down--active');
+  });
+});
+        
+    </script>
 </body>
 
 

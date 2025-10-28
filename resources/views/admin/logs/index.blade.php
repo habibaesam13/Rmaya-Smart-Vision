@@ -123,6 +123,7 @@
                                 {{--                                <th>{{__('lang.item_code')}}</th>--}}
                                 {{--                                <th>{{__('lang.module_name')}}</th>--}}
                                 <th class=" text-center">{{__('lang.admin')}}</th>
+                                <th class=" text-center">Module</th>
 
                                 <th class=" text-center">{{__('lang.action')}}</th>
                                 <th class=" text-center">{{__('lang.created_at')}}</th>
@@ -138,8 +139,9 @@
                                     {{--                                    <td>{{ $log->item_id }}</td>--}}
                                     {{--                                    <td>{{ __('lang.'.$log->module_name) }}</td>--}}
                                     <td class="text-bg-primary text-center">{{ $log->user?->name }}</td>
+                                    <td class="text-bg-primary text-center">{{ $log->module_name }}</td>
 
-                                    <td  class="text-center">{{ __('lang.logs_'.$log->action) }}  <strong class="text-secondary"> {{ __('lang.'.$log->module_name) }} </strong>  ( {{$log->item_id}} ) </td>
+                                    <td  class="text-center">{{$log->action }}( {{$log->item_id}} ) </td>
                                     <td class="text-center">{{ $log->created_at }}</td>
                                     {{--                                    <td>--}}
                                     {{--                                        @if(checkModulePermission('logs', 'delete'))--}}

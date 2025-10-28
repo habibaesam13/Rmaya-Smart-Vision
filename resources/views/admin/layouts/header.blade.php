@@ -10,7 +10,7 @@
 
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{url('admin/assets/images/favicon.ico')}}">
+     <!--<link rel="shortcut icon" href="{{url('admin/assets/images/favicon.ico')}}">-->
 
     <!-- Vendor css -->
     <link href="{{url('admin/assets/css/vendor.min.css')}}" rel="stylesheet" type="text/css"/>

@@ -78,6 +78,22 @@ class FinalResultReportController extends Controller
         }
     }
 
+
+
+
+    public function deletePlayer($rid , $playerId )
+    {
+        $action = $this->finalResultsService->deletePlayer($rid , $playerId);
+        if ($action) {
+            return redirect()->back()->with('success', "تم إلغاء الرامي بنجاح");
+        } else {
+            return redirect()->back()->with('error', 'لم تتم عملية الالغاء بنجاح حاول مرة اخري');
+        }
+    }
+
+
+
+
  //    public function showReportMembersByPrint($id, Request $request)
 //    {
 //        $members = $this->resultService->getReportDetails($id);

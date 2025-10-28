@@ -18143,7 +18143,7 @@ html[data-topbar-color=dark] .app-topbar .logo .logo-dark {
 
 .logo-lg img {
 	/*height: var(--highdmin-logo-lg-height);*/
-	height:80%;  /*added code*/
+	height:57%;  /*added code*/
 }
 
 .logo-sm img {

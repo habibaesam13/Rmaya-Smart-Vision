@@ -1,31 +1,94 @@
-*و*::after,
-*::before {
-    box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-
 ::selection {
     background-color: rgb(142, 76, 21);
     color: #fff;
 }
 
 body {
-    direction: rtl;
+direction: rtl;
+    height: 100vh;
+    font-family: "Tajawal", sans-serif !important;
+    background: #fff url(../header_footer/body.png) repeat-x right bottom;
 
+}
+
+
+ header, nav, section, summary {
+    display: block;
+}
+
+
+.header-two .header-top {
+    padding: 10px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border-bottom: 1px solid #f6f0e6;
+  background: #fff url("../header_footer/04.a319d53a.png") repeat-y right;
+background-size: contain;
+}
+
+
+
+
+.header-two .header-top .content {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+    align-items: center;
+    width: 98%;
+}
+
+.header-two .header-top .content .left-header-top p {
+    font-size: 16px;
+    color: #fff;
+}
+p:last-child {
+    margin-bottom: 0;
+}
+.header-two .header-top .content .right-header-top {
+    display: flex;
+    align-items: center;
+}
+
+.header-two .header-top .content .right-header-top .ht-social {
+    display: flex;
+    align-items: center;
+    margin-left: 60px;
+    position: relative;
+}
+
+.header-two .header-top::after {
+    position: absolute;
+    left: -5%;
+    content: "";
+    top: 0;
+    width: 40%;
+    height: 100%;
+    background: #f6f0e6 ;
+    z-index: -1;
 }
 
 main {
-    background: url("../header_footer/bg.jpg");
-    background-position: center;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
+ 
 }
-
-.container {
-    width: 800px;
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f6f0e6;
+    font-size: 13px;
+    padding: 10px;
+    color: #8e4c15;
 }
 
 .text-brown {
@@ -161,7 +224,7 @@ main {
 @media (min-width:1200px) {
     .title {
         display: block;
-        font-size: 27px;
+        font-size: 22px;
     }
 
     .date-size {

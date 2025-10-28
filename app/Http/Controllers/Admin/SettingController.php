@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ImageTrait;
+use App\Http\Traits\LogsTrait;
 use App\Models\SiteSettings;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
-    use ImageTrait;
+    use ImageTrait,LogsTrait;
 
     public function edit()
     {
@@ -58,6 +59,7 @@ class SettingController extends Controller
                 foreach ($arr as $name => $val) {
                     if (isset($arr[$name])) {
                         SiteSettings::first()->update([$name => $arr[$name]]);
+                         $this->saveAction('الاعدادات',1,'تم تعديل اعدادات النظام' );
                     }
                 }
             } else {

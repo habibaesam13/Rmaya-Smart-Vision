@@ -7,14 +7,14 @@
                     <h4 class="header-title">تقارير النتائح النهائية - الديتيل</h4>
                 </div>
                 <div class="col-12 col-md-4 text-md-end text-center">
-                        <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-primary  ">
-                            <i class="ri-file-pdf-2-line"></i>
+                    <span class="badge badge-outline-primary"> عدد التقارير : {{count($ReportsDetails)}}</span>
+                    <span  title="طباعة" onclick="printDiv('pr')"  class="btn btn-sm btn-danger  ">
+                            <i class="ri-printer-line"></i>
                         </span>
                 </div>
-
-                {{-- Success Message --}}
+                 {{-- Success Message --}}
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show w-100" role="alert">
                         <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
@@ -35,12 +35,13 @@
                     <div class="card-body">
                         <div class="card bg-search">
                             {{-- Search Form --}}
-                            <form action="{{route('reports-details_absent_players_final')}}" method="get"
+                            <!--<form action="{{route('reports-details_absent_players_final')}}" method="get"-->
+                                <form action="{{route('reports-details_players_final')}}" method="get"
                                   class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-3">
-                                        <label for="weapons" class="form-label">الأسلحة</label>
-                                        <select name="weapon_id" id="weapons" class="form-select form-select-lg">
+                                        <!--<label for="weapons" class="form-label">الأسلحة</label>-->
+                                        <select name="weapon_id" id="weapons" class="form-select form-select">
                                             <option value="">اختر السلاح</option>
                                             @foreach($weapons as $weapon)
                                                 <option value="{{ $weapon->wid }}"
@@ -51,36 +52,37 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="detail" class="form-label">رقم الديتيل</label>
+                                            <!--<label for="detail" class="form-label">رقم الديتيل</label>-->
                                         <input type="number" name="details" id="detail"
                                                value="{{ request('details') }}"
-                                               class="form-control form-control-lg text-center"
+                                               class="form-control form-control text-center"
                                                placeholder="أدخل رقم الديتيل">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="date-from" class="form-label">من</label>
+                                        <!--<label for="date-from" class="form-label">من</label>-->
                                         <input id="date-from" type="date" name="date_from"
-                                               class="form-control form-control-lg"
+                                               class="form-control form-control"
                                                value="{{ request('date_from') }}">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="date-to" class="form-label">إلى</label>
+                                        <!--<label for="date-to" class="form-label">إلى</label>-->
                                         <input id="date-to" type="date" name="date_to"
-                                               class="form-control form-control-lg"
+                                               class="form-control form-control"
                                                value="{{ request('date_to') }}">
                                     </div>
 
                                 </div>
                                 <div class="col-md-12 d-flex justify-content-start gap-2 my-2">
                                     <div class="col-md-1">
-                                        <button type="submit" class="btn btn-sm btn-info mt-1 mt-md-0 mt-lg-0 w-100"
+                                        <button type="submit" class="btn btn-sm btn-success mt-1 mt-md-0 mt-lg-0 w-100"
                                                 name="search" value="بحث">
-                                            <i class="fas fa-search me-2"></i>&nbsp;&nbsp;بحث
+                                            <i class="ri-search-2-line"></i>&nbsp;&nbsp;بحث
                                         </button>
                                     </div>
                                     <div class="col-md-1">
-                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-warning w-100">
-                                            اعادة تعيين
+                                        <a href="{{ url()->current() }}" class="btn btn-sm btn-primary w-100">
+
+                                            اعادة ضبط
                                         </a>
                                     </div>
                                 </div>
@@ -97,7 +99,7 @@
                                     <th>التاريخ</th>
                                     <th>السلاح</th>
                                     <th>رقم الديتيل</th>
-                                    <th>أدوات تحكم</th>
+                                    <th>التحكم</th>
                                 </tr>
                                 </thead>
 
@@ -108,7 +110,7 @@
                                         <td>{{ date_create($report->date)->format('d-m-Y') }}</td>
                                         <td>{{ $report->weapon?->name ?? '-' }}</td>
                                         <td>{{ $report->details }}</td>
-                                        <td class="text-center">
+                                        <td class="text-center d-flex" style="justify-content: center" >
                                             <a href="{{route('report-members_final',$report->id)}}"
                                                class=" me-2"
                                                data-bs-toggle="tooltip"
@@ -116,6 +118,20 @@
                                                title="طباعة التقرير">
                                                 <i class="ri-printer-line icon-btn"></i>
                                             </a>
+
+                                            <!-----delete-->
+                                            <form action="{{route('final_reports_delete.delete' , $report->id)}}" method="post" style="background-color: transparent" >
+                                                @csrf
+                                                @method('delete')
+                                            <span
+                                                style="border: none; background-color: transparent" onclick="confirmSubmit(this)"
+                                               class=" me-2"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top"
+                                               title="الغاء التقرير">
+                                                <i class="ri-delete-bin-fill icon-btn"></i>
+                                            </span>
+                                            </form>
 
                                             {{-- Attached File Icon (shown only if exists) --}}
                                             {{--                                        <a href="{{ $report->file ? asset('storage/' . $report->file) : '#' }}"--}}
@@ -191,4 +207,12 @@
             </div>
         </div>
     </div>
+    <script>
+        function confirmSubmit(object) {
+           const check = window.confirm('هل انت متأكد من إلغاء هذا الديتيل ؟'   );
+           if(check === true){
+               object.parentElement.submit();
+           }
+        }
+    </script>
 @endsection

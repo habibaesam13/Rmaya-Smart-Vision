@@ -38,7 +38,7 @@ class GroupService
     //المسجلين فرق
     public function getGroups()
     {
-        $groups = Sv_team::with(['club', 'weapon'])->orderBy('tid');
+        $groups = Sv_team::with(['club', 'weapon'])->orderByDesc('tid');
         $groupsCount = $groups->count();
         $groups_without_pag=$groups->get();
         $groups = $groups->cursorPaginate(config('app.admin_pagination_number'));

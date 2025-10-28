@@ -61,11 +61,19 @@
 {{--                             </div>--}}
 
                              <div class="row mb-3">
-                             <label for="{{$setting->company_name}}" class="col-3 col-form-label">{{__('lang.company_name')}}</label>
+                             <label for="{{$setting->company_name}}" class="col-3 col-form-label">{{__('lang.company_name')}} EN</label>
                              <div class="col-9">
                                  <div class="row">
                                      <input type="text" name="company_name"  value="{{$setting->company_name}}"
                                             class="form-control w-75    "  id="{{$setting->company_name}}">
+                                 </div>
+                             </div>
+                         </div> <div class="row mb-3">
+                             <label for="{{$setting->company_name}}" class="col-3 col-form-label">{{__('lang.company_name')}} AR</label>
+                             <div class="col-9">
+                                 <div class="row">
+                                     <input type="text" name="company_name_ar"  value="{{$setting->company_name}}"
+                                            class="form-control w-75    "  id="{{$setting->company_name_ar}}">
                                  </div>
                              </div>
                          </div>

@@ -11,7 +11,7 @@ class SiteSettings extends Model
     protected $fillable = [
         'logo',
         'secondary_logo',
-        'company_name',
+        'company_name','company_name_ar',
         'company_department_name',
         'phone',
         'whatsapp',

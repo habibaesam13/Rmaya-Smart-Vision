@@ -181,12 +181,23 @@ class AbsentFinalResultsService
                 ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
                 ->orderBy('sv_initial_results_players.total', 'desc');
 
+//            if (!empty($request->search)) {
+//                $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
+//                    ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
+//                    ->orWhere('sv_members.phone1', $request->search)
+//                    ->orWhere('sv_members.phone2', $request->search);
+//            }
             if (!empty($request->search)) {
-                $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
-                    ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
-                    ->orWhere('sv_members.phone1', $request->search)
-                    ->orWhere('sv_members.phone2', $request->search);
+                $qValue = trim($request->search);
+
+                $query->where(function ($sub) use ($qValue) {
+                    $sub->where('sv_members.name', 'like', "%{$qValue}%")
+                        ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+                        ->orWhere('sv_members.phone1', $qValue)
+                        ->orWhere('sv_members.phone2', $qValue);
+                });
             }
+
             /*********end search part****/
 
 
@@ -289,18 +300,26 @@ class AbsentFinalResultsService
         if (!empty($request->details_date)) {
             $query = $query->whereDate('sv_fianl_results.date', $request->details_date);
         }
-//        if (!empty($request->to_date)) {
-//            $query = $query->whereDate('sv_fianl_results.date', '=<', $request->to_date);
+
+//        if (!empty($request->search)) {
+//            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.phone1', $request->search)
+//                ->orWhere('sv_members.phone2', $request->search);
+//
+//
 //        }
-
         if (!empty($request->search)) {
-            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.phone1', $request->search)
-                ->orWhere('sv_members.phone2', $request->search);
+            $qValue = trim($request->search);
 
-
+            $query->where(function ($sub) use ($qValue) {
+                $sub->where('sv_members.name', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.phone1', $qValue)
+                    ->orWhere('sv_members.phone2', $qValue);
+            });
         }
+
 
         if (!empty($request->total)) {
             $query = $query->where('sv_fianl_results_players.total', '<=', $request->total);
@@ -412,11 +431,21 @@ class AbsentFinalResultsService
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
             ->orderBy('sv_initial_results_players.total', 'desc');
 
+//        if (!empty($request->search)) {
+//            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
+//                ->orWhere('sv_members.phone1', $request->search)
+//                ->orWhere('sv_members.phone2', $request->search);
+//        }
         if (!empty($request->search)) {
-            $query = $query->where('sv_members.name', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.ID', 'like', "%" . $request->search . "%")
-                ->orWhere('sv_members.phone1', $request->search)
-                ->orWhere('sv_members.phone2', $request->search);
+            $qValue = trim($request->search);
+
+            $query->where(function ($sub) use ($qValue) {
+                $sub->where('sv_members.name', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.ID', 'like', "%{$qValue}%")
+                    ->orWhere('sv_members.phone1', $qValue)
+                    ->orWhere('sv_members.phone2', $qValue);
+            });
         }
 
 
