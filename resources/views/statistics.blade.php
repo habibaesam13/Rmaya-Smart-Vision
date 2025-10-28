@@ -73,16 +73,16 @@
                                 </thead>
 
                                 <tbody>
-                                <tr>
-                                    <th class="bg-secondary text-light">السلاح</th>
+                                <tr  >
+                                    <th style="background-color:   #EFC3CA">السلاح</th>
                                     <?php  $i =0;  ?>
                                     @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as   $clubName)
                                         <?php   $i++;  ?>
-                                        <th class="{{$i%2 == 0   ?   'bg-secondary' :  'bg-dark'   }}">
+                                        <th style="{{$i%2 == 0   ?   'background-color: #EFC3CA' :  'background-color:#E7DDFF'   }}">
                                             <div class="row ">
-                                                <div class="col-4 fw-bold text-light px-2 ">All Members {{$i}} </div>
-                                                <div class="col-4 fw-bold text-light px-2 border   border-1 border-top-0  border-bottom-0"> Active</div>
-                                                <div class="col-4 fw-bold text-light px-2"> Qualified</div>
+                                                <div class="col-4 fw-bold  px-2 ">المسجلين</div>
+                                                <div class="col-4 fw-bold  px-2 border   border-1 border-top-0  border-bottom-0">المفعلين</div>
+                                                <div class="col-4 fw-bold  px-2">المتأهلين</div>
                                             </div>
                                         </th>
                                     @endforeach
@@ -95,23 +95,26 @@
                                 @foreach($weapons as $weaponId => $weaponName)
                                     <tr>
                                         <th>{{ $weaponName }}</th>
+                                        @php  $i2 = 0;  @endphp
 
                                         @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as $clubName)
+
                                             @php
                                                 $record = $generalReportForClubsAndWeapons
                                                     ->first(fn($r) => $r->weapon_id == $weaponId && $r->club_name == $clubName);
+                                            $i2++;
                                             @endphp
 
                                             @if($record)
-                                                <td>
+                                                <td style="{{$i2%2 == 0   ?   'background-color:#E8E8E8' :  ''   }}">
                                                     <div class="row">
-                                                    <div class="col-4 fw-bold text-primary px-2  ">All Members: {{ $record->all_members_count }}</div>
-                                                    <div class="col-4 px-2    ">Active: {{ $record->active_members_count }}</div>
-                                                    <div class="col-4 px-2   ">Qualified: {{ $record->qualified }}</div>
+                                                    <div class="col-4 fw-bold text-primary px-2  ">{{ $record->all_members_count }}</div>
+                                                    <div class="col-4 px-2    ">{{ $record->active_members_count }}</div>
+                                                    <div class="col-4 px-2   ">{{ $record->qualified }}</div>
                                                     </div>
                                                 </td>
                                             @else
-                                                <td class="text-muted">—</td>
+                                                <td class="text-muted" style="{{$i2%2 == 0   ?   'background-color:#E8E8E8' :  ''   }}">—</td>
                                             @endif
                                         @endforeach
                                     </tr>

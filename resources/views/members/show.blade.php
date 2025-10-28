@@ -13,18 +13,22 @@ use Carbon\Carbon;
     </div>
 
     <!-----start ------->
+    <div class="ml-0 text-left">
+    <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary d-block text-left ml-0 "><i
+            class="ri-printer-line"></i> </a>
+    </div>
 
+    <div class="card shadow-sm border-0" id="pr">
 
-    <div class="card shadow-sm border-0">
         <div class="card-body">
-            <table class="table table-bordered mb-3  m-auto">
+            <table class="table table-bordered mb-3  m-auto"  id="pr" >
                 <thead>
-                <tr>
-                    <th>اسم العنصر</th>
-                    <th>القيمة </th>
-                    <th>اسم العنصر</th>
-                    <th>القيمة</th>
-                 </tr>
+{{--                <tr>--}}
+{{--                    <th>اسم العنصر</th>--}}
+{{--                    <th>القيمة </th>--}}
+{{--                    <th>اسم العنصر</th>--}}
+{{--                    <th>القيمة</th>--}}
+{{--                 </tr>--}}
                 </thead>
 
 
@@ -133,19 +137,18 @@ use Carbon\Carbon;
                 <!------------------------------------------------------------------------->
                 <!------------------------------------------------------------------------->
                 <tr>
-                    <td class="text-primary">
-                      صورة الهوية الامامية
-                    </td>
-                    <td>
+
+                    <td colspan="4" style="text-align: center">
+
                         <img src="{{asset('storage/' . $member->front_id_pic)}}">
-                    </td>
-                    <td  class="text-primary">
-                        صورة الهوية الخلفية
+                        <br>
+                        <img src="{{asset('storage/' . $member->back_id_pic)}}">
+
+
+
                     </td>
 
-                    <td>
-                        <img src="{{asset('storage/' . $member->back_id_pic)}}">
-                    </td>
+
                 </tr>
                 <!------------------------------------------------------------------------->
 
