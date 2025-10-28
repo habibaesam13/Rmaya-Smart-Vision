@@ -113,5 +113,54 @@ use Carbon\Carbon;
         });
     });
 </script>
+
+<!-- UI form validation-->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nationalID = document.getElementById('ID');
+        nationalID.addEventListener('input', e => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 15) value = value.slice(0, 15);
+            e.target.value = value;
+        });
+
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate() + 1).padStart(2, '0');
+        const minDate = `${year}-${month}-${day}`;
+        document.getElementById('expire-date').setAttribute('min', minDate);
+
+
+        const dobInput = document.getElementById('birth-date');
+        const todayStr = new Date().toISOString().split('T')[0];
+        dobInput.setAttribute('max', todayStr);
+
+
+        function setupPhoneValidation(id) {
+            const phoneInput = document.getElementById(id);
+            phoneInput.addEventListener('input', e => {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (!value.startsWith('05')) {
+                    value = '05' + value.replace(/^0+/, '');
+                }
+
+                if (value.length > 10) value = value.slice(0, 10);
+                e.target.value = value;
+            });
+
+            phoneInput.addEventListener('paste', e => e.preventDefault());
+        }
+        setupPhoneValidation('phone1');
+        const nameInput = document.getElementById('full-name');
+        nameInput.addEventListener('input', e => {
+            let value = e.target.value.normalize('NFC');
+            value = value.replace(/[^\u0600-\u06FF\s]/g, '');
+            e.target.value = value;
+        });
+    });
+</script>
 @endsection
 

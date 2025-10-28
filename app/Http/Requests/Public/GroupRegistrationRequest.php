@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Public;
 
+use Carbon\Carbon;
+use App\Models\Sv_weapons;
+use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use App\Models\Sv_weapons;
 
 class GroupRegistrationRequest extends FormRequest
 {
@@ -14,6 +15,16 @@ class GroupRegistrationRequest extends FormRequest
     {
         return true;
     }
+    protected array $weaponAgeRanges = [
+        12 => ['min' => 60, 'max' => null], // فئة أولى بندقية فرق رجال
+        13 => ['min' => 50, 'max' => 59],   // فئة ثانية بندقية فرق رجال
+        14 => ['min' => 40, 'max' => 49],   // فئة ثالثة بندقية فرق رجال
+        15 => ['min' => null, 'max' => 39], // فئة رابعة بندقية فرق رجال
+        16 => ['min' => null, 'max' => null],
+        17 => ['min' => null, 'max' => null],
+        18 => ['min' => null, 'max' => null],
+        19 => ['min' => null, 'max' => null],
+    ];
 
     protected function prepareForValidation()
     {
@@ -26,8 +37,11 @@ class GroupRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_name' => ['required', 'string', 'max:255',
-              Rule::unique('sv_teams', 'name'),
+            'team_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sv_teams', 'name'),
             ],
 
             'weapon_id' => [
@@ -89,7 +103,31 @@ class GroupRegistrationRequest extends FormRequest
         $validator->after(function ($validator) {
             // Only validate if team_name and members exist
             if ($this->filled('weapon_id') && is_array($this->members)) {
+                if (!$this->filled('weapon_id') || !is_array($this->members)) {
+                    return;
+                }
                 $weapon = Sv_weapons::where('wid', $this->weapon_id)->first();
+                $ageRule = $this->weaponAgeRanges[$this->weapon_id] ?? null;
+                if ($ageRule) {
+                    foreach ($this->members as $index => $member) {
+                        if (empty($member['dob'])) continue;
+
+                        $dob = Carbon::parse($member['dob']);
+                        $age = $dob->age;
+
+                        if (
+                            ($ageRule['min'] !== null && $age < $ageRule['min']) ||   // أصغر من الحد الأدنى
+                            ($ageRule['max'] !== null && $age > $ageRule['max'])      // أكبر من الحد الأقصى
+                        ) {
+                            $validator->errors()->add(
+                                "members.$index.dob",
+                                "العمر ($age سنة) لا يناسب الفئة المحددة للسلاح (رقم: {$weapon->name})."
+                            );
+                        }
+                    }
+                }
+
+
 
                 if ($weapon && $weapon->number_of_members !== count($this->members)) {
                     $validator->errors()->add(
@@ -130,7 +168,7 @@ class GroupRegistrationRequest extends FormRequest
 
             'members.*.dob.required' => 'تاريخ الميلاد مطلوب.',
             'members.*.dob.date' => 'تاريخ الميلاد غير صحيح.',
-            'members.*.dob.before_or_equal' =>'العمر يجب ان يكون 16 سنة على الاقل',
+            'members.*.dob.before_or_equal' => 'العمر يجب ان يكون 16 سنة على الاقل',
 
             'members.*.front_id_pic.mimes' => 'الملف يجب أن يكون بصيغة jpg أو jpeg أو png أو pdf.',
             'members.*.front_id_pic.max' => 'حجم الملف لا يجب أن يزيد عن 2 ميجا.',

@@ -8,14 +8,14 @@
             </div>
             {{-- Success Message --}}
             @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show " role="alert">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
             @if ($errors->any())
             <div class="alert alert-danger">
-                <ul>
+                <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                     @endforeach
@@ -54,7 +54,7 @@
 
 
                         {{-- Action Buttons --}}
-
+                            
                         <div class="d-flex flex-wrap gap-2 mb-2">
                             @if(!$confirmed)
                             <form action="{{route('add-player-to-report',$report?->Rid)}}" method="GET">
@@ -146,6 +146,7 @@
 
                             <tbody>
                                 @forelse($members as $index => $member)
+                                @php $club_id=$member->player->club_id; @endphp
                                 <tr>
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td>{{ $member?->player?->phone1 ?? '---' }}</td>
@@ -224,6 +225,27 @@
                                 @endforelse
                             </tbody>
                         </table>
+                                  <table celpadding="0" cellspacing="0" class="noborder show_printxx" style="border:none;width:100%;padding-top:10px;">
+                                <tr>
+                                    <td class="noborder" style="text-align:center;width:50%;vertical-align: text-bottom;">لجنة الرماية
+                                    </td>
+                                    <td class="noborder" style="text-align:center;width:50%">لجنة التحكيم
+                                    <br>
+                                     
+                                     <?php if($club_id==1){?>
+                                       <span style="font-size: 16px;">  مقدم / سيف صبيح طناف الراشدي	 	  </span>
+                                       <?php }?><?php if($club_id==3){?>
+                                       <span style="font-size: 16px;">   مقدم ركن م / سالم عبيد راشد السلامي		 </span>
+                                       <?php }?><?php if($club_id==4){?>
+                                       <span style="font-size: 16px;">  رائد / علي حيي سعيد محمد الكعبي		   </span>
+                                       <?php }?><?php if($club_id==2){?>
+                                       <span style="font-size: 16px;">     رائد / احمد خلف براك المزروعي		 </span>
+                                      <?php }?>
+                                    <br>
+                                    @if($confirmed)  <img style="max-width:200px" src="{{ asset('storage/' . $club_id.'.png') }}">  @endif
+                                    </td>
+                                </tr>
+                            </table>
 
                     </div>
                 </div>
