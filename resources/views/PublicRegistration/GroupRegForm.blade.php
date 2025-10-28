@@ -91,7 +91,7 @@
         @csrf
 
         <div class="">
-          <input type="text" name="team_name" placeholder="أسم الفريق"
+          <input type="text" name="team_name" placeholder="أسم الفريق" id="team_name"
             class="form-control w-100 @error('team_name') is-invalid @enderror"
             value="{{ old('team_name') }}" required style="border:1px #e7dac2 solid">
           @error('team_name')
@@ -182,9 +182,19 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+          const teamInput = document.getElementById('team_name');
+          if (teamInput) {
+            teamInput.addEventListener('input', e => {
+              let value = e.target.value.normalize('NFC');
+              value = value.replace(/[^\u0600-\u06FF\s]/g, '');
+              e.target.value = value;
+            });
+          }
+        });
     const oldMembers = @json(old('members', []));
     const oldTempFiles = @json(session('temp_files', []));
-    
+
     document.querySelectorAll('.weapon-radio').forEach(radio => {
       radio.addEventListener('change', function() {
         const membersCount = this.dataset.members;
@@ -254,7 +264,7 @@
         </tr>`;
           tbody.insertAdjacentHTML('beforeend', row);
         }
-
+        
         setupRowValidation();
       });
     });
@@ -266,6 +276,7 @@
         selected.dispatchEvent(new Event('change'));
       }
     });
+
     function setupRowValidation() {
       const today = new Date();
       const year = today.getFullYear();
@@ -301,7 +312,6 @@
           }
         });
       });
-
       // --- National ID (15 digits numeric only) ---
       document.querySelectorAll('.id-num').forEach(input => {
         input.addEventListener('input', e => {
