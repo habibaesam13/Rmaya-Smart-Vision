@@ -84,7 +84,7 @@
                                     <div class="col-md-3">
                                         <!--<label for="mgid" class="form-label">المجموعات</label>-->
                                         <select name="mgid" id="mgid" class="form-select form-select-lg">
-                                            <option value=""  selected>اختر المجموعة</option>
+                                            <option value="" selected>اختر المجموعة</option>
                                             @foreach($memberGroups as $memberGroup)
                                                 <option value="{{ $memberGroup->mgid }}"
                                                     {{ request('mgid') == $memberGroup->mgid ? 'selected' : '' }}>
@@ -98,7 +98,7 @@
                                         <div class="col-md-3">
                                             <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                             <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                                <option value=""  selected>اختر السلاح </option>
+                                                <option value="" selected>اختر السلاح </option>
                                                 @foreach($weapons as $weapon)
                                                     <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
                                                         {{ $weapon->name }}
@@ -111,7 +111,7 @@
                                         <div class="col-md-3">
                                             <!--<label for="club_id" class="form-label">النادي</label>-->
                                             <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                                <option value=""  {{ !request('club_id') ? 'selected' : '' }}>اختر نادي الرماية</option>
+                                                <option value="" {{ !request('club_id') ? 'selected' : '' }}>اختر نادي الرماية</option>
                                                 @foreach($clubs as $club)
                                                     <option value="{{ $club->cid }}" {{ request('club_id') == $club->cid ? 'selected' : '' }}>
                                                         {{ $club->name }}
@@ -124,14 +124,14 @@
                                         <div class="col-md-3">
                                             <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                             <select name="weapon_id" id="weapon_id" class="form-select form-select-lg">
-                                                <option value=""  selected>اختر السلاح</option>
+                                                <option value="" selected>اختر السلاح</option>
                                             </select>
                                         </div>
                                     @endif
                                     <div class="col-md-3">
                                         <!--<label for="nat" class="form-label">الجنسية</label>-->
                                         <select name="nat" id="nat" class="form-select form-select-lg">
-                                            <option value=""  {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
+                                            <option value="" {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
                                             @foreach($countries as $country)
                                                 <option value="{{ $country->id }}">
                                                     {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}
@@ -299,12 +299,12 @@
 
                                                     <div id="checkedMembersContainer" style="display:none;"></div>
 
-                                             <div class="col-md-4">
-                                                <button type="submit" class="btn btn-success btn-lg w-100">
-                                                    <i class="fas fa-save me-2"></i>
-                                                    {{ isset($Edit_report->Rid) ? 'تحديث الديتيل' : 'حفظ الديتيل' }}
-                                                </button>
-                                            </div>
+                                                    <div class="col-md-4">
+                                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                                            <i class="fas fa-save me-2"></i>
+                                                            {{ isset($Edit_report->Rid) ? 'تحديث الديتيل' : 'حفظ الديتيل' }}
+                                                        </button>
+                                                    </div>
 
                                                 </div>
                                             </form>
@@ -366,7 +366,7 @@
                                                                 <div class="d-flex justify-content-center gap-1">
                                                                     @if(checkModulePermission('members', 'view'))
                                                                         {{-- Edit Button --}}
-                                                                        <form action="{{route('personal.show' , $player->mid)}}"    method="GET" class="d-inline">
+                                                                        <form action="{{route('personal.show' , $member->mid)}}"    method="GET" class="d-inline">
                                                                             @csrf
                                                                             <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
                                                                                 <i class="ri-eye-2-line   fs-16"></i>
@@ -374,10 +374,7 @@
                                                                         </form>
 
                                                                     @endif
-
-
-
-                                                                @if(checkModulePermission('members', 'edit'))
+                                                                    @if(checkModulePermission('members', 'edit'))
                                                                         {{-- Edit Button --}}
                                                                         <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
                                                                             @csrf
@@ -470,7 +467,7 @@
                                             <th>الجنسية</th>
                                             <th>المجموعات</th>
                                             <th>تاريخ التسجيل</th>
-                                            <th>ادوات تحكم</th>
+                                            <th> التحكم</th>
                                         </tr>
                                         </thead>
 
@@ -501,11 +498,9 @@
                                                 <td>
                                                     <div class="d-flex justify-content-center gap-1">
 
-
-
                                                         @if(checkModulePermission('members', 'view'))
                                                             {{-- Edit Button --}}
-                                                            <form action="{{route('personal.show' , $member->mid)}}"    method="GET" class="d-inline">
+                                                            <form action="{{route('personal.show' , $member->mid)}}" method="GET" class="d-inline">
                                                                 @csrf
                                                                 <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
                                                                     <i class="ri-eye-2-line   fs-16"></i>
@@ -513,8 +508,8 @@
                                                             </form>
 
                                                         @endif
+                                                        @if(checkModulePermission('members', 'edit'))
 
-                                                    @if(checkModulePermission('members', 'edit'))
 
                                                             {{-- Edit Button --}}
                                                             <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
@@ -575,116 +570,7 @@
                                 </div>
 
                             </div>
-
-                            @else
-                            <table class="table table-bordered mb-3">
-                                <thead class="bg-soft-primary">
-
-                                    <tr>
-
-                                        <th>الاسم</th>
-                                        <th>رقم الهوية</th>
-                                        <th>الهاتف</th>
-                                        <th>العمر</th>
-                                        <th>السلاح</th>
-                                        <th>نادي الرماية</th>
-                                        <th>مكان التسجيل</th>
-                                        <th>الجنسية</th>
-                                        <th>المجموعات</th>
-                                        <th>تاريخ التسجيل</th>
-                                        <th> التحكم</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @forelse($members as $member)
-                                    <tr>
-                                        <td>{{ $member->name }}</td>
-                                        <td>{{ $member->ID}}</td>
-                                        <td>{{ $member->phone1 ?$member->phone1:$member->phone2}}</td>
-                                        <td>{{ $member->age_calculation()}}</td>
-                                        <td>{{ $member->weapon->name}}</td>
-                                        <td>{{ $member->club?->name ?? '---' }}</td>
-                                        <td>{{ $member->registrationClub?->name ?? '---' }}</td>
-                                        <td>
-                                            {{ $member->nationality && trim($member->nationality->country_name_ar ?? '') !== ''
-                                            ? $member->nationality->country_name_ar
-                                            : (trim($member->nationality->country_name ?? '') !== ''
-                                                ? $member->nationality->country_name
-                                                : '---')
-                                            }}
-                                        </td>
-
-
-                                        </td>
-                                        <td>{{ $member->member_group?->name ?? '---' }}</td>
-                                        <td>{{ $member->registration_date}}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-1">
-
-
-                                                @if(checkModulePermission('members', 'edit'))
-
-                                                {{-- Edit Button --}}
-                                                <form action="{{route('personal.edit')}}" method="GET" class="d-inline">
-                                                    @csrf
-                                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                                    <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="تعديل">
-                                                        <i class="ri-edit-box-line fs-16"></i>
-                                                    </button>
-                                                </form>
-
-                                                @endif
-                                                @if(checkModulePermission('members', 'delete'))
-
-                                                {{-- Delete Button --}}
-                                                <form action="{{route('personal-registration-delete')}}" method="POST" class="d-inline"
-                                                    onsubmit="return confirm('هل أنت متأكد من حذف هذا الشخص؟');">
-
-                                                    @csrf
-                                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="حذف">
-                                                        <i class="ri-delete-bin-line fs-16"></i>
-                                                    </button>
-                                                </form>
-
-                                                @endif
-                                                @if(checkModulePermission('members', 'active'))
-
-                                                {{-- Toggle Status Button --}}
-                                                <form action="{{route('personal-registration-toggle')}}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <input type="hidden" name="mid" value="{{ $member->mid }}">
-                                                    <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle"
-                                                        title="{{ $member->active ? 'تعطيل' : 'تفعيل' }}">
-                                                        <!--<i class="fas fa-{{ $member->active ? 'pause' : 'play' }}"></i>-->
-                                                        @if($club->active) <i class="ri-pause-line"></i> @else <i class="ri-play-line"></i> @endif
-                                                    </button>
-                                                </form>@endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="11" class="text-center text-muted">
-                                            لا توجد نتائج مطابقة للبحث
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                            <div id="pr" style="display:none">
-                                @include('members/registered_members_print', ['members'=>@$members_without_pag])
-                            </div>
-
-                            @endif
-                            <div class="mt-4 d-flex justify-content-center">
-                                {{ $members->appends(request()->query())->links() }}
-                            </div>
-
-                         </div>
+                        </div>
                     </div>
 
 
