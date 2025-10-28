@@ -76,36 +76,44 @@
 
                                 <tbody>
 
-                                {{--                                @foreach($generalReportForClubsAndWeapons->groupBy( 'weapon_name' , 'club_name')->unique() as $key3 => $item3)--}}
-                                {{--                                    <tr>--}}
-                                @foreach($generalReportForClubsAndWeapons->groupBy( 'weapon_name' , 'club_name')->unique() as $key3 => $item3)
-                                    <tr>
-                                        <th>  {{    $item3->first() != null ? $item3->first()->weapon_name  : ''  }}   </th>
-                                        @foreach($generalReportForClubsAndWeapons->pluck( 'club_name' , 'weapon_name')->unique() as $key2 => $item2)
-                                            <td>
-                                                @foreach($item3 as $key4 => $val4)
-                                                    @if($val4->club_name == $item2 && $val4->weapon_name == $key2)
-                                                        fffff    {{$val4->club_name}}
-{{--                                                                                                                / {{$val4->all_member_name}}--}}
-{{--                                                                                                                / {{$val4->active_member_name}}--}}
-                                                        /{{$val4->weapon_name}}
-                                                        /{{$val4->pid}}
+                                                                @foreach($generalReportForClubsAndWeapons  as $key => $item)
+                                                                    @foreach($generalReportForClubsAndWeapons->pluck('weapon_id' , 'club_name')->unique()  as $key1 => $weapon)
+                                                                        @if($item->weapon_id == $weapon && $item->club_name == $key1  )
+                                                                            <tr>
+                                                                                <th>{{$item->weapon_name}}</th>
+                                                                                @foreach($generalReportForClubsAndWeapons  as $key => $val)
+
+                                                                                    @if($val->weapon_id  ==$item->weapon_id)
+                                                                                        <td>
+                                                                                          All  Members count : {{$val->all_members_count}} <br>
+                                                                                            Active Members : {{$val->active_members_count}} <br>
+                                                                                            Qualified : {{$val->qualified}}
+{{--                                                                                               {{$val->all_member_name}}--}}
+                                                                                        </td>
+                                                                                    @endif
 
 
-                                                    <br>
-                                                        /wid : {{$val4->wid}}
-                                                    <br>
-                                                        /cid : {{$val4->cid}}
+                                                                                @endforeach
+                                                                            </tr>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endforeach
 
-                                                    <br>
-                                                        fffff
-                                                    @endif
 
-                                                @endforeach
-                                            </td>
-                                        @endforeach
-                                    </tr>
-                                @endforeach
+{{--                                @foreach($generalReportForClubsAndWeapons as $clubName => $weapons)--}}
+{{--                                    <tr style="background-color: #bf1e2f;">--}}
+{{--                                        <th class="text-light" colspan="4">{{ $clubName }}</th>--}}
+{{--                                    </tr>--}}
+
+{{--                                    @foreach($weapons as $weapon)--}}
+{{--                                        <tr>--}}
+{{--                                            <td>{{ $weapon->weapon_name }}</td>--}}
+{{--                                            <td>All Members: {{ $weapon->all_members_count }}</td>--}}
+{{--                                            <td>Active: {{ $weapon->active_members_count }}</td>--}}
+{{--                                            <td>Qualified: {{ $weapon->qualified }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
+{{--                                @endforeach--}}
 
                                 </tbody>
                             </table>

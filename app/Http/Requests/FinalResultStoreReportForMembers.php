@@ -53,6 +53,7 @@ class FinalResultStoreReportForMembers extends FormRequest
             'checkedMembers.*.exists' => 'عضو أو أكثر من الأعضاء المحددين غير موجودين في النظام.',
             'date.date' => 'يجب أن يكون حقل التاريخ تاريخاً صحيحاً.',
             'details.integer' => 'يجب أن يكون حقل التفاصيل قيمة رقمية صحيحة.',
+            'details.unique' => 'رقم الديتيل موجود بالفعل',
         ];
     }
 
