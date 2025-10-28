@@ -14,7 +14,7 @@
                 </div>
             </div>
             {{-- Success Message --}}
-            @if(session('success'))
+            <!-- @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -28,12 +28,16 @@
                     @endforeach
                 </ul>
             </div>
-            @endif
+            @endif -->
         </div>
 
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @if (session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+                    @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+                    @if (session('warning')) <div class="alert alert-warning">{{ session('warning') }}</div>@endif
+                    @if ($errors->any()) @foreach ($errors->all() as $error) <div class="text-danger">{{$error}}</div>@endforeach <br>@endif
                     <div class="card bg-search">
                         {{-- Search Form --}}
                         <form action="{{route('reports-details')}}" method="get" class="card-body">
@@ -108,6 +112,15 @@
                                     <td>{{ $report->weapon?->name ?? '-' }}</td>
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">
+                                        {{-- Delete Button --}}
+                                        <form action="{{route('report-delete',$report->Rid)}}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('هل أنت متأكد من حذف  الديتيل؟');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="حذف">
+                                                <i class="ri-delete-bin-line fs-16"></i>
+                                            </button>
+                                        </form>
                                         <a href="{{route('report-members',$report->Rid)}}"
                                             class="me-2"
                                             data-bs-toggle="tooltip"
@@ -116,7 +129,7 @@
                                             <i class="ri-printer-line icon-btn"></i>
                                         </a>
 
-                                        
+
                                         <a href="{{ $report->attached_file ? asset('storage/' . $report->attached_file) : '#' }}"
                                             target="_blank"
                                             class="dis {{ $report->attached_file ? '' : 'invisible' }}"

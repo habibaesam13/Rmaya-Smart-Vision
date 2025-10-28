@@ -2,21 +2,45 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonalUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        // dd($this->mid);
         return true;
     }
 
     public function rules(): array
     {
         return [
-            'ID'             => 'required|string|exists:sv_members,ID',
+            'ID' => [
+                'sometimes',
+                'string',
+                'min:15',
+                'max:15', // min & max = 15
+                Rule::unique('sv_members', 'ID')
+                    ->where(fn($query) => $query->where('reg_type', 'personal'))
+                    ->ignore($this->mid, 'mid'),
+            ],
+
+
+            'name' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    // Remove extra spaces and split by whitespace
+                    $words = preg_split('/\s+/u', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+
+                    if (count($words) < 3) {
+                        $fail('الاسم يجب أن يتكون من ثلاث كلمات على الأقل.');
+                    }
+                },
+            ],
+
             'dob'            => 'nullable|date|before_or_equal:' . now()->subYear(16)->toDateString(),
-            'name'           => 'nullable|string',
             'Id_expire_date' => 'nullable|date|after:today',
             'nat'            => 'nullable|exists:countries,id',
             'gender'         => 'nullable|in:male,female',
@@ -35,8 +59,6 @@ class PersonalUpdateRequest extends FormRequest
         return [
             'ID.required' => 'رقم الهوية مطلوب.',
             'ID.string'   => 'رقم الهوية يجب أن يكون نصياً.',
-            'ID.exists'   => 'رقم الهوية غير موجود في قاعدة البيانات.',
-
             'dob.date'   => 'تاريخ الميلاد يجب أن يكون تاريخاً صحيحاً.',
             'dob.before' => 'يجب ان لا يقل السن عن 16 سنه',
 
@@ -65,6 +87,8 @@ class PersonalUpdateRequest extends FormRequest
             'back_id_pic.max'   => 'الحد الأقصى لحجم الملف هو 2 ميجا.',
 
             'mgid.exists' => 'المجموعة غير موجودة.',
+            'ID.min' => 'رقم الهوية يجب ان يكون 15 رقم ',
+            'ID.max' => 'رقم الهوية يجب ان يكون 15 رقم ',
         ];
     }
 }

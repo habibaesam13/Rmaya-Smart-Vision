@@ -326,6 +326,7 @@ Route::group(
                 function () {
                     Route::delete('report-members/{rid}/player/{player_id}', [ResultsController::class, 'deletePlayerFromReport'])
                         ->name('report-player-delete');
+                    Route::delete('report-delete/{rid}',[ResultsController::class, 'deleteReport'])->name('report-delete');
                     Route::get('registered-members', [ResultsController::class, 'index'])->name('results-registered-members');
                     Route::get('search-members', [ResultsController::class, 'index'])->name('search-results-registered-members');
 

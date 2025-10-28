@@ -302,7 +302,7 @@
                                             <div class="col-md-4">
                                                 <button type="submit" class="btn btn-success btn-lg w-100">
                                                     <i class="fas fa-save me-2"></i>
-                                                    {{ isset($Edit_report->Rid) ? 'تحديث التقرير' : 'حفظ التقرير' }}
+                                                    {{ isset($Edit_report->Rid) ? 'تحديث الديتيل' : 'حفظ الديتيل' }}
                                                 </button>
                                             </div>
 
@@ -457,7 +457,7 @@
                                         <th>الجنسية</th>
                                         <th>المجموعات</th>
                                         <th>تاريخ التسجيل</th>
-                                        <th>ادوات تحكم</th>
+                                        <th> التحكم</th>
                                     </tr>
                                 </thead>
 

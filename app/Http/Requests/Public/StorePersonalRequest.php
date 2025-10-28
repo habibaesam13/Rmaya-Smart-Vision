@@ -30,6 +30,14 @@ class StorePersonalRequest extends FormRequest
                 'required',
                 'string',
                 'regex:/^[\p{Arabic}\s]+$/u',
+                function ($attribute, $value, $fail) {
+                    // Remove extra spaces and split by whitespace
+                    $words = preg_split('/\s+/u', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+
+                    if (count($words) < 3) {
+                        $fail('ادخل الاسم كاملا');
+                    }
+                },
             ],
             'reg_club' => 'required|exists:sv_clubs,cid',
 
@@ -95,7 +103,7 @@ class StorePersonalRequest extends FormRequest
 
             'phone1.required' => 'رقم الهاتف الأول مطلوب.',
             'phone1.regex' => 'رقم الهاتف الأول يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
-  'phone2.regex' => 'رقم الهاتف الثاني يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
+            'phone2.regex' => 'رقم الهاتف الثاني يجب أن يبدأ بـ 05 ويتكون من 10 أرقام فقط.',
 
 
             'front_id_pic.required' => 'صورة البطاقة الأمامية مطلوبة.',

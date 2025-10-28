@@ -6,22 +6,6 @@
             <div class="col-12 col-md-8 mb-2 mb-md-0">
                 <h4 class="header-title"> تقرير النتائج اليومية للأسلحة</h4>
             </div>
-            {{-- Success Message --}}
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show " role="alert">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
             <div class="col-12 col-md-4 text-md-end text-center">
             </div>
         </div>
@@ -29,6 +13,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @if (session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+                    @if (session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+                    @if (session('warning')) <div class="alert alert-warning">{{ session('warning') }}</div>@endif
+                    @if ($errors->any()) @foreach ($errors->all() as $error) <div class="text-danger">{{$error}}</div>@endforeach <br>@endif
                     <div class="card bg-search">
                         {{-- Report Info --}}
                         <div class="row g-3 mb-4 mt-1 d-flex justify-content-center">
@@ -50,6 +38,15 @@
                                     <h5 class="mb-0 text-dark">{{ $report?->date ? $report?->date : '---' }}</h5>
                                 </div>
                             </div>
+                            @if($confirmed)
+                            {{-- Print Button --}}
+                            <a href="{{ route('report.print', $report->Rid) }}"
+                                target="_blank"
+                                class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
+                                <i class="ri-printer-line"></i>
+                            </a>
+                            @endif
+
                         </div>
 
 
@@ -88,19 +85,23 @@
                                 <div class="file-upload-wrapper">
                                     <input type="file" name="attached_file" id="attached_file"
                                         class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
+                                    <span style="color:#bf1e2f;">pdf,doc,docx,xlsx,xls 2MB</span>
+                                    <span style="color:#bf1e2f;">
+                                        في حالة ارفاق ملف للديتيل يجب حفظ الديتيل قبل اعتماد الديتيل
+                                    </span>
                                 </div>
-                                @endif
                                 {{-- Print Button --}}
                                 <a href="{{ route('report.print', $report->Rid) }}"
                                     target="_blank"
                                     class="btn btn-outline-dark btn-lg d-flex align-items-center gap-2">
                                     <i class="ri-printer-line"></i>
                                 </a>
+                                @endif
                                 @if(!$confirmed)
                                 {{-- زر الحفظ --}}
                                 <button type="submit" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
                                     <i class="fas fa-save"></i>
-                                    <span>حفظ التقرير</span>
+                                    <span>حفظ الديتيل</span>
                                 </button>
                                 @endif
                             </form>

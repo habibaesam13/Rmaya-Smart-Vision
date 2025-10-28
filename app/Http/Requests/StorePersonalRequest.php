@@ -40,7 +40,19 @@ class StorePersonalRequest extends FormRequest
         return [
             'reg_type' => 'required|in:personal,group',
             'group_id' => 'nullable|exists:sv_teams,tid',
-            'name' => 'required|string',//حروف عربي فقط ولا يقبل ارقام
+            'name' => [
+                'required',
+                'string',
+                'regex:/^[\p{Arabic}\s]+$/u',
+                function ($attribute, $value, $fail) {
+                    // Remove extra spaces and split by whitespace
+                    $words = preg_split('/\s+/u', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+
+                    if (count($words) < 3) {
+                        $fail('ادخل الاسم كاملا');
+                    }
+                },
+            ],
             'Id_expire_date' => 'required|date|after:today',
             'dob' => 'required|date|before_or_equal:' . now()->subYear(16)->toDateString(),
             'nat' => 'required|exists:countries,id',
@@ -51,7 +63,7 @@ class StorePersonalRequest extends FormRequest
             'phone2' => 'nullable|string|max:10|min:10',
             'front_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'back_id_pic' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'mgid' => 'required|exists:member_groups,mgid',//for admin only
+            'mgid' => 'nullable|exists:member_groups,mgid',//for admin only
             'reg_club' => 'nullable|exists:sv_clubs,cid',
             'registration_date' => 'required|date',
             'ID' => [
@@ -117,7 +129,6 @@ class StorePersonalRequest extends FormRequest
             'back_id_pic.mimes' => 'الصورة الخلفية يجب أن تكون jpg أو jpeg أو png أو pdf.',
             'back_id_pic.max' => 'حجم الصورة الخلفية يجب ألا يتجاوز 2 ميجا.',
 
-            'mgid.required' => 'المجموعة مطلوبة.',
             'mgid.exists' => 'المجموعة المحددة غير موجودة.',
 
             'reg_club.exists' => 'النادي المسجل المحدد غير موجود.',

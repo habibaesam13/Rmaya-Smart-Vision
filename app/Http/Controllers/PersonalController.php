@@ -73,10 +73,6 @@ class PersonalController extends Controller
             ->with('success', 'تم تحديث حالة الشخص');
     }
 
-
-
-
-
     public function edit(Request $request)
     {
         if(!checkModulePermission('members', 'edit')) {   return redirect()->route('access_denied');  }

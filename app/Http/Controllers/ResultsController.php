@@ -97,9 +97,13 @@ class ResultsController extends Controller
         if (!$report) {
             return redirect()->route('results-registered-members');
         }
-        $members = $this->resultService->getReportDetails($rid);
-        $confirmed = $report->confirmed;
-        return view('personalReports/initial_results/personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $confirmed]);
+        if($report->confirmed){
+            $members=$this->resultService->getConfirmedReportdetailsWithoutAbsent($rid);
+        }
+        else{
+            $members = $this->resultService->getReportDetails($rid);
+        }
+        return view('personalReports/initial_results/personal_report_members', ['report' => $report, 'members' => $members, 'confirmed' => $report->confirmed]);
     }
     public function confirmReport($rid)
     {
@@ -107,7 +111,7 @@ class ResultsController extends Controller
         if ($confirmed) {
             return redirect()
                 ->route('report-members', $rid)
-                ->with(['success' => 'تم تأكيد التقرير']);
+                ->with(['success' => 'تم  اعتماد الديتيل وارسال النتائج']);
         }
         return redirect()->back()->with('error', 'حدث خطأ أثناء التأكيد');
     }
@@ -117,14 +121,14 @@ class ResultsController extends Controller
         $player = $this->resultService->deleteplayerFromReport($player_id);
 
         if ($player) {
-            return redirect()->route('report-members', $rid)->with(['success' => 'تم حذف الرامي بنجاح']);
+            return redirect()->route('report-members', $rid)->with(['success' => 'تم الغاء الرامي بنجاح']);
         }
         return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الرامي');
     }
 
     public function saveReport(Request $request, $rid)
     {
-
+        
         if ($request->has('players_data')) {
             $playersData = json_decode($request->input('players_data'), true);
 
@@ -142,8 +146,9 @@ class ResultsController extends Controller
         return redirect()->route('report-members', $rid)
             ->with('info', 'تم الرجوع إلى التقرير.');
     }
-
-
+    public function deleteReport($rid){
+        return $this->resultService->deleteReport($rid);
+    }
     public function calculateTotal(Request $request)
     {
         try {

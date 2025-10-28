@@ -32,11 +32,17 @@
                         <form action="{{route('initial-results-search')}}" method="get" class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-4">
+                                    <label class="form-label" for="date">
+                                        تاريخ الديتيل 
+                                    </label>
                                     <input type="date" name="date" id="date"
                                         value="{{ request('date') }}"
                                         class="form-control form-control-lg text-center">
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label" for="q">
+                                          الاسم / رقم الهوية / رقم الهاتف
+                                    </label>
                                     <input type="text" name="q" id="q"
                                         value="{{ request('q') }}"
                                         class="form-control form-control-lg text-center"

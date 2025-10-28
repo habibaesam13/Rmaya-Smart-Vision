@@ -306,7 +306,7 @@ class GroupService
     //new for session
     public function createNewGroup($data)
     {
-        $tempFiles = session('temp_files', []); // Get stored temp images from session
+        $tempFiles = session('temp_files', []); // paths like 'temp/xxxx.jpg'
 
         return DB::transaction(function () use ($data, $tempFiles) {
             $team = Sv_team::create([
@@ -316,20 +316,19 @@ class GroupService
             ]);
 
             foreach ($data['members'] as $index => $member) {
-
-                // Session keys for this member
+                // Field names in session
                 $frontKey = "members[{$index}][front_id_pic]";
                 $backKey  = "members[{$index}][back_id_pic]";
 
-                // Retrieve file paths or UploadedFiles
-                $frontInput = $member['front_id_pic'] ?? ($tempFiles[$frontKey] ?? null);
-                $backInput  = $member['back_id_pic'] ?? ($tempFiles[$backKey] ?? null);
+                // Get file paths from session (not from request)
+                $frontPath = $tempFiles[$frontKey] ?? null;
+                $backPath  = $tempFiles[$backKey] ?? null;
 
-                // Handle file movement
-                $path_front = $this->handleFileInput($frontInput, 'front');
-                $path_back  = $this->handleFileInput($backInput, 'back');
+                // Move files from /temp → /national_ids
+                $path_front = $frontPath ? $this->moveTempFile($frontPath) : null;
+                $path_back  = $backPath ? $this->moveTempFile($backPath) : null;
 
-                // Create member record
+                // Save member with final file paths
                 $team->teamMembers()->create([
                     'reg_type'          => 'group',
                     'team_id'           => $team->tid,
@@ -345,55 +344,28 @@ class GroupService
                 ]);
             }
 
-            // Clear session after successful save
+            // Clear session after success
             session()->forget('temp_files');
 
             return $team;
         });
     }
-    protected function handleFileInput($fileInput, string $prefix = 'file'): ?string
+
+    protected function moveTempFile(string $relativePath): ?string
     {
-        //  Case 1: Uploaded directly from request
-        if ($fileInput instanceof \Illuminate\Http\UploadedFile) {
-            $originalName = pathinfo($fileInput->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $fileInput->getClientOriginalExtension();
-            $newFile = $originalName . '_' . time() . '.' . $extension;
-
-            $fileInput->move(public_path('storage/national_ids'), $newFile);
-            return 'national_ids/' . $newFile;
-        }
-
-        //  Case 2: File from session temp folder
-        if (is_string($fileInput) && (str_contains($fileInput, '/storage/temp/') || str_starts_with($fileInput, 'temp/'))) {
-            return $this->moveTempFile($fileInput);
-        }
-
-        //  Case 3: Already in national_ids folder
-        if (is_string($fileInput) && str_contains($fileInput, 'national_ids/')) {
-            return $fileInput;
-        }
-
-        return null;
-    }
-    protected function moveTempFile(string $urlPath): ?string
-    {
-        // Normalize path (handle both full URL or relative)
-        if (str_contains($urlPath, '/storage/')) {
-            $relativePath = str_replace(url('/storage/'), '', $urlPath);
-        } else {
-            $relativePath = ltrim($urlPath, '/'); // e.g., "temp/abc.jpg"
-        }
+        // Normalize (remove any leading slashes)
+        $relativePath = ltrim($relativePath, '/');
 
         $sourcePath = public_path('storage/' . $relativePath);
-        $filename = basename($sourcePath);
+        $filename = uniqid() . '_' . basename($sourcePath);
         $destinationPath = public_path('storage/national_ids/' . $filename);
 
-        // Ensure directories exist
+        // Ensure national_ids folder exists
         if (!file_exists(dirname($destinationPath))) {
             mkdir(dirname($destinationPath), 0755, true);
         }
 
-        // Move file physically if exists
+        // Move the file
         if (file_exists($sourcePath)) {
             rename($sourcePath, $destinationPath);
             return 'national_ids/' . $filename;

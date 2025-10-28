@@ -61,11 +61,23 @@ class ResultsService
     {
         return SV_initial_results::findOrfail($rid);
     }
+    public function deleteReport( $rid){
+        $report=$this->getReport($rid);
+        if(!$report){
+            return redirect()->route('reports-details')->with('error','التقرير غير موجود');
+        }
+        $report->delete();
+        return redirect()->route('reports-details')->with('success','تم حذف التقرير بنجاح');
+    }
     public function confirmReport($rid)
     {
         $report = $this->getReport($rid);
         $report->confirmed = !$report->confirmed;
         return $report->save();
+    }
+    public function getConfirmedReportdetailsWithoutAbsent($reportId){
+        $Players = sv_initial_results_players::where('Rid', $reportId)->where('total','>=',0)->get();
+        return $Players;
     }
     public function deletePlayerFromReport($player_id)
     {

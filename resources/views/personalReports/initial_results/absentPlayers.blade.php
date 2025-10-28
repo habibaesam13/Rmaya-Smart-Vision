@@ -16,45 +16,46 @@
 
                     <a title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  "><i class="ri-printer-line"></i> </a>
                     <!-- Excel Download Form -->
-                <form
-                    action="{{ route('absent-personal-results-export-excel') }}"
-                    method="post"
-                    class="mb-0">
-                    @csrf
-                    @foreach(request()->query() as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
+                    <form
+                        action="{{ route('absent-personal-results-export-excel') }}"
+                        method="post"
+                        class="mb-0">
+                        @csrf
+                        @foreach(request()->query() as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
 
-                    <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
-                        <i class="ri-file-excel-line fs-5"></i>
-                    </button>
-                </form>
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" title="تحميل Excel">
+                            <i class="ri-file-excel-line fs-5"></i>
+                        </button>
+                    </form>
                 </div>
-                
+
             </div>
         </div>
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    @endif
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <p class="text-muted font-14">
                         <a href="#" class="btn btn-soft-success rounded-pill  mx-1 " style="display: none;">&nbsp;</a>
                     </p>
                     <div class="card bg-search ">
-                        @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        @endif
-                        @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
+
                         <form action="{{ route('search-individuals-absent-preliminary-results') }}" method="get" class="card-body">
                             <div class="row g-3">
                                 {{-- Clubs --}}
@@ -141,6 +142,7 @@
                     </div>
                     {{-- Filtered Data --}}
                     <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                        @if(auth()->user()->clubid)
                         <div class="card-header">
                             <h5 class="mb-0 header-title">
                                 <i class="ri-file-line me-2"></i>
@@ -148,23 +150,6 @@
                             </h5>
                         </div>
                         <div class="card-body">
-
-                            {{-- Success Message --}}
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                            @endif
-                            @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @endif
                             <form action="{{ isset($Edit_report) 
                                         ? route('update-report-registered-members', $Edit_report->Rid)
                                         : route('generate-report-registered-members') }}" method="POST" id="reportForm">
@@ -200,6 +185,7 @@
                                     الرجوع للتقرير
                                 </button>
                             </form>
+                            @endif
                             @endif
                             <hr>
                             <table class="table table-bordered mb-3">

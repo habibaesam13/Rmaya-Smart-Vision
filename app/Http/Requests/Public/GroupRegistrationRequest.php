@@ -42,6 +42,7 @@ class GroupRegistrationRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                'regex:/^[\p{Arabic}\s]+$/u',
                 Rule::unique('sv_teams', 'name'),
             ],
 
@@ -62,14 +63,26 @@ class GroupRegistrationRequest extends FormRequest
                 'distinct', // prevents duplicates within same request (team)
             ],
             'members.*.Id_expire_date' => ['required', 'date', 'after:today'],
-            'members.*.name' => ['required', 'string', 'regex:/^[\p{Arabic}\s]+$/u'],
+            'members.*.name' => [
+                'required',
+                'string',
+                'regex:/^[\p{Arabic}\s]+$/u',
+                function ($attribute, $value, $fail) {
+                    // Remove extra spaces and split by whitespace
+                    $words = preg_split('/\s+/u', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+
+                    if (count($words) < 3) {
+                        $fail('ادخل الاسم كاملا');
+                    }
+                },
+            ],
             'members.*.phone1' => ['required', 'regex:/^05\d{8}$/'],
             'members.*.dob' => [
                 'required',
                 'date',
                 'before_or_equal:' . now()->subYears(16)->toDateString(),
             ],
-            'members.*.age' => ['nullable', 'numeric', 'min:16'],
+           // 'members.*.age' => ['nullable', 'numeric', 'min:16'],
             'members.*.front_id_pic' => [
                 'nullable', // allow null if already in session
                 function ($attribute, $value, $fail) {
@@ -145,6 +158,7 @@ class GroupRegistrationRequest extends FormRequest
         return [
             'team_name.required' => 'اسم الفريق مطلوب.',
             'team_name.unique' => 'يوجد اسم فريق اخر بنفس الأسم',
+            'team_name.regex'=>'اسم الفريق يجب ان يكون باللغة العربية',
             'weapon_id.required' => 'السلاح مطلوب.',
             'weapon_id.exists' => 'السلاح المحدد غير موجود.',
             'registration_date.required' => 'تاريخ التسجيل مطلوب.',
