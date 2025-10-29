@@ -72,10 +72,14 @@
                             </ul>
                         </div>
                         @endif
+
                         <form action="{{ isset($reportSection) && $reportSection
                         ? route('search-results-registered-members')
                         : route('personal-registration') }}" method="get" class="card-body">
                             <div class="row g-3">
+                                @if(isset($Edit_report))
+                                <input type="hidden" name="addMembertoReportRid" value="{{ $Edit_report->Rid }}">
+                                @endif
                                 <div class="col-md-3">
                                     <input class="form-control form-control-lg" type="text" name="q"
                                         placeholder="الاسم / رقم الهوية / رقم الهاتف" value="{{ request('q') }}">
@@ -162,6 +166,7 @@
                                     <input id="date-to" type="date" name="date_to" class="form-control form-control-lg"
                                         value="{{ request('date_to') }}">
                                 </div>
+                                @if(!$reportSection)
                                 {{-- Registration Status --}}
                                 <div class="col-md-4">
                                     <!--<label class="form-label">حالة التسجيل</label>-->
@@ -182,6 +187,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 {{-- Gender --}}
                                 <div class="col-md-2 d-flex align-items-center justify-content-center gap-3">
                                     <div>
@@ -279,7 +285,7 @@
 
 
                                     <form action="{{ isset($Edit_report)
-                                        ? route('update-report-registered-members', $Edit_report->Rid)
+                                        ? route('update-report-registered-members',[$Edit_report->Rid,$Edit_report->details])
                                         : route('generate-report-registered-members') }}" method="POST" id="reportForm">
 
                                         @csrf
@@ -294,7 +300,8 @@
                                                 <label for="detail_number" class="form-label">رقم الديتيل</label>
                                                 <input type="text" name="details" id="detail_number"
                                                     class="form-control form-control-lg" placeholder="أدخل رقم الديتيل" required
-                                                    value="{{isset($Edit_report)?$Edit_report->details:''}}">
+                                                    value="{{isset($Edit_report)?$Edit_report->details:''}}"
+                                                    @if(isset($Edit_report)) readonly @endif>
                                             </div>
 
                                             <div id="checkedMembersContainer" style="display:none;"></div>
@@ -365,13 +372,13 @@
                                                 <td>
                                                     <div class="d-flex justify-content-center gap-1">
                                                         @if(checkModulePermission('members', 'view'))
-                                                            {{-- Edit Button --}}
-                                                            <form action="{{route('personal.show' , $member->mid)}}"    method="GET" class="d-inline">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
-                                                                    <i class="ri-eye-2-line   fs-16"></i>
-                                                                </button>
-                                                            </form>
+                                                        {{-- Edit Button --}}
+                                                        <form action="{{route('personal.show' , $member->mid)}}" method="GET" class="d-inline">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="عرض">
+                                                                <i class="ri-eye-2-line   fs-16"></i>
+                                                            </button>
+                                                        </form>
 
                                                         @endif
                                                         @if(checkModulePermission('members', 'edit'))

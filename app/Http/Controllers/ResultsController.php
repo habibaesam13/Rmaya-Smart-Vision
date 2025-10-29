@@ -9,10 +9,11 @@ use App\Services\WeaponService;
 use App\Services\ResultsService;
 use App\Services\PersonalService;
 use App\Services\CountriesService;
+use App\Http\Requests\EditReportMembers;
+use App\Models\Sv_initial_results_players;
 use App\Http\Requests\StoreReportForMembers;
 use App\Http\Requests\SaveMembersReportRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\Sv_initial_results_players;
 
 class ResultsController extends Controller
 {
@@ -48,9 +49,11 @@ class ResultsController extends Controller
         $club_id = auth()->user()->clubid ?? null;
         $membersCount = null;
         if ($request->filled('addMembertoReportRid')) {
+            //dd('here');
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
-            $available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0, $club_id);
-            $available_players = $this->resultService->getAvailablePlayers($Edit_report, $club_id);
+            //$available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0, $club_id);
+            $available_players_without_pag = $this->resultService->getAvailablePlayers($request,$Edit_report,$club_id,0);
+            $available_players = $this->resultService->getAvailablePlayers($request,$Edit_report, $club_id,1);
             $membersCount = $available_players_without_pag->count() ?? 0;
             $reportSection = true;
         } else {
@@ -187,7 +190,7 @@ class ResultsController extends Controller
         }
         return redirect()->route('results-registered-members', ['addMembertoReportRid' => $rid]);
     }
-    public function updateReport(StoreReportForMembers $request, $rid)
+    public function updateReport(EditReportMembers $request, $rid)
     {
         $report = $this->resultService->getReport($rid);
 
@@ -215,6 +218,13 @@ class ResultsController extends Controller
         $weapons = $this->weaponService->getAllPersonalWeapons();
         $ReportsDetails = $this->resultService->getReportsDetails($request, 1);
         return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
+    }
+    public function reportReview($rid){
+        $results=$this->resultService->reportReview($rid);
+        if($results){
+            return redirect()->back()->with('success','تم تأكيد ومراجعة الديتيل');
+        }
+         return redirect()->back()->with('error',' تم تأكيد ومراجعة الديتيل سابقا');
     }
 
     public function getResportsDetails_print(Request $request)

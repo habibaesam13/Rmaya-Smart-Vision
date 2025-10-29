@@ -337,7 +337,7 @@ Route::group(
                     Route::post('calculate-total', [ResultsController::class, 'calculateTotal'])->name('calculate-total');
                     //add new player to report
                     Route::get('add-player-to-report/{rid}', [ResultsController::class, 'addPlayer'])->name('add-player-to-report');
-                    Route::post('update-report-registered-members/{rid}', [ResultsController::class, 'updateReport'])->name('update-report-registered-members');
+                    Route::post('update-report-registered-members/{rid}/details/{details}', [ResultsController::class, 'updateReport'])->name('update-report-registered-members');
                     //report for members with same weapon
                     Route::get('report-{rid}-members/view-pdf', function (Request $request, PersonalWeaponReportProvider $provider) {
                         $controller = new PDFController($provider, 'pdf.personal_report', 'details-for-weapon-report.pdf');
@@ -372,6 +372,7 @@ Route::group(
 
                     /**Preliminary results reports - clubs - details */
                     Route::get('reports-details', [ResultsController::class, 'getResportsDetails'])->name('reports-details');
+                    Route::get('review-report/{rid}',[ResultsController::class,'reportReview'])->name('review-report');
                     Route::get('print-reports-details', [ResultsController::class, 'getResportsDetails_print'])->name('print-reports-details');
                     //search in initial results reports
                     Route::get('initial-reports-results-search', [ResultsController::class, 'searchInitialResultsReports'])->name('initial-results-search');

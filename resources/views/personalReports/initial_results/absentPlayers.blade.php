@@ -62,7 +62,7 @@
                                 <div class="col-md-4">
                                     <!--<label for="club_id" class="form-label">النادي</label>-->
                                     <select name="club_id" id="club_id" class="form-select form-select-lg">
-                                        <option value="" disabled {{ !request('club_id') ? 'selected' : '' }}>اختر النادي</option>
+                                        <option value=""  {{ !request('club_id') ? 'selected' : '' }}>اختر نادي الرماية</option>
                                         @foreach($clubs as $club)
                                         <option value="{{ $club->cid }}" {{ request('club_id') == $club->cid ? 'selected' : '' }}>
                                             {{ $club->name }}
@@ -74,7 +74,7 @@
                                 <div class="col-md-4">
                                     <!--<label for="weapon_id" class="form-label">السلاح</label>-->
                                     <select name="weapon_id" id="weapon_id" class="form-select form-select-lg" required>
-                                        <option value="" disabled selected>اختر السلاح </option>
+                                        <option value=""  selected>اختر السلاح </option>
                                         @foreach($weapons as $weapon)
                                         <option value="{{ $weapon->wid }}" {{ request('weapon_id') == $weapon->wid ? 'selected' : '' }}>
                                             {{ $weapon->name }}
@@ -86,7 +86,7 @@
                                 <div class="col-md-4">
                                     <!--<label for="nat" class="form-label">الجنسية</label>-->
                                     <select name="nat" id="nat" class="form-select form-select-lg">
-                                        <option value="" disabled {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
+                                        <option value=""  {{ !request('nat') ? 'selected' : '' }}>اختر الجنسية</option>
                                         @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country?->country_name_ar ? $country->country_name_ar : $country->country_name }}

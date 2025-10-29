@@ -85,8 +85,8 @@
                                 {{-- الملف --}}
                                 <div class="file-upload-wrapper">
                                     <input type="file" name="attached_file" id="attached_file"
-                                        class="form-control" accept=".pdf,.doc,.docx,.xlsx,.xls">
-                                    <span style="color:#bf1e2f;">pdf,doc,docx,xlsx,xls 2MB</span>
+                                        class="form-control" accept=".pdf,.doc">
+                                    <span style="color:#bf1e2f;">pdf,doc 2MB</span>
                                     <span style="color:#bf1e2f;">
                                         في حالة ارفاق ملف للديتيل يجب حفظ الديتيل قبل اعتماد الديتيل
                                     </span>

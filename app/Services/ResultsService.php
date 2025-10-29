@@ -153,29 +153,32 @@ class ResultsService
 
 
 
-    public function getAvailablePlayers($report, $club_id)
+    public function getAvailablePlayers($request, $report, $club_id, $pag)
     {
         $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
         if ($club_id != null) {
-            return Sv_member::where('reg_type', 'personal')->where('club_id', $club_id)->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-                ->orderByDesc('mid')
-                ->get();
+            $results = Sv_member::where('reg_type', 'personal')->where('club_id', $club_id)->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
+                ->when(
+                    $request->hasAny([
+                        'mgid',
+                        'nat',
+                        'club_id',
+                        'weapon_id',
+                        'q',
+                        'gender',
+                        'active',
+                        'date_from',
+                        'date_to',
+                        'reg_club',
+                    ]),
+                    fn($q) => $q->filter($request)
+                )
+                ->orderByDesc('mid');
         }
-        return Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
-            ->orderByDesc('mid')
-            ->get();
-    }
-    public function GetAllAvailablePlayers(Request $request, $pag, $club_id)
-    {
-        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
-
-        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
-            ->where('reg_type', 'personal')
-            ->whereNotIn('mid', $addedPlayers)
+        $results = Sv_member::where('reg_type', 'personal')->where('weapon_id', $report->weapon_id)->whereNotIn('mid', $addedPlayers)
             ->when(
                 $request->hasAny([
                     'mgid',
-                    'reg',
                     'nat',
                     'club_id',
                     'weapon_id',
@@ -185,29 +188,43 @@ class ResultsService
                     'date_from',
                     'date_to',
                     'reg_club',
-                    'reg',
-
+                ]),
+                fn($q) => $q->filter($request)
+            )
+            ->orderByDesc('mid');
+        return $pag
+            ? $results->cursorPaginate(config('app.admin_pagination_number'))
+            : $results->get();
+    }
+    public function GetAllAvailablePlayers(Request $request, $pag, $club_id, $report = null)
+    {
+        //dd($request->all());
+        $addedPlayers = sv_initial_results_players::pluck('player_id')->toArray();
+        // dd($addedPlayers);
+        $results = Sv_member::with(['club', 'registrationClub', 'weapon', 'nationality'])
+            ->where('reg_type', 'personal')
+            ->whereNotIn('mid', $addedPlayers)
+            ->when(
+                $request->hasAny([
+                    'mgid',
+                    'nat',
+                    'club_id',
+                    'weapon_id',
+                    'q',
+                    'gender',
+                    'active',
+                    'date_from',
+                    'date_to',
+                    'reg_club',
                 ]),
                 fn($q) => $q->filter($request)
             )
             ->orderByDesc('mid');
         // Get all player IDs that exist in initial results
-        $initialReportMembers = Sv_initial_results_players::pluck('player_id');
-        // Handle registration filter
-        if ($request->filled('reg')) {
-            if ($request->reg === 'registered') {
-                // Only members that exist in initial results
-                $results->whereIn('mid', $initialReportMembers);
-                //dd($members->get());
-
-            } elseif ($request->reg === 'not-registered') {
-                // Only members that are NOT in initial results
-                $results->whereNotIn('mid', $initialReportMembers);
-            }
-        }
         if ($club_id !== null) {
             $results->where('club_id', $club_id);
         }
+
         return $pag
             ? $results->cursorPaginate(config('app.admin_pagination_number'))
             : $results->get();
@@ -231,6 +248,17 @@ class ResultsService
         } else {
             return $query->get();
         }
+    }
+    //make report reviewed
+    public function reportReview($rid)
+    {
+        $report = $this->getReport($rid);
+        if ($report->reviwed) {
+            return 0;
+        }
+        $report->reviwed = 1;
+        $report->save();
+        return $report;
     }
 
 
