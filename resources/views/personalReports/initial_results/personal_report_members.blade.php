@@ -201,9 +201,6 @@
                                                 value="{{ old('notes.'.$member->id, $member->notes ?? '') }}"
                                                 @if($confirmed) readonly @endif>
                                         </td>
-
-
-
                                         @if(!$confirmed)
                                         <td class="text-center">
                                             <form action="{{ route('report-player-delete', ['rid' => $report->Rid, 'player_id' => $member->id]) }}"
@@ -211,7 +208,7 @@
                                                 onsubmit="return confirm('هل أنت متأكد من الغاء الرامي من الديتيل؟');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="حذف"><i
+                                                <button type="submit" class="btn btn-soft-danger btn-icon btn-sm rounded-circle" title="الغاء الرامي من الديتيل"><i
                                                         class="ri-delete-bin-line"></i>
                                                 </button>
                                             </form>

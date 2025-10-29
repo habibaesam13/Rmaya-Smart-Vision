@@ -52,8 +52,8 @@ class ResultsController extends Controller
             //dd('here');
             $Edit_report = $this->resultService->getReport($request->addMembertoReportRid);
             //$available_players_without_pag = $this->resultService->GetAllAvailablePlayers($request, 0, $club_id);
-            $available_players_without_pag = $this->resultService->getAvailablePlayers($request,$Edit_report,$club_id,0);
-            $available_players = $this->resultService->getAvailablePlayers($request,$Edit_report, $club_id,1);
+            $available_players_without_pag = $this->resultService->getAvailablePlayers($request, $Edit_report, $club_id, 0);
+            $available_players = $this->resultService->getAvailablePlayers($request, $Edit_report, $club_id, 1);
             $membersCount = $available_players_without_pag->count() ?? 0;
             $reportSection = true;
         } else {
@@ -219,12 +219,16 @@ class ResultsController extends Controller
         $ReportsDetails = $this->resultService->getReportsDetails($request, 1);
         return view('personalReports/initial_results/preliminary_results_reports_clubs_details', compact('ReportsDetails', 'weapons'));
     }
-    public function reportReview($rid){
-        $results=$this->resultService->reportReview($rid);
-        if($results){
-            return redirect()->back()->with('success','تم تأكيد ومراجعة الديتيل');
+    public function reportReview($rid)
+    {
+        $results = $this->resultService->reportReview($rid);
+        if ($results == -1) {
+            return redirect()->route('reports-details')->with('error', 'يجب تأكيد التقرير أولا');
+        } else if ($results) {
+            return redirect()->back()->with('success', 'تم تأكيد ومراجعة الديتيل');
+        } else {
+            return redirect()->back()->with('error', ' تم تأكيد ومراجعة الديتيل سابقا');
         }
-         return redirect()->back()->with('error',' تم تأكيد ومراجعة الديتيل سابقا');
     }
 
     public function getResportsDetails_print(Request $request)

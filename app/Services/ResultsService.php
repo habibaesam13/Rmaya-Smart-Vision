@@ -253,6 +253,9 @@ class ResultsService
     public function reportReview($rid)
     {
         $report = $this->getReport($rid);
+        if(!$report->confirmed){
+            return -1;
+        }
         if ($report->reviwed) {
             return 0;
         }

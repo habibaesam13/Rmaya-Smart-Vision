@@ -112,7 +112,7 @@
                                     <td>{{ $report->weapon?->name ?? '-' }}</td>
                                     <td>{{ $report->details }}</td>
                                     <td class="text-center">
-                                        @if(!$report->reviwed) 
+                                        @if(!$report->reviwed)
                                         {{-- Delete Button --}}
                                         <form action="{{route('report-delete',$report->Rid)}}" method="POST" class="d-inline"
                                             onsubmit="return confirm('هل أنت متأكد من حذف  الديتيل؟');">
@@ -132,18 +132,29 @@
                                             <i class="ri-printer-line icon-btn"></i>
                                         </a>
                                         <!-- report review -->
-
-                                        <form action="{{route('review-report',$report->Rid)}}" method="GET" class="d-inline"
-                                            onsubmit="return confirm('هل أنت متأكد من تأكيد ومراجعة الديتيل؟');">
+                                        @if($report->confirmed)
+                                        <form
+                                            action="{{ route('review-report', $report->Rid) }}"
+                                            method="GET"
+                                            class="d-inline"
+                                            @if($report->reviwed) onsubmit="return false;" @else onsubmit="return confirm('هل أنت متأكد من تأكيد ومراجعة الديتيل؟');" @endif
+                                            >
                                             @csrf
-                                            <button type="submit" class="btn btn-soft-success btn-icon btn-sm rounded-circle" title="تأكيد ومراجعة الديتيل">
-                                                @if($report->reviwed) 
+                                            <button
+                                                type="submit"
+                                                class="btn btn-soft-success btn-icon btn-sm rounded-circle"
+                                                title="{{ $report->reviwed ? 'تمت المراجعة بالفعل' : 'تأكيد ومراجعة الديتيل' }}"
+                                                @if($report->reviwed)  @endif
+                                                >
+                                                @if($report->reviwed)
                                                 <i class="ri-check-line"></i>
                                                 @else
                                                 <i class="ri-ball-pen-fill"></i>
                                                 @endif
                                             </button>
                                         </form>
+                                        @endif
+
 
 
                                         <a href="{{ $report->attached_file ? asset('storage/' . $report->attached_file) : '#' }}"
