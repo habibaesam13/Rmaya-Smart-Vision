@@ -316,7 +316,7 @@
                         <div class="card-body">
 
 
-                            <select onchange="onClubChange(this)">
+                            <select class="form-control w-25" onchange="onClubChange(this)">
                                 <option value="">
                                     اختر النادي ...
                                 </option>
