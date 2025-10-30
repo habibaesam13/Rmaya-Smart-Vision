@@ -115,7 +115,7 @@
                                                class=" me-2"
                                                data-bs-toggle="tooltip"
                                                data-bs-placement="top"
-                                               title="طباعة التقرير">
+                                               title="عرض و طباعة التقرير">
                                                 <i class="ri-printer-line icon-btn"></i>
                                             </a>
 

@@ -1,0 +1,259 @@
+@extends('admin.master')
+@php
+    use Carbon\Carbon;
+@endphp
+@section('content')
+
+
+
+
+{{--    <div class="page-container">--}}
+
+
+{{--        <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">--}}
+{{--            <div class="col-12 col-md-8 mb-2 mb-md-0">--}}
+{{--                <h4 class="header-title"> عرض بيانات--}}
+{{--                    <span class="text-primary">{{$member->name}}</span>--}}
+{{--                </h4>--}}
+{{--            </div>--}}
+{{--            <div class="col-12 col-md-4 text-md-end text-center">--}}
+{{--                <div class="">--}}
+{{--                    <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">--}}
+{{--                            <i class="ri-printer-line"></i>--}}
+{{--                        </span>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+
+
+{{--        <div class="card shadow-sm border-0" id="pr">--}}
+
+{{--            <div class="card-body">--}}
+{{--                <table class="table table-bordered mb-3  m-auto">--}}
+{{--                    <thead>--}}
+{{--                    --}}{{--                <tr>--}}
+{{--                    --}}{{--                    <th>اسم العنصر</th>--}}
+{{--                    --}}{{--                    <th>القيمة </th>--}}
+{{--                    --}}{{--                    <th>اسم العنصر</th>--}}
+{{--                    --}}{{--                    <th>القيمة</th>--}}
+{{--                    --}}{{--                 </tr>--}}
+{{--                    </thead>--}}
+
+
+{{--                    <tbody>--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <tr>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            رقم بطاقة الهوية--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                            {{ $member->ID}}--}}
+{{--                        </td>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            تاريخ انتهاء الهوية--}}
+{{--                        </td>--}}
+
+{{--                        <td>--}}
+{{--                            {{$member->Id_expire_date ? Carbon::parse($member->Id_expire_date)->format('Y-m-d') : '' }}--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <tr>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            الاسم بالكامل--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                            {{  $member->name }}--}}
+{{--                        </td>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            تاريخ الميلاد--}}
+{{--                        </td>--}}
+
+{{--                        <td>--}}
+{{--                            {{  $member->dob ? Carbon::parse($member->dob)->format('Y-m-d') : ''  }}--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <tr>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            رقم هاتف 1--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                            {{ $member->phone1  }}--}}
+{{--                        </td>--}}
+{{--                        <td class="text-primary">--}}
+{{--                            العمر--}}
+{{--                        </td>--}}
+
+{{--                        <td>--}}
+{{--                            {{ $member->dob ? Carbon::parse($member->dob)->age : '' }}--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+{{--                    <tr>--}}
+
+{{--                        <td colspan="4" style="text-align: center">--}}
+
+{{--                            <img src="{{asset('storage/' . $member->front_id_pic)}}">--}}
+{{--                            <br>--}}
+{{--                            <img src="{{asset('storage/' . $member->back_id_pic)}}">--}}
+
+
+{{--                        </td>--}}
+
+
+{{--                    </tr>--}}
+{{--                    <!------------------------------------------------------------------------->--}}
+
+{{--                    </tbody>--}}
+{{--                </table>--}}
+{{--                <div--}}
+{{--                    class="col-12 col-md-3 offset-md-9 d-flex justify-content-center justify-content-md-end mb-3 hide_print">--}}
+{{--                    <a class="btn btn-primary rounded-pill px-3" onclick="window.history.back();">--}}
+{{--                        <i class="ri-refresh-line"></i> &nbsp;&nbsp;رجوع </a>--}}
+{{--                </div>--}}
+
+
+{{--            </div>--}}
+
+{{--        </div>--}}
+
+{{--        <!----------end -------------->--}}
+
+
+{{--    </div>--}}
+
+
+    <!-----------------------------new part -------------------------->
+
+
+    <div class="page-container">
+
+
+        <div class="col-12 d-flex flex-wrap justify-content-between align-items-center my-3">
+            <div class="col-12 col-md-8 mb-2 mb-md-0">
+                <h4 class="header-title"> عرض بيانات
+                    <span class="text-primary">{{$member->name}}</span>
+                </h4>
+            </div>
+            <div class="col-12 col-md-4 text-md-end text-center">
+                <div class="">
+                    <span title="طباعة" onclick="printDiv('pr')" class="btn btn-sm btn-primary  ">
+                            <i class="ri-printer-line"></i>
+                        </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card shadow-sm border-0" id="pr">
+
+            @include('print.table_header',['title'=>' بيانات مسجل '])
+
+            <div class="card-body">
+                <table class="table table-bordered mb-3  m-auto">
+                    <thead>
+                    {{--                <tr>--}}
+                    {{--                    <th>اسم العنصر</th>--}}
+                    {{--                    <th>القيمة </th>--}}
+                    {{--                    <th>اسم العنصر</th>--}}
+                    {{--                    <th>القيمة</th>--}}
+                    {{--                 </tr>--}}
+                    </thead>
+
+
+                    <tbody>
+                    <!------------------------------------------------------------------------->
+                    <tr>
+                        <td class="text-primary">
+                            رقم بطاقة الهوية
+                        </td>
+                        <td>
+                            {{ $member->ID}}
+                        </td>
+                        <td class="text-primary">
+                            تاريخ انتهاء الهوية
+                        </td>
+
+                        <td>
+                            {{$member->Id_expire_date ? Carbon::parse($member->Id_expire_date)->format('Y-m-d') : '' }}
+                        </td>
+                    </tr>
+                    <!------------------------------------------------------------------------->
+                    <!------------------------------------------------------------------------->
+                    <tr>
+                        <td class="text-primary">
+                            الاسم بالكامل
+                        </td>
+                        <td>
+                            {{  $member->name }}
+                        </td>
+                        <td class="text-primary">
+                            تاريخ الميلاد
+                        </td>
+
+                        <td>
+                            {{  $member->dob ? Carbon::parse($member->dob)->format('Y-m-d') : ''  }}
+                        </td>
+                    </tr>
+                    <!------------------------------------------------------------------------->
+                    <!------------------------------------------------------------------------->
+                    <tr>
+                        <td class="text-primary">
+                            رقم هاتف 1
+                        </td>
+                        <td>
+                            {{ $member->phone1  }}
+                        </td>
+
+                        <td class="text-primary">
+                            العمر
+                        </td>
+
+                        <td>
+                            {{ $member->dob ? Carbon::parse($member->dob)->age : '' }}
+                        </td>
+                    </tr>
+                    <!------------------------------------------------------------------------->
+                    <!------------------------------------------------------------------------->
+                    <tr>
+
+                        <td colspan="2" style="text-align: center;width:50%">
+
+                            <img style="max-width:90%" src="{{asset('storage/' . $member->front_id_pic)}}">
+
+                        </td>
+                        <td colspan="2" style="text-align: center">
+
+                            <img style="max-width:90%" src="{{asset('storage/' . $member->back_id_pic)}}">
+
+
+                        </td>
+
+
+                    </tr>
+                    <!------------------------------------------------------------------------->
+
+                    </tbody>
+                </table>
+                <div
+                    class="col-12 col-md-3 offset-md-9 d-flex justify-content-center justify-content-md-end mb-3 hide_print">
+                    <a class="btn btn-primary rounded-pill px-3" onclick="window.history.back();">
+                        <i class="ri-refresh-line"></i> &nbsp;&nbsp;رجوع </a>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <!----------end -------------->
+
+
+    </div>
+
+@endsection
+

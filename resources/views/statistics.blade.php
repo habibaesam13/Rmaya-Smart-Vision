@@ -32,10 +32,6 @@
 
                     <div class="">
 
-{{--                <span class="badge badge-outline-primary">--}}
-{{--                           عدد الأفراد المسجلين : 6--}}
-{{--                </span>--}}
-
                         <span title="اكسيل" onclick="exportDivToExcel('pr', 'final_report.xlsx')" target="_blank"
                               class="btn btn-sm btn-success  ">
                         <i class="ri-file-excel-line"></i>
@@ -73,15 +69,20 @@
                                 </thead>
 
                                 <tbody>
-                                <tr  >
-                                    <th style="background-color:   #EFC3CA">السلاح</th>
-                                    <?php  $i =0;  ?>
+                                <tr>
+
+                                    <th style="background-color:  #f1556c3b">السلاح</th>
+                                    <?php  $i = 0;  ?>
                                     @foreach($generalReportForClubsAndWeapons->pluck('club_name')->unique() as   $clubName)
                                         <?php   $i++;  ?>
-                                        <th style="{{$i%2 == 0   ?   'background-color: #EFC3CA' :  'background-color:#E7DDFF'   }}">
+                                        {{--                                        <th style="{{$i%2 == 0   ?   'background-color: #EFC3CA' :  'background-color:#E7DDFF'   }}">--}}
+                                        <th style="{{$i%2 == 0   ?   'background-color: #f1556c3b' :  'background-color:#E3B0E7'   }}">
                                             <div class="row ">
                                                 <div class="col-4 fw-bold  px-2 ">المسجلين</div>
-                                                <div class="col-4 fw-bold  px-2 border   border-1 border-top-0  border-bottom-0">المفعلين</div>
+                                                <div
+                                                    class="col-4 fw-bold  px-2 border   border-1 border-top-0  border-bottom-0">
+                                                    المفعلين
+                                                </div>
                                                 <div class="col-4 fw-bold  px-2">المتأهلين</div>
                                             </div>
                                         </th>
@@ -106,87 +107,389 @@
                                             @endphp
 
                                             @if($record)
-                                                <td style="{{$i2%2 == 0   ?   'background-color:#E8E8E8' :  ''   }}">
+                                                <td style="{{$i2%2 == 0   ?   'background-color:white' :  ''   }}">
                                                     <div class="row">
-                                                    <div class="col-4 fw-bold text-primary px-2  ">{{ $record->all_members_count }}</div>
-                                                    <div class="col-4 px-2    ">{{ $record->active_members_count }}</div>
-                                                    <div class="col-4 px-2   ">{{ $record->qualified }}</div>
+                                                        <div
+                                                            class="col-4 fw-bold text-primary px-2  ">{{ $record->all_members_count }}</div>
+                                                        <div
+                                                            class="col-4 px-2    ">{{ $record->active_members_count }}</div>
+                                                        <div class="col-4 px-2   ">{{ $record->qualified }}</div>
                                                     </div>
                                                 </td>
                                             @else
-                                                <td class="text-muted" style="{{$i2%2 == 0   ?   'background-color:#E8E8E8' :  ''   }}">—</td>
+                                                <td class="text-muted"
+                                                    style="{{$i2%2 == 0   ?   'background-color:white' :  ''   }}">—
+                                                </td>
                                             @endif
                                         @endforeach
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
-{{--                            <table class="table table-bordered">--}}
-{{--                                <thead>--}}
-{{--                                <tr>--}}
-{{--                                    <th></th>--}}
 
-{{--                                    @foreach($generalReportForClubsAndWeapons->pluck( 'club_name')->unique() as $key3 => $item3)--}}
-{{--                                        <th>{{$item3 }}</th>--}}
-{{--                                    @endforeach--}}
+                        </div>
 
-{{--                                </tr>--}}
-{{--                                </thead>--}}
+                    </div>
+                    <br>
+                    <br>
 
-{{--                                <tbody>--}}
+                    <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                        <div class="card-header ">
+                            <h5 class="mb-0 header-title">
+                                <i class="fas fa-file-alt me-2"></i>
+                                تقرير الأحصاء العام لمسلبقات الرماية السنوية - مسابقات الرماية الرابع عشر - 2025 </h5>
+                        </div>
+                        <div class="card-body">
 
-{{--                                                                @foreach($generalReportForClubsAndWeapons  as $key => $item)--}}
-{{--                                                                    @foreach($generalReportForClubsAndWeapons->pluck('weapon_id' , 'club_name')->unique()  as $key1 => $weapon)--}}
-{{--                                                                        @if($item->weapon_id == $weapon && $item->club_name == $key1  )--}}
-{{--                                                                            <tr>--}}
-{{--                                                                                <th>{{$item->weapon_name}}</th>--}}
-{{--                                                                                @foreach($generalReportForClubsAndWeapons  as $key => $val)--}}
+                            <table class="table table-borderedr">
+                                <thead>
+                                <tr>
+                                    <th>النادي</th>
+                                    <th>المسجلين</th>
+                                    <th> المفعلين</th>
+                                    <th>المتأهلين</th>
+                                </tr>
+                                </thead>
 
-{{--                                                                                    @if($val->weapon_id  ==$item->weapon_id)--}}
-{{--                                                                                        <td>--}}
-{{--                                                                                          All  Members count : {{$val->all_members_count}} <br>--}}
-{{--                                                                                            Active Members : {{$val->active_members_count}} <br>--}}
-{{--                                                                                            Qualified : {{$val->qualified}}--}}
-{{--                                                                                               {{$val->all_member_name}}--}}
-{{--                                                                                        </td>--}}
-{{--                                                                                    @endif--}}
+                                <tbody>
+                                @foreach($allCometetionsWithAllClubs as $club)
+                                    <tr>
+                                        <td>{{$club->club_name}}</td>
+
+                                        <td>
+                                            {{$club->all_members_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$club->active_members_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$club->qualified}}
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <br>
+                    <br>
+
+                    <!--------weapons and teams -------------------------->
+                    <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                        <div class="card-header ">
+                            <h5 class="mb-0 header-title">
+                                <i class="fas fa-file-alt me-2"></i>
+                                إحصائية فرق مسابقة إسقاط الصحون ليوم الاربعاء - مسابقات الرماية الرابع عشر - 2025
+                            </h5>
+                        </div>
+                        <div class="card-body">
+
+                            <table class="table table-borderedr">
+                                <thead>
+                                <tr>
+                                    <th>الفئة</th>
+                                    <th>العمر من</th>
+                                    <th>العمر الى</th>
+                                    <th> عدد الفرق</th>
+                                    <th> عدد المتسابقين</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                @foreach($teams  as   $item)
+                                    <tr>
+                                        <td>
+                                            {{$item->weapon_name}}
+                                        </td>
+                                        <td>{{$item->age_from ?? ''}}</td>
+                                        <td>{{$item->age_to ?? '_'}}</td>
+
+                                        <td>
+                                            {{$item->teams_count}}
+                                        </td>
+                                        <td>
+                                            {{$item->members_count}}
+                                        </td>
+                                    </tr>
+
+                                @endforeach
 
 
-{{--                                                                                @endforeach--}}
-{{--                                                                            </tr>--}}
-{{--                                                                        @endif--}}
-{{--                                                                    @endforeach--}}
-{{--                                                                @endforeach--}}
+                                </tbody>
+                            </table>
+                            <br>
+                            <table class="table table-borderedr">
+                                <thead>
+                                <tr>
+                                    <th>الفئة</th>
+                                    <th> عدد الفرق</th>
+                                    <th> عدد المتسابقين</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                @foreach($teams_with_no_age  as   $item)
+                                    <tr>
+                                        <td>
+                                            {{$item->weapon_name}}
+                                        </td>
+                                        <td>
+                                            {{$item->teams_count}}
+                                        </td>
+                                        <td>
+                                            {{$item->members_count}}
+                                        </td>
+                                    </tr>
+
+                                @endforeach
 
 
-{{--                                @foreach($generalReportForClubsAndWeapons as $clubName => $weapons)--}}
-{{--                                    <tr style="background-color: #bf1e2f;">--}}
-{{--                                        <th class="text-light" colspan="4">{{ $clubName }}</th>--}}
-{{--                                    </tr>--}}
-
-{{--                                    @foreach($weapons as $weapon)--}}
-{{--                                        <tr>--}}
-{{--                                            <td>{{ $weapon->weapon_name }}</td>--}}
-{{--                                            <td>All Members: {{ $weapon->all_members_count }}</td>--}}
-{{--                                            <td>Active: {{ $weapon->active_members_count }}</td>--}}
-{{--                                            <td>Qualified: {{ $weapon->qualified }}</td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endforeach--}}
-{{--                                @endforeach--}}
-
-{{--                                </tbody>--}}
-{{--                            </table>--}}
-
+                                </tbody>
+                            </table>
 
                         </div>
                     </div>
-                    <div class="mt-4 d-flex justify-content-center">
+                    <br>
+                    <br>
+
+
+                    <div class="card border-success mb-3 rounded-3 overflow-hidden">
+                        <div class="card-header ">
+                            <h5 class="mb-0 header-title">
+                                <i class="fas fa-file-alt me-2"></i>
+                                كشف إحصاء المشاركين العسكريين فى مسابقات الرماية  - مسابقات الرماية الرابع عشر - 2025
+                            </h5>
+                        </div>
+                        <div class="card-body">
+
+                            <table class="table table-borderedr">
+                                <thead>
+                                <tr>
+                                    <th>الوحدة</th>
+                                    <th>المسجلين</th>
+                                    <th> رماه</th>
+                                    <th>المتأهلين</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                @foreach($groups as $group)
+                                    <tr>
+                                        <th>{{$group->name}}</th>
+                                        <td>
+                                            {{$group->players_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$group->players_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$group->qualified_count}}
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
 
+                    <br>
+                    <br>
+
+
+                    <div id="club_weapon" class="card border-success mb-3 rounded-3 overflow-hidden">
+                        <div class="card-header ">
+                            <h5 class="mb-0 header-title">
+                                <i class="fas fa-file-alt me-2"></i>
+                                المشاركين في كل سلاح في نادي </h5>
+                        </div>
+                        <div class="card-body">
+
+
+                            <select onchange="onClubChange(this)">
+                                <option value="">
+                                    اختر النادي ...
+                                </option>
+                                @foreach($clubs as $club)
+                                    <option
+                                        {{(int)request()->get('cid' ) == $club->cid ? "selected" : ''}} action-attr="{{route('statistics.index')   }}?cid={{$club->cid}}&#club_weapon"
+                                        value="{{$club->cid}}">{{$club->name}}   </option>
+                                @endforeach
+                            </select>
+                            <table class="table table-borderedr">
+                                <thead>
+                                <tr>
+                                    <th>السلاح</th>
+                                    <th>ذكور</th>
+                                    <th> إناث</th>
+                                    <th>إجمالي</th>
+
+                                    <th>المتأهلين</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                @foreach($weapons_partcicipents_for_club as $weapon)
+                                    <tr>
+                                        <th>{{$weapon->weapon_name}}</th>
+                                        <td>
+                                            {{$weapon->male_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$weapon->female_count}}
+                                        </td>
+
+                                        <td>
+                                            {{$weapon->members_count}}
+                                        </td>
+                                        <td>
+                                            {{$weapon->qualified_count}}
+
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <script>
+                            function onClubChange(obj) {
+                                if (obj.value != '') {
+                                    let url = (obj.options[obj.selectedIndex]).getAttribute('action-attr');
+                                    if (url) {
+                                        return window.location.href = url;
+                                    } else {
+                                        return window.location.href = "{{route('statistics.index')   }}?#club_weapon";
+                                    }
+                                }
+                                return window.location.href = "{{route('statistics.index')   }}?#club_weapon";
+
+                            }
+
+                            // async  function chooseClub(obj) {
+                            //     if(obj.value != '') {
+                            //         obj.parentElement.setAttribute('action', (obj.options[obj.selectedIndex]).getAttribute('action-attr'));
+                            //
+                            //     }
+                            // }
+                            //
+                            // chooseClub(obj).then(
+                            //     function(value , obj) {
+                            //         obj.parentElement.submit()
+                            //
+                            //     },
+                            //     function(error) { /* code if some error */ }
+                            // );
+                            // async function chooseClub(obj) {
+                            //     if (obj.value !== '') {
+                            //         const selectedOption = obj.options[obj.selectedIndex];
+                            //         const form = obj.parentElement;
+                            //
+                            //         // Set the form's action dynamically
+                            //         form.setAttribute('action', selectedOption.getAttribute('action-attr'));
+                            //
+                            //         // Return something (optional)
+                            //         return form;
+                            //     } else {
+                            //         throw new Error('No club selected');
+                            //     }
+                            // }
+                            //
+                            // // Usage example:
+                            // function onClubChange(obj) {
+                            //     chooseClub(obj)
+                            //         .then((form) => {
+                            //             form.submit(); // submit the form once action is set
+                            //         })
+                            //         .catch((error) => {
+                            //             console.error(error);
+                            //         });
+                            // }
+
+                        </script>
+                    </div>
+
+                    <br>
+                    <br>
+
+
+                    {{--                            <table class="table table-bordered">--}}
+                    {{--                                <thead>--}}
+                    {{--                                <tr>--}}
+                    {{--                                    <th></th>--}}
+
+                    {{--                                    @foreach($generalReportForClubsAndWeapons->pluck( 'club_name')->unique() as $key3 => $item3)--}}
+                    {{--                                        <th>{{$item3 }}</th>--}}
+                    {{--                                    @endforeach--}}
+
+                    {{--                                </tr>--}}
+                    {{--                                </thead>--}}
+
+                    {{--                                <tbody>--}}
+
+                    {{--                                                                @foreach($generalReportForClubsAndWeapons  as $key => $item)--}}
+                    {{--                                                                    @foreach($generalReportForClubsAndWeapons->pluck('weapon_id' , 'club_name')->unique()  as $key1 => $weapon)--}}
+                    {{--                                                                        @if($item->weapon_id == $weapon && $item->club_name == $key1  )--}}
+                    {{--                                                                            <tr>--}}
+                    {{--                                                                                <th>{{$item->weapon_name}}</th>--}}
+                    {{--                                                                                @foreach($generalReportForClubsAndWeapons  as $key => $val)--}}
+
+                    {{--                                                                                    @if($val->weapon_id  ==$item->weapon_id)--}}
+                    {{--                                                                                        <td>--}}
+                    {{--                                                                                          All  Members count : {{$val->all_members_count}} <br>--}}
+                    {{--                                                                                            Active Members : {{$val->active_members_count}} <br>--}}
+                    {{--                                                                                            Qualified : {{$val->qualified}}--}}
+                    {{--                                                                                               {{$val->all_member_name}}--}}
+                    {{--                                                                                        </td>--}}
+                    {{--                                                                                    @endif--}}
+
+
+                    {{--                                                                                @endforeach--}}
+                    {{--                                                                            </tr>--}}
+                    {{--                                                                        @endif--}}
+                    {{--                                                                    @endforeach--}}
+                    {{--                                                                @endforeach--}}
+
+
+                    {{--                                @foreach($generalReportForClubsAndWeapons as $clubName => $weapons)--}}
+                    {{--                                    <tr style="background-color: #bf1e2f;">--}}
+                    {{--                                        <th class="text-light" colspan="4">{{ $clubName }}</th>--}}
+                    {{--                                    </tr>--}}
+
+                    {{--                                    @foreach($weapons as $weapon)--}}
+                    {{--                                        <tr>--}}
+                    {{--                                            <td>{{ $weapon->weapon_name }}</td>--}}
+                    {{--                                            <td>All Members: {{ $weapon->all_members_count }}</td>--}}
+                    {{--                                            <td>Active: {{ $weapon->active_members_count }}</td>--}}
+                    {{--                                            <td>Qualified: {{ $weapon->qualified }}</td>--}}
+                    {{--                                        </tr>--}}
+                    {{--                                    @endforeach--}}
+                    {{--                                @endforeach--}}
+
+                    {{--                                </tbody>--}}
+                    {{--                            </table>--}}
+
+
                 </div>
             </div>
+            <div class="mt-4 d-flex justify-content-center">
+
+            </div>
+
         </div>
+    </div>
+    </div>
 
     </div>
 @endsection

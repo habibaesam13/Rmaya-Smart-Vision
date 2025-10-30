@@ -231,7 +231,7 @@
                                                 onsubmit="return confirm('هل انت متأكد من الغاء هذا الرامي من الديتيل ؟');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="icon-btn text-danger" title="حذف">
+                                                <button type="submit" class="icon-btn text-danger" title="الغاء من الديتيل">
                                                     <i class="ri-delete-bin-fill icon-btn"></i>
                                                 </button>
                                             </form>

@@ -169,13 +169,12 @@ class FinalResultsService
                 'sv_initial_results.attached_file'
             )
             ->where('sv_members.weapon_id', $report->weapon_id)
+
             ->whereNotIn('mid', $addedPlayers)
-            ->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results_players.total', '>', -1]])
+            ->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results.reviwed' , '=' , 1] ,['sv_initial_results_players.total', '>', -1]])
             /********search part ******/
             ->when($request->club_id, fn ($q, $club) => $q->where('cid', $club))
             ->when($request->nat, fn ($q, $nat) => $q->where('nat', $nat))
-
-
             //                ->when($request->details, fn($q, $details) => $q->where('details', $details))
             ->when($request->date_from, fn ($q, $from) => $q->whereDate('date', '>=', $from))
             ->when($request->date_to, fn ($q, $to) => $q->whereDate('date', '<=', $to))
@@ -415,7 +414,17 @@ class FinalResultsService
             ->join('sv_initial_results_players', 'sv_initial_results_players.player_id', '=', 'sv_members.mid')
             ->join('sv_weapons', 'sv_weapons.wid', '=', 'sv_members.weapon_id')
             ->join('sv_clubs', 'sv_clubs.cid', '=', 'sv_members.club_id')
+            /***************************/
+            ->join('sv_clubs_weapons', function ($join) {
+                $join->on('sv_clubs_weapons.cid', '=', 'sv_clubs.cid')
+                    ->on('sv_clubs_weapons.wid', '=', 'sv_weapons.wid');
+            })
+            /***************************/
+
             ->join('sv_initial_results', 'sv_initial_results.Rid', '=', 'sv_initial_results_players.Rid')
+
+            ->where('sv_members.weapon_id', $request->weapon_id)
+            ->whereRaw('CAST(sv_initial_results_players.total AS SIGNED) >= sv_clubs_weapons.success_degree')
             ->select('sv_initial_results_players.*',
                 'sv_members.name',
                 'sv_members.phone1',
@@ -424,8 +433,10 @@ class FinalResultsService
                 'sv_members.ID',
                 'sv_weapons.name as weapon_name',
                 'sv_members.registration_date',
-                'sv_clubs.name as club_name'
-            )->where('sv_members.weapon_id', $request->weapon_id);
+                'sv_clubs.name as club_name',
+                'sv_clubs_weapons.success_degree'
+            );
+
 
 
         //here
@@ -454,11 +465,10 @@ class FinalResultsService
                     ->orWhere('sv_members.phone2', $qValue);
             });
         }
-        $query = $query->where([['sv_initial_results.confirmed', '=', 1], ['sv_initial_results_players.total', '>', -1]])
+        $query = $query->where([['sv_initial_results.confirmed', '=', 1],['sv_initial_results.reviwed', '=', 1]  ,['sv_initial_results_players.total', '>', -1]])
             ->whereNotIn('mid', $occupied_players)
             ->orderBy('sv_initial_results_players.total', 'desc');
 
-        //dd($query->get());
         if ($with_pagination = 'yes') {
             $data = $query->cursorPaginate(config('app.admin_pagination_number'));
         } else {
@@ -468,6 +478,7 @@ class FinalResultsService
         return $data;
 
     }
+
 
 
     public function getSortedRatings()

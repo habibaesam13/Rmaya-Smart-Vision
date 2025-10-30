@@ -31,13 +31,13 @@ class GroupController extends Controller
         if (!checkModulePermission('members_groups', 'view')) {
             return redirect()->route('access_denied');
         }
-        
+
         $groups_without_pag = $this->groupService->getGroups()['groups_without_pag'];
-        
+
         $groups = $this->groupService->getGroups()['groups'];
-        
+
         $groupsCount = $groups_without_pag->count()??0;
-        
+
         $weapons = $this->weaponService->getAllGroupWeapons();
         return view('groups.registered_groups', ['groups' => $groups, 'weapons' => $weapons, 'groupsCount' => $groupsCount, 'groups_without_pag' => $groups_without_pag]);
     }
@@ -107,7 +107,7 @@ class GroupController extends Controller
             return redirect()->route('access_denied');
         }
         $members = $this->groupService->getMembersWithGroups()['members'];
-        
+
         $members_without_pag=$this->groupService->getMembersWithGroups()['members_without_pag'];
         $members_count = $members_without_pag->count()??0;
         $groups = $this->groupService->getGroups();
@@ -138,5 +138,11 @@ class GroupController extends Controller
         $member = $this->personalService->getMemberByID($mid);
         return redirect()->route('group-members', ['tid' => $member->team_id])
             ->with('success', 'تم تعديل البيانات بنجاح');
+    }
+
+    public function showMemberData($mid , Request $request  )
+    {
+        $member = $this->personalService->getMemberByID($mid);
+        return view('groups.member_group_show', compact('member'));
     }
 }

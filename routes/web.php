@@ -279,6 +279,7 @@ Route::group(
                     Route::get('registered/edit', [GroupController::class, 'edit'])->name('group-edit');
                     Route::put('registered/{tid}/edit', [GroupController::class, 'update'])->name('group-update');
                     //Edit group member details
+                    Route::get('registered/member/show/{mid}', [GroupController::class, 'showMemberData'])->name('memeber-show');
                     Route::get('registered/member/edit', [GroupController::class, 'editMemberData'])->name('memeber-edit');
                     Route::put('registered/member/{mid}/edit', [GroupController::class, 'updateMemberData'])->name('memeber-update');
 
